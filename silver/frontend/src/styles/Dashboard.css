@@ -1,0 +1,100 @@
+/* Container for the entire dashboard */
+.dashboard-container {
+  padding: 20px;
+  background-color: #121212; /* dark background */
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Dashboard heading */
+.dashboard-heading {
+  font-size: 2rem;
+  color: #1DA1F2; /* Twitter blue */
+  text-align: center;
+}
+
+/* Style for the entry list */
+.entry-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.pagination button {
+  background-color: #1DA1F2; /* Twitter blue */
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.pagination button:hover {
+  background-color: #0d95e8; /* Slightly darker blue */
+}
+
+/* Form container for Add/Edit entry */
+.add-edit-entry-form {
+  background-color: #333;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.add-edit-entry-form input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #555;
+  background-color: #222;
+  color: #fff;
+  border-radius: 5px;
+}
+
+/* Style for the Logout button */
+.logout-button {
+  background-color: #ff4d4d;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s;
+}
+
+.logout-button:hover {
+  background-color: #e60000;
+}
+
+/* Style for the "+" toggle editor button */
+.toggle-editor-button {
+  background-color: #1DA1F2; /* Twitter blue */
+  color: #fff;
+  border: none;
+  font-size: 1.5rem;
+  padding: 10px 15px;
+  border-radius: 50%;
+  cursor: pointer;
+  align-self: center; /* Center the button */
+  transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add a subtle shadow */
+}
+
+.toggle-editor-button:hover {
+  background-color: #0d95e8; /* Slightly darker blue */
+  transform: scale(1.1); /* Slight zoom effect */
+}
+
+.toggle-editor-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px #1DA1F2; /* Add a focus outline */
+}

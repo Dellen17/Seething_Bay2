@@ -1,10 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './components/login';  // Ensure correct capitalization for component imports
-import Register from './components/register';
-import Dashboard from './components/dashboard';
-import EditEntry from './components/EditEntry';  // Import the EditEntry component
-import ProtectedRoute from './components/ProtectedRoute'; // Import ProtectedRoute
+import Login from './components/Login';
+import Register from './components/Register';
+import Dashboard from './components/Dashboard';
+import Logout from './components/Logout';
+import ProtectedRoute from './components/ProtectedRoute';
+import ResetPassword from './components/ResetPassword';
+import ResetPasswordConfirm from './components/ResetPasswordConfirm';
 
 const App = () => {
   return (
@@ -12,9 +14,16 @@ const App = () => {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/password-reset" element={<ResetPassword />} />
+        {/* Update the path to accept both uidb64 and token parameters */}
+        <Route path="/reset-password-confirm/:uidb64/:token" element={<ResetPasswordConfirm />} />
+
         <Route path="/dashboard" element={<ProtectedRoute element={<Dashboard />} />} />
-        <Route path="/edit/:id" element={<ProtectedRoute element={<EditEntry />} />} />
-        <Route path="/" element={<Navigate to="/login" />} /> {/* Default route */}
+        <Route path="/edit/:id" element={<ProtectedRoute element={<Dashboard />} />} />
+
+        <Route path="/logout" element={<Logout />} />
+        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </Router>
   );

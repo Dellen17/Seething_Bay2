@@ -1,0 +1,68 @@
+/* Global styles for the Register component */
+.register-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #121212; /* Dark background similar to Twitter */
+    color: white;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+  }
+  
+  .register-heading {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #1da1f2; /* Twitter Blue */
+  }
+  
+  .register-error {
+    color: #e0245e; /* Red color for error messages */
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  
+  .register-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 400px;
+    gap: 15px;
+  }
+  
+  .register-input {
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    border: 1px solid #333;
+    background-color: #1a1a1a;
+    color: white;
+    font-size: 1rem;
+  }
+  
+  .register-input:focus {
+    outline: none;
+    border-color: #1da1f2; /* Highlight input on focus with Twitter blue */
+  }
+  
+  .register-button {
+    padding: 12px;
+    background-color: #1da1f2; /* Twitter Blue */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .register-button:hover {
+    background-color: #1a91da; /* Slightly darker blue on hover */
+  }
+  
+  .register-button:disabled {
+    background-color: #666; /* Disabled button */
+    cursor: not-allowed;
+  }

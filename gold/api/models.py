@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
+# Validators
 def validate_file_size(file):
     max_size_mb = 10  # Set max size to 10MB
     if file.size > max_size_mb * 1024 * 1024:
@@ -17,18 +18,36 @@ def validate_document_type(file):
     if file.content_type not in allowed_document_types:
         raise ValidationError("Only documents (.pdf, .doc, .docx, .txt) are allowed.")
 
+def validate_audio_type(file):
+    allowed_audio_types = ['audio/webm', 'audio/mpeg', 'audio/wav']
+    if file.content_type not in allowed_audio_types:
+        raise ValidationError("Only audio files (.webm, .mp3, .wav) are allowed.")
+
+# Entry Model
 class Entry(models.Model):
-    title = models.CharField(max_length=200)
-    content = models.TextField()
+    MOOD_CHOICES = [
+        ('happy', 'Happy'),
+        ('neutral', 'Neutral'),
+        ('sad', 'Sad'),
+        ('excited', 'Excited'),
+        ('tired', 'Tired'),
+    ]
+
+    content = models.TextField(blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     
+    # Mood field is optional (blank=True)
+    mood = models.CharField(max_length=10, choices=MOOD_CHOICES, blank=True, null=True)  # Allow blank mood
+
+    # File fields
     image = models.ImageField(upload_to='entry_images/', blank=True, null=True, validators=[validate_file_size])
     video = models.FileField(upload_to='entry_videos/', blank=True, null=True, validators=[validate_file_size, validate_video_type])
     document = models.FileField(upload_to='entry_documents/', blank=True, null=True, validators=[validate_file_size, validate_document_type])
+    voice_note = models.FileField(upload_to='voice_notes/', blank=True, null=True, validators=[validate_file_size, validate_audio_type])
 
     class Meta:
         verbose_name_plural = 'entries'
 
     def __str__(self):
-        return f"{self.title[:50]}..."
+        return f"{self.content[:50]}..." if self.content else "No Content"

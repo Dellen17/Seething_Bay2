@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import '../styles/Register.css';
 
 const Register = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState(''); // Now used in form
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
@@ -19,6 +21,15 @@ const Register = () => {
       return;
     }
 
+    // Basic validation for email format
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailPattern.test(email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+
+    setLoading(true);
+
     try {
       const response = await axios.post('http://127.0.0.1:8000/api/register/', {
         username: username,
@@ -29,16 +40,24 @@ const Register = () => {
       // Redirect user to login page upon successful registration
       navigate('/login');
     } catch (error) {
-      console.error(error.response.data);
-      setError('Registration failed');
+      console.error(error.response?.data);
+      
+      // Check if the error is related to duplicate email
+      if (error.response?.data?.email) {
+        setError('This email is already registered');
+      } else {
+        setError('Registration failed. Please try again.');
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div>
-      <h2>Register</h2>
-      {error && <p>{error}</p>}
-      <form onSubmit={handleRegister}>
+    <div className="register-container">
+      <h2 className="register-heading">Register</h2>
+      {error && <p className="register-error">{error}</p>}
+      <form onSubmit={handleRegister} className="register-form">
         <input
           id="register-username"
           name="username"
@@ -46,6 +65,7 @@ const Register = () => {
           placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          className="register-input"
         />
         <input
           id="register-email"
@@ -54,6 +74,7 @@ const Register = () => {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          className="register-input"
         />
         <input
           id="register-password"
@@ -62,8 +83,8 @@ const Register = () => {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          className="register-input"
         />
-        {/* Confirm Password Input */}
         <input
           id="register-confirm-password"
           name="confirmPassword"
@@ -71,8 +92,11 @@ const Register = () => {
           placeholder="Confirm Password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
+          className="register-input"
         />
-        <button type="submit">Register</button>
+        <button type="submit" disabled={loading} className="register-button">
+          {loading ? 'Registering...' : 'Register'}
+        </button>
       </form>
     </div>
   );

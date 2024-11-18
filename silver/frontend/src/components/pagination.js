@@ -1,4 +1,5 @@
 import React from 'react';
+import '../styles/Pagination.css';
 
 const Pagination = ({ currentPage = 1, totalPages = 1, onPageChange }) => {
   const handlePreviousPage = () => {
@@ -13,14 +14,63 @@ const Pagination = ({ currentPage = 1, totalPages = 1, onPageChange }) => {
     }
   };
 
+  const handlePageClick = (page) => {
+    if (page !== currentPage) {
+      onPageChange(page);
+    }
+  };
+
+  const renderPageNumbers = () => {
+    const pages = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pages.push(
+        <button
+          key={i}
+          className={`pagination-button ${i === currentPage ? 'active' : ''}`}
+          onClick={() => handlePageClick(i)}
+          aria-current={i === currentPage ? 'page' : undefined}
+        >
+          {i}
+        </button>
+      );
+    }
+    return pages;
+  };
+
   return (
-    <div>
-      <button onClick={handlePreviousPage} disabled={currentPage === 1}>
+    <div className="pagination-container">
+      <button
+        className="pagination-nav-button"
+        onClick={() => onPageChange(1)}
+        disabled={currentPage === 1}
+        aria-label="Go to first page"
+      >
+        First
+      </button>
+      <button
+        className="pagination-nav-button"
+        onClick={handlePreviousPage}
+        disabled={currentPage === 1}
+        aria-label="Go to previous page"
+      >
         Previous
       </button>
-      <span>{`Page ${currentPage} of ${totalPages}`}</span>
-      <button onClick={handleNextPage} disabled={currentPage === totalPages}>
+      {renderPageNumbers()}
+      <button
+        className="pagination-nav-button"
+        onClick={handleNextPage}
+        disabled={currentPage === totalPages}
+        aria-label="Go to next page"
+      >
         Next
+      </button>
+      <button
+        className="pagination-nav-button"
+        onClick={() => onPageChange(totalPages)}
+        disabled={currentPage === totalPages}
+        aria-label="Go to last page"
+      >
+        Last
       </button>
     </div>
   );

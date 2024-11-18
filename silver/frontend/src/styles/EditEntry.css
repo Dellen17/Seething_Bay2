@@ -1,0 +1,74 @@
+.edit-entry-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+  }
+  
+  .edit-entry-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .edit-entry-error {
+    color: red;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+  
+  .edit-entry-form .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .edit-entry-form label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .edit-entry-textarea,
+  .edit-entry-select,
+  .edit-entry-file-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+  
+  .edit-entry-actions {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .edit-entry-submit,
+  .edit-entry-cancel {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .edit-entry-submit {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .edit-entry-cancel {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .existing-file-preview img,
+  .existing-file-preview video,
+  .existing-file-preview audio {
+    margin-top: 10px;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 5px;
+  }
+  
