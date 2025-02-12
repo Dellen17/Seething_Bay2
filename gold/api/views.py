@@ -5,12 +5,17 @@ from rest_framework_simplejwt.tokens import RefreshToken  # type: ignore
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken # type: ignore
 from django.contrib.auth import authenticate
 from django.core.mail import send_mail
-from django.shortcuts import render
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from rest_framework.permissions import AllowAny, IsAuthenticated  # type: ignore
 from django.contrib.auth.models import User
+from django.core.files.storage import default_storage
+from .models import Profile
+from .serializers import ProfileSerializer
+from django.db.models import Q
+from django.db.models import Count
+from datetime import datetime
 from .models import Entry
 from .serializers import EntrySerializer
 from rest_framework.pagination import PageNumberPagination  # type: ignore
@@ -156,31 +161,57 @@ def logout_user(request):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     return Response({"error": "No refresh token provided"}, status=status.HTTP_400_BAD_REQUEST)
 
-
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
 def search_entries(request):
-    # Get query parameters
-    keyword = request.query_params.get('keyword', '')
-    mood = request.query_params.get('mood', '')
-    date_from = request.query_params.get('date_from', '')
-    date_to = request.query_params.get('date_to', '')
+    """
+    Search and filter entries based on keyword, media type, and date.
+    """
+    keyword = request.GET.get('keyword', '')
+    media_types = request.GET.getlist('mediaType[]', [])  # Handle array input
+    date = request.GET.get('date', '')
 
-    # Filter entries based on the parameters
-    entries = Entry.objects.all()
+    # Debugging: Log received parameters
+    print("Keyword:", keyword)
+    print("Media types:", media_types)
+    print("Date:", date)
 
+    # Base query
+    query = Q()
+
+    # Keyword filtering
     if keyword:
-        entries = entries.filter(content__icontains=keyword)
-    
-    if mood:
-        entries = entries.filter(mood=mood)
+        query &= Q(content__icontains=keyword)
 
-    if date_from and date_to:
-        entries = entries.filter(timestamp__range=[date_from, date_to])
+    # Media type filtering
+    if media_types:
+        media_query = Q()
+        if 'image' in media_types:
+            media_query |= Q(image__isnull=False) & ~Q(image='')  # Ensure image is not null or empty
+        if 'video' in media_types:
+            media_query |= Q(video__isnull=False) & ~Q(video='')  # Ensure video is not null or empty
+        if 'document' in media_types:
+            media_query |= Q(document__isnull=False) & ~Q(document='')  # Ensure document is not null or empty
+        if 'voice_note' in media_types:
+            media_query |= Q(voice_note__isnull=False) & ~Q(voice_note='')  # Ensure voice_note is not null or empty    
+        query &= media_query
+
+    # Date filtering
+    if date:
+        try:
+            parsed_date = datetime.strptime(date, '%Y-%m-%d').date()
+            query &= Q(timestamp__date=parsed_date)
+        except ValueError:
+            return Response({'error': 'Invalid date format. Use YYYY-MM-DD.'}, status=400)
+
+    # Retrieve entries
+    entries = Entry.objects.filter(query).order_by('-timestamp')
+
+    # Debugging: Log query and entries
+    print("Final query:", query)
+    print("Filtered entries:", entries)
 
     serializer = EntrySerializer(entries, many=True)
     return Response(serializer.data)
-
 
 # Entry Management Views
 @api_view(['GET'])
@@ -263,3 +294,84 @@ def delete_entry(request, pk):
         return Response({"message": "Entry deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
     except Entry.DoesNotExist:
         return Response({"error": "Entry not found"}, status=status.HTTP_404_NOT_FOUND)
+    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def user_profile(request):
+    """
+    Fetch user profile with counts of entries, images, videos, documents, and voice notes.
+    """
+    user = request.user
+    try:
+        # Get or create the user's profile
+        profile, created = Profile.objects.get_or_create(user=user)
+
+        # Count total entries
+        total_entries = Entry.objects.filter(author=user).count()
+
+        # Count entries with images, videos, documents, and voice notes
+        entry_counts = Entry.objects.filter(author=user).aggregate(
+            images=Count('image', distinct=True),
+            videos=Count('video', distinct=True),
+            documents=Count('document', distinct=True),
+            voice_notes=Count('voice_note', distinct=True),
+        )
+
+        profile_data = {
+            'username': user.username,
+            'email': user.email,
+            'date_joined': user.date_joined,
+            'profile_picture': profile.profile_picture.url if profile.profile_picture else None,  # Use profile instance
+            'total_entries': total_entries,
+            **entry_counts,  # Include image, video, document, and voice note counts
+        }
+
+        return Response(profile_data)
+    except Exception as e:
+        return Response({'error': str(e)}, status=400)
+
+from django.conf import settings
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def upload_profile_picture(request):
+    """
+    Upload or update the user's profile picture.
+    """
+    user = request.user
+    profile, created = Profile.objects.get_or_create(user=user)
+
+    if 'profile_picture' in request.FILES:
+        # Delete the old profile picture if it exists
+        if profile.profile_picture:
+            default_storage.delete(profile.profile_picture.path)
+
+        # Save the new profile picture
+        profile.profile_picture = request.FILES['profile_picture']
+        profile.save()
+
+        # Return the absolute URL of the uploaded profile picture
+        profile_picture_url = request.build_absolute_uri(profile.profile_picture.url)
+        return Response({
+            'message': 'Profile picture updated successfully.',
+            'profile_picture': profile_picture_url,
+        })
+    else:
+        return Response({'error': 'No file provided.'}, status=400)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_entries_by_month(request, year, month):
+    """
+    Fetch entries for a specific month.
+    """
+    try:
+        entries = Entry.objects.filter(
+            author=request.user,
+            timestamp__year=year,
+            timestamp__month=month
+        ).order_by('-timestamp')
+        serializer = EntrySerializer(entries, many=True)
+        return Response(serializer.data)
+    except Exception as e:
+        return Response({'error': str(e)}, status=400)

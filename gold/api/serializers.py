@@ -1,5 +1,5 @@
 from rest_framework import serializers # type: ignore
-from .models import Entry
+from .models import Entry, Profile
 
 class EntrySerializer(serializers.ModelSerializer):
     timestamp = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
@@ -16,3 +16,8 @@ class EntrySerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         return data
+    
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ['profile_picture']    

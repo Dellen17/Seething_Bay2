@@ -1,12 +1,15 @@
 from django.urls import path
 from .views import register_user, login_user, logout_user, create_entry, get_entries, get_entry, update_entry, delete_entry
-from .views import search_entries, reset_password, reset_password_confirm
+from .views import search_entries, reset_password, reset_password_confirm, user_profile, upload_profile_picture, get_entries_by_month
 
 urlpatterns = [
     
     path('register/', register_user, name='register_user'),
     path('login/', login_user, name='login_user'),
     path('logout/', logout_user, name='logout_user'),
+    path('user-profile/', user_profile, name='user-profile'),
+    path('upload-profile-picture/', upload_profile_picture, name='upload-profile-picture'),
+    path('entries/month/<int:year>/<int:month>/', get_entries_by_month, name='get_entries_by_month'),
     path('search/', search_entries, name='search_entries'),
     path('entries/', get_entries, name='get_entries'),  # List entries
     path('entries/create/', create_entry, name='create_entry'),  # Create entry

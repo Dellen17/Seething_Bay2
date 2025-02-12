@@ -51,3 +51,11 @@ class Entry(models.Model):
 
     def __str__(self):
         return f"{self.content[:50]}..." if self.content else "No Content"
+    
+# Add Profile Model
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.user.username}'s Profile"        

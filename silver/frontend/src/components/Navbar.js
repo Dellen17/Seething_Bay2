@@ -19,7 +19,6 @@ const Navbar = () => {
 
         {/* Links for larger screens */}
         <div className={`navbar-links ${isMobileMenuOpen ? 'open' : ''}`}>
-          <Link to="/" className="navbar-link">Home</Link>
           <Link to="/profile" className="navbar-link">Profile</Link>
           <Link to="/calendar" className="navbar-link">Calendar</Link>
           <Link to="/logout" className="navbar-link">Logout</Link>

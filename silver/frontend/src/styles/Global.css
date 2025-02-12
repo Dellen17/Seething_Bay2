@@ -1,6 +1,6 @@
 /* Set black background for the entire app */
 body {
-    background-color: #141414; /* Dark background like Twitter/X */
+    background-color: black; /* Dark background like Twitter/X */
     color: #ffffff; /* White text for contrast */
     font-family: Arial, Helvetica, sans-serif; /* Standard font */
     margin: 0;
@@ -38,8 +38,8 @@ body {
   
   /* Input fields */
   input, textarea {
-    background-color: #333; /* Dark input field background */
-    color: white;
+    background-color: #070707; /* Dark input field background */
+    color: rgb(255, 255, 255);
     border: 1px solid #444;
     padding: 10px;
     border-radius: 10px;

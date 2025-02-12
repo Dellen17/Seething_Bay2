@@ -2,6 +2,9 @@ import React from 'react';
 import '../styles/Pagination.css';
 
 const Pagination = ({ currentPage = 1, totalPages = 1, onPageChange }) => {
+  const maxVisiblePages = 5; // Number of visible page buttons
+  const halfVisiblePages = Math.floor(maxVisiblePages / 2);
+
   const handlePreviousPage = () => {
     if (currentPage > 1) {
       onPageChange(currentPage - 1);
@@ -22,7 +25,34 @@ const Pagination = ({ currentPage = 1, totalPages = 1, onPageChange }) => {
 
   const renderPageNumbers = () => {
     const pages = [];
-    for (let i = 1; i <= totalPages; i++) {
+    let startPage = Math.max(1, currentPage - halfVisiblePages);
+    let endPage = Math.min(totalPages, currentPage + halfVisiblePages);
+
+    // Adjust startPage and endPage if we're near the edges
+    if (currentPage <= halfVisiblePages) {
+      endPage = Math.min(maxVisiblePages, totalPages);
+    } else if (currentPage >= totalPages - halfVisiblePages) {
+      startPage = Math.max(totalPages - maxVisiblePages + 1, 1);
+    }
+
+    // Add "First" and ellipsis if needed
+    if (startPage > 1) {
+      pages.push(
+        <button
+          key={1}
+          className="pagination-button"
+          onClick={() => handlePageClick(1)}
+        >
+          1
+        </button>
+      );
+      if (startPage > 2) {
+        pages.push(<span key="ellipsis-start" className="pagination-ellipsis">...</span>);
+      }
+    }
+
+    // Add page numbers
+    for (let i = startPage; i <= endPage; i++) {
       pages.push(
         <button
           key={i}
@@ -34,6 +64,23 @@ const Pagination = ({ currentPage = 1, totalPages = 1, onPageChange }) => {
         </button>
       );
     }
+
+    // Add ellipsis and "Last" if needed
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) {
+        pages.push(<span key="ellipsis-end" className="pagination-ellipsis">...</span>);
+      }
+      pages.push(
+        <button
+          key={totalPages}
+          className="pagination-button"
+          onClick={() => handlePageClick(totalPages)}
+        >
+          {totalPages}
+        </button>
+      );
+    }
+
     return pages;
   };
 
@@ -53,7 +100,7 @@ const Pagination = ({ currentPage = 1, totalPages = 1, onPageChange }) => {
         disabled={currentPage === 1}
         aria-label="Go to previous page"
       >
-        Previous
+        &lt; {/* Left arrow */}
       </button>
       {renderPageNumbers()}
       <button
@@ -62,7 +109,7 @@ const Pagination = ({ currentPage = 1, totalPages = 1, onPageChange }) => {
         disabled={currentPage === totalPages}
         aria-label="Go to next page"
       >
-        Next
+        &gt; {/* Right arrow */}
       </button>
       <button
         className="pagination-nav-button"

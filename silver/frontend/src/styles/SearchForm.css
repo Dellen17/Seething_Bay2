@@ -8,64 +8,79 @@
     margin-bottom: 20px;
 }
 
+.search-bar-wrapper {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    background-color: #333; /* Dark background for search bar */
+    border-radius: 25px; /* Rounded corners */
+    padding: 5px 10px;
+    border: 1px solid #444; /* Dark border */
+}
+
 .search-input {
     flex: 1;
     padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+    border: none;
+    background-color: transparent; /* Transparent background */
+    color: #ffffff; /* White text */
     font-size: 16px;
+    outline: none; /* Remove outline */
+}
+
+.search-input::placeholder {
+    color: #888; /* Light gray placeholder */
+}
+
+.clear-button {
+    background: none;
+    border: none;
+    color: #888; /* Light gray for the clear button */
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0 10px;
+    transition: color 0.3s ease;
+}
+
+.clear-button:hover {
+    color: #ffffff; /* White on hover */
 }
 
 .search-button {
     margin-left: 10px;
-    padding: 10px;
-    border-radius: 5px;
-    background-color: #007BFF;
+    padding: 10px 20px;
+    border-radius: 25px; /* Rounded corners */
+    background-color: #1da1f2; /* Twitter Blue */
     color: white;
     border: none;
     cursor: pointer;
     font-size: 16px;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease;
 }
 
 .search-button:hover {
-    background-color: #0056b3;
-}
-
-.filter-toggle-button {
-    margin-right: 10px;
-    padding: 10px;
-    border-radius: 5px;
-    background-color: #6c757d;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
-}
-
-.filter-toggle-button:hover {
-    background-color: #5a6268;
+    background-color: #1991c6; /* Darker blue on hover */
 }
 
 .filters-container {
     margin-top: 20px;
-    border: 1px solid #ccc;
+    border: 1px solid #444; /* Dark border */
     padding: 15px;
-    border-radius: 5px;
-    background-color: grey;
+    border-radius: 10px; /* Rounded corners */
+    background-color: #1c1c1c; /* Slightly lighter than body background */
 }
 
 .filters-heading {
     margin-bottom: 10px;
     font-size: 18px;
     font-weight: bold;
-    color: #333;
+    color: #ffffff; /* White text */
 }
 
 .filter-option {
     margin-bottom: 10px;
     font-size: 16px;
+    color: #ffffff; /* White text */
 }
 
 .filter-option label {
@@ -77,4 +92,18 @@
 .filter-option input[type="checkbox"],
 .filter-option input[type="date"] {
     margin-right: 10px;
+    accent-color: #1da1f2; /* Twitter Blue for checkboxes */
+}
+
+.filter-option input[type="date"] {
+    background-color: #333; /* Dark background for date input */
+    color: #ffffff; /* White text */
+    border: 1px solid #444; /* Dark border */
+    padding: 5px;
+    border-radius: 5px; /* Rounded corners */
+    outline: none; /* Remove outline */
+}
+
+.filter-option input[type="date"]:focus {
+    border-color: #1da1f2; /* Twitter Blue on focus */
 }

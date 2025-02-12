@@ -8,13 +8,6 @@
   gap: 20px;
 }
 
-/* Dashboard heading */
-.dashboard-heading {
-  font-size: 2rem;
-  color: #1DA1F2; /* Twitter blue */
-  text-align: center;
-}
-
 /* Style for the entry list */
 .entry-list {
   display: flex;
