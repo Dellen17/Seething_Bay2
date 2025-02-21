@@ -11,11 +11,23 @@ const ResetPasswordConfirm = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
 
+    // Function to validate password
+    const validatePassword = (password) => {
+        return password.length >= 8; // Minimum 8 characters
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // Validate password length
+        if (!validatePassword(newPassword)) {
+            setMessage('Password must be at least 8 characters long.');
+            return;
+        }
+
+        // Check if passwords match
         if (newPassword !== confirmPassword) {
-            setMessage('Passwords do not match');
+            setMessage('Passwords do not match.');
             return;
         }
 
@@ -26,15 +38,13 @@ const ResetPasswordConfirm = () => {
                 new_password: newPassword,
                 confirm_password: confirmPassword,
             });
-            setMessage(response.data.message || 'Password reset successful.');
+            setMessage('Password reset successful. Click here to log in.');
 
-            // Clear stored token after reset
-            localStorage.removeItem('authToken');
-
-            // Redirect to login after a short delay for user feedback
-            setTimeout(() => navigate('/login'), 2000); // 2-second delay
+            // Clear inputs on success
+            setNewPassword('');
+            setConfirmPassword('');
         } catch (error) {
-            setMessage(error.response?.data?.error || 'An error occurred');
+            setMessage(error.response?.data?.detail || 'An error occurred. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -69,7 +79,15 @@ const ResetPasswordConfirm = () => {
                     {loading ? 'Resetting...' : 'Reset Password'}
                 </button>
             </form>
-            {message && <p className="reset-password-confirm-message">{message}</p>}
+            {message && (
+                <p 
+                    className="reset-password-confirm-message"
+                    onClick={() => navigate('/login')} // Allow manual navigation
+                    style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                >
+                    {message}
+                </p>
+            )}
         </div>
     );
 };

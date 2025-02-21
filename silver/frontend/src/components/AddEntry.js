@@ -5,7 +5,7 @@ import VoiceNote from './VoiceNote';
 import MoodSelector from './MoodSelector';
 import '../styles/AddEntry.css';
 
-const AddEntry = ({ onEntryAdded, entry, onUpdateEntry }) => {
+const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
   const [content, setContent] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileType, setFileType] = useState('');
@@ -105,12 +105,16 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry }) => {
         onEntryAdded(response.data);
       }
 
+      // Reset form fields
       setContent('');
       setSelectedFile(null);
       setFileType('');
       setMood('');
       setAudioBlob(null);
       setError('');
+
+      // Close the form after successful submission
+      setShowEditor(false);
     } catch (err) {
       if (err.response) {
         setError(`Error: ${err.response.status} - ${err.response.data.detail || 'Failed to create or update entry. Please try again.'}`);

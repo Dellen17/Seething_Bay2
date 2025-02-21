@@ -1,6 +1,6 @@
 /* Set black background for the entire app */
 body {
-    background-color: black; /* Dark background like Twitter/X */
+    background-color: rgb(7, 6, 6); /* Dark background like Twitter/X */
     color: #ffffff; /* White text for contrast */
     font-family: Arial, Helvetica, sans-serif; /* Standard font */
     margin: 0;
@@ -50,3 +50,9 @@ body {
     outline: none;
     border-color: #1da1f2;
   }
+
+/* Ensure all pages have a black background */
+#root {
+  background-color: rgb(7, 6, 6); /* Dark black background */
+  min-height: 100vh; /* Ensure the background covers the entire viewport */
+}  

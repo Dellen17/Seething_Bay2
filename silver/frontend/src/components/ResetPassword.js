@@ -7,14 +7,28 @@ const ResetPassword = () => {
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
 
+    // Function to validate email format
+    const validateEmail = (email) => {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regex.test(email);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Validate email format
+        if (!validateEmail(email)) {
+            setMessage('Please enter a valid email address.');
+            return;
+        }
+
         setLoading(true);
         try {
             const response = await axios.post('http://127.0.0.1:8000/api/password-reset/', { email });
             setMessage(response.data.message || 'Check your email for a reset link.');
+            setEmail(''); // Clear the email input on success
         } catch (error) {
-            setMessage(error.response?.data?.error || 'An error occurred');
+            setMessage(error.response?.data?.error || 'An error occurred. Please try again.');
         } finally {
             setLoading(false);
         }

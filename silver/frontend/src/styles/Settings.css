@@ -1,0 +1,67 @@
+.settings-container {
+    max-width: 600px;
+    margin: 80px auto 20px auto; /* Push content below the top nav */
+    padding: 20px;
+    color: #ffffff; /* White text */
+  }
+  
+  .back-button {
+    background-color: #1da1f2; /* Twitter blue */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px; /* Add some spacing */
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .back-button:hover {
+    background-color: #0d95e8; /* Darker blue on hover */
+  }
+  
+  .settings-section {
+    margin-bottom: 30px;
+  }
+  
+  .settings-section h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #1da1f2; /* Twitter Blue */
+  }
+  
+  .settings-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #444; /* Dark border */
+    border-radius: 5px;
+    background-color: #333; /* Dark background */
+    color: #ffffff; /* White text */
+  }
+  
+  .settings-button {
+    background-color: #1da1f2; /* Twitter Blue */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .settings-button:hover {
+    background-color: #0d95e8; /* Darker blue on hover */
+  }
+  
+  .error-message {
+    color: #ff6b6b; /* Red for error messages */
+    margin-top: 10px;
+  }
+  
+  .success-message {
+    color: #4caf50; /* Green for success messages */
+    margin-top: 10px;
+  }

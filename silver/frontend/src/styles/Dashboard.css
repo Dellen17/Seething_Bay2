@@ -1,11 +1,10 @@
-/* Container for the entire dashboard */
-.dashboard-container {
+/* Container for the dashboard content */
+.dashboard-content {
   padding: 20px;
-  background-color: #121212; /* dark background */
+  background-color: rgb(7, 6, 6); /* Dark background */
   color: #fff;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  flex: 1; /* Take up remaining space in the layout */
+  overflow-y: auto; /* Allow scrolling if content overflows */
 }
 
 /* Style for the entry list */
@@ -20,6 +19,7 @@
   display: flex;
   justify-content: center;
   gap: 10px;
+  margin-top: 20px; /* Add some space above the pagination */
 }
 
 .pagination button {
@@ -41,6 +41,7 @@
   background-color: #333;
   padding: 20px;
   border-radius: 5px;
+  margin-bottom: 20px; /* Add space below the form */
 }
 
 .add-edit-entry-form input {
@@ -77,7 +78,10 @@
   padding: 10px 15px;
   border-radius: 50%;
   cursor: pointer;
-  align-self: center; /* Center the button */
+  position: fixed; /* Fixed position for floating effect */
+  bottom: 20px; /* Position at the bottom */
+  right: 20px; /* Position at the right */
+  z-index: 1000; /* Ensure it's above other content */
   transition: background-color 0.3s, transform 0.2s;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add a subtle shadow */
 }
@@ -90,4 +94,30 @@
 .toggle-editor-button:focus {
   outline: none;
   box-shadow: 0 0 0 3px #1DA1F2; /* Add a focus outline */
+}
+
+/* Entry item styling */
+.entry-item {
+  background-color: #333;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 10px; /* Add space between entries */
+}
+
+.entry-item:hover {
+  background-color: #444; /* Slightly lighter on hover */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .dashboard-content {
+    padding: 10px; /* Reduce padding on smaller screens */
+  }
+
+  .toggle-editor-button {
+    bottom: 10px; /* Adjust position for smaller screens */
+    right: 10px;
+    font-size: 1.2rem; /* Smaller button on mobile */
+    padding: 8px 12px;
+  }
 }

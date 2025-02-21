@@ -1,100 +1,100 @@
 /* Style for the entire entry list */
 .entry-list {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    padding: 20px;
-  }
-  
-  /* Style for each entry item */
-  .entry-item {
-    background-color: #333;
-    padding: 20px;
-    border-radius: 10px;
-    color: #fff;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-    transition: background-color 0.3s ease;
-  }
-  
-  .entry-item:hover {
-    background-color: #444;
-  }
-  
-  /* Styling for the entry content */
-  .entry-content {
-    font-size: 1.2rem;
-    margin-bottom: 15px;
-  }
-  
-  /* Styling for the mood icon */
-  .entry-mood {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  
-  .mood-icon {
-    font-size: 30px;
-    margin-right: 10px;
-  }
-  
-  /* Mood icon styles */
-  .mood-icon.happy {
-    color: green;
-  }
-  
-  .mood-icon.neutral {
-    color: gray;
-  }
-  
-  .mood-icon.sad {
-    color: blue;
-  }
-  
-  /* Styling for images, videos, documents, and audio */
-  .entry-image,
-  .entry-video,
-  .entry-audio {
-    max-width: 100%;
-    margin-top: 10px;
-    border-radius: 5px;
-  }
-  
-  /* Styling for document download link */
-  .entry-document {
-    color: #1DA1F2;
-    font-weight: bold;
-    margin-top: 10px;
-    display: inline-block;
-  }
-  
-  /* Styling for timestamps */
-  .entry-timestamp {
-    font-size: 0.9rem;
-    color: #bbb;
-    margin-top: 10px;
-  }
-  
-  /* Buttons for delete and edit */
-  .entry-button {
-    background-color: #ff4d4d;
-    color: #fff;
-    padding: 10px 20px;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    margin-right: 10px;
-  }
-  
-  .entry-button:hover {
-    background-color: #e60000;
-  }
-  
-  .entry-button.edit {
-    background-color: #1DA1F2;
-  }
-  
-  .entry-button.edit:hover {
-    background-color: #0d95e8;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+}
+
+/* Style for each entry item */
+.entry-item {
+  background-color: rgb(7, 6, 6);
+  padding: 20px;
+  border-radius: 10px;
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s ease;
+}
+
+.entry-item:hover {
+  background-color: rgba(255, 255, 255, 0.1); 
+}
+
+/* Styling for the entry content */
+.entry-content {
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+}
+
+/* Styling for the mood icon */
+.entry-mood {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.mood-icon {
+  font-size: 30px;
+  margin-right: 10px;
+}
+
+/* Mood icon styles */
+.mood-icon.happy {
+  color: green;
+}
+
+.mood-icon.neutral {
+  color: gray;
+}
+
+.mood-icon.sad {
+  color: blue;
+}
+
+/* Styling for images, videos, documents, and audio */
+.entry-image,
+.entry-video,
+.entry-audio {
+  max-width: 100%;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+
+/* Styling for document download link */
+.entry-document {
+  color: #1DA1F2;
+  font-weight: bold;
+  margin-top: 10px;
+  display: inline-block;
+}
+
+/* Styling for timestamps */
+.entry-timestamp {
+  font-size: 0.9rem;
+  color: #bbb;
+  margin-top: 10px;
+}
+
+/* Buttons for delete and edit */
+.entry-button {
+  background-color: #ff4d4d;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-right: 10px;
+}
+
+.entry-button:hover {
+  background-color: #e60000;
+}
+
+.entry-button.edit {
+  background-color: #1DA1F2;
+}
+
+.entry-button.edit:hover {
+  background-color: #0d95e8;
+}

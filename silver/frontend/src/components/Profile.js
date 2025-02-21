@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import '../styles/Profile.css';
 
 const Profile = () => {
@@ -7,6 +8,7 @@ const Profile = () => {
     const [error, setError] = useState('');
     const [profilePicture, setProfilePicture] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
+    const navigate = useNavigate(); // Initialize useNavigate
 
     useEffect(() => {
         const token = localStorage.getItem('access_token');
@@ -21,7 +23,6 @@ const Profile = () => {
         })
         .then(response => {
             setUser(response.data);
-            // Ensure the profile picture URL is absolute
             setProfilePicture(response.data.profile_picture ? `http://127.0.0.1:8000${response.data.profile_picture}` : null);
         })
         .catch(error => {
@@ -44,7 +45,6 @@ const Profile = () => {
                 },
             })
             .then(response => {
-                // Use the absolute URL returned by the backend
                 setProfilePicture(response.data.profile_picture);
                 setIsEditing(false);
             })
@@ -60,6 +60,14 @@ const Profile = () => {
 
     return (
         <div className="profile-container">
+            {/* Back Button */}
+            <button
+                className="back-button"
+                onClick={() => navigate('/')} // Navigate back to the dashboard
+            >
+                ← Back to Dashboard
+            </button>
+
             <div className="profile-header">
                 <h2>{user.username}'s Profile</h2>
                 <div className="profile-picture-container">

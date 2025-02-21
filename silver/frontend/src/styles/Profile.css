@@ -1,7 +1,7 @@
 /* Profile.css */
 .profile-container {
     max-width: 600px;
-    margin: 20px auto;
+    margin: 80px auto 20px auto;
     padding: 20px;
     background-color: #1c1c1c; /* Slightly lighter than body background */
     border-radius: 10px;
@@ -22,6 +22,22 @@
 .profile-picture-container {
     margin-top: 20px;
     text-align: center;
+}
+
+.back-button {
+    background-color: #1da1f2; /* Twitter blue */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px; /* Add some spacing */
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.back-button:hover {
+    background-color: #0d95e8; /* Darker blue on hover */
 }
 
 .profile-picture {

@@ -1,11 +1,27 @@
 /* CalendarView.css */
 .calendar-view {
     max-width: 800px;
-    margin: 0 auto;
+    margin: 80px auto 0 auto;
     padding: 20px;
     text-align: center;
     font-family: Arial, Helvetica, sans-serif;
     color: #ffffff; /* White text */
+}
+
+.back-button {
+    background-color: #1da1f2; /* Twitter blue */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px; /* Add some spacing */
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.back-button:hover {
+    background-color: #0d95e8; /* Darker blue on hover */
 }
 
 .react-calendar {

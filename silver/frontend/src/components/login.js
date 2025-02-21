@@ -52,7 +52,7 @@ const Login = () => {
       localStorage.setItem('access_token', response.data.access);
       localStorage.setItem('refresh_token', response.data.refresh);
 
-      navigate('/dashboard');
+      navigate('/');
     } catch (error) {
       if (error.response?.status === 401) {
         // Token is invalid or expired, attempt to refresh the token
@@ -67,7 +67,7 @@ const Login = () => {
             });
             localStorage.setItem('access_token', response.data.access);
             localStorage.setItem('refresh_token', response.data.refresh);
-            navigate('/dashboard');
+            navigate('/');
           } catch (err) {
             setError('Invalid login credentials. Please try again.');
           }

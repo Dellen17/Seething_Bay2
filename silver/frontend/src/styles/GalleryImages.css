@@ -1,0 +1,41 @@
+.gallery-images-container {
+    max-width: 1200px;
+    margin: 80px auto 20px auto;
+    padding: 20px;
+    color: #ffffff;
+  }
+  
+  .images-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+  }
+  
+  .image-item {
+    border: 1px solid #444;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #333;
+  }
+  
+  .gallery-image {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .back-button {
+    background-color: #1da1f2; /* Twitter blue */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px; /* Add some spacing */
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .back-button:hover {
+    background-color: #0d95e8; /* Darker blue on hover */
+  }

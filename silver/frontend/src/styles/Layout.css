@@ -1,0 +1,20 @@
+.layout-container {
+  display: flex;
+  height: 100vh;
+  background-color: #121212; /* Dark background */
+  color: #fff;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: 250px; /* Adjust based on sidebar width */
+  transition: margin-left 0.3s ease;
+}
+
+.main-content.collapsed {
+  margin-left: 60px; /* Adjust based on collapsed sidebar width */
+}
+
+.dashboard-content {
+  padding: 20px;
+}

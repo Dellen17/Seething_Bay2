@@ -1,4 +1,5 @@
 from rest_framework import status  # type: ignore
+from django.contrib.auth import get_user_model
 from rest_framework.response import Response  # type: ignore
 from rest_framework.decorators import api_view, permission_classes  # type: ignore
 from rest_framework_simplejwt.tokens import RefreshToken  # type: ignore
@@ -19,6 +20,8 @@ from datetime import datetime
 from .models import Entry
 from .serializers import EntrySerializer
 from rest_framework.pagination import PageNumberPagination  # type: ignore
+
+User = get_user_model()
 
 # Custom pagination class
 class EntryPagination(PageNumberPagination):
@@ -375,3 +378,35 @@ def get_entries_by_month(request, year, month):
         return Response(serializer.data)
     except Exception as e:
         return Response({'error': str(e)}, status=400)
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def update_email(request):
+    user = request.user
+    new_email = request.data.get('email')
+
+    if not new_email:
+        return Response({"error": "Email is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Check if the new email is already in use
+    if User.objects.filter(email=new_email).exclude(pk=user.pk).exists():
+        return Response({"error": "Email already in use."}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Update the user's email
+    user.email = new_email
+    user.save()
+    return Response({"message": "Email updated successfully."}, status=status.HTTP_200_OK)
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def update_password(request):
+    user = request.user
+    new_password = request.data.get('password')
+
+    if not new_password:
+        return Response({"error": "Password is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Update the user's password
+    user.set_password(new_password)
+    user.save()
+    return Response({"message": "Password updated successfully."}, status=status.HTTP_200_OK)    

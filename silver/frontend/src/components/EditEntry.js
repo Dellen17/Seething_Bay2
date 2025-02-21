@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '../styles/EditEntry.css';
 
-const EditEntry = ({ entry, onUpdateEntry }) => {
+const EditEntry = ({ entry, onUpdateEntry, onCancel }) => {
   const [content, setContent] = useState(entry?.content || '');
   const [selectedImage, setSelectedImage] = useState(null);
   const [existingImage, setExistingImage] = useState(entry?.image || '');
@@ -48,7 +48,7 @@ const EditEntry = ({ entry, onUpdateEntry }) => {
       });
       if (response.status === 200) {
         onUpdateEntry(response.data);
-        navigate('/dashboard');
+        navigate('/');
       }
     } catch (err) {
       setError(err.response?.data.detail || 'Failed to update entry. Please try again.');
@@ -153,17 +153,21 @@ const EditEntry = ({ entry, onUpdateEntry }) => {
         </div>
 
         <div className="edit-entry-actions">
-          <button type="submit" className="edit-entry-submit" disabled={loading}>
-            {loading ? 'Updating...' : 'Update Entry'}
-          </button>
-          <button
-            type="button"
-            className="edit-entry-cancel"
-            onClick={() => navigate('/dashboard')}
-          >
-            Cancel
-          </button>
-        </div>
+                    <button type="submit" className="edit-entry-submit" disabled={loading}>
+                        {loading ? 'Updating...' : 'Update Entry'}
+                    </button>
+                    <button
+                        type="button"
+                        className="edit-entry-cancel"
+                        onClick={() => {
+                            console.log("Cancel button clicked"); // Debugging
+                            onCancel();
+                            navigate('/');
+                        }}
+                    >
+                        Cancel
+                    </button>
+                </div>
       </form>
     </div>
   );

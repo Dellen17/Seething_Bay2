@@ -1,6 +1,6 @@
 .search-form-container {
-    margin: 20px 0;
-}
+    margin: 100px 0 20px 0; /* Adjust the top margin to push it below the navbar */
+  }
 
 .search-form {
     display: flex;

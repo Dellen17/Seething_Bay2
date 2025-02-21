@@ -1,0 +1,112 @@
+.gallery-container {
+  max-width: 1200px;
+  margin: 80px auto 20px auto; /* Push content below the top nav */
+  padding: 20px;
+  color: #ffffff; /* White text */
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  background-color: #1da1f2; /* Twitter blue */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 20px; /* Add some spacing */
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.back-button:hover {
+  background-color: #0d95e8; /* Darker blue on hover */
+}
+
+.back-icon {
+  margin-right: 10px; /* Add spacing between icon and text */
+}
+
+.gallery-options {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.gallery-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #1da1f2; /* Twitter blue */
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 18px;
+  transition: background-color 0.3s ease;
+}
+
+.gallery-option:hover {
+  background-color: #0d95e8; /* Darker blue on hover */
+}
+
+.gallery-icon {
+  font-size: 24px; /* Adjust icon size */
+  margin-bottom: 10px; /* Add spacing between icon and text */
+}
+
+/* Styles for Gallery Images, Videos, and Voice Notes */
+.gallery-images-container,
+.gallery-videos-container,
+.gallery-voice-notes-container {
+  max-width: 1200px;
+  margin: 80px auto 20px auto;
+  padding: 20px;
+  color: #ffffff;
+}
+
+.images-grid,
+.videos-grid,
+.voice-notes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.image-item,
+.video-item,
+.voice-note-item {
+  border: 1px solid #444; /* Dark border */
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #333; /* Dark background */
+}
+
+.gallery-image,
+.gallery-video,
+.gallery-voice-note {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Additional styles for videos and voice notes */
+.gallery-video {
+  height: 200px; /* Set a fixed height for video thumbnails */
+  object-fit: cover; /* Ensure videos maintain aspect ratio */
+}
+
+.gallery-voice-note {
+  padding: 10px;
+}
+
+/* Error and Loading Messages */
+.error-message {
+  color: #ff6b6b; /* Red for error messages */
+  margin-top: 10px;
+}
+
+.loading-message {
+  color: #1da1f2; /* Twitter Blue for loading messages */
+  margin-top: 10px;
+}

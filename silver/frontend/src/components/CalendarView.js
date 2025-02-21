@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import '../styles/CalendarView.css';
 
 const CalendarView = () => {
     const [date, setDate] = useState(new Date());
     const [entries, setEntries] = useState([]);
     const [selectedDayEntries, setSelectedDayEntries] = useState([]);
+    const navigate = useNavigate(); // Initialize useNavigate
 
     useEffect(() => {
         fetchEntriesForMonth(date);
@@ -63,6 +65,14 @@ const CalendarView = () => {
 
     return (
         <div className="calendar-view">
+            {/* Back Button */}
+            <button
+                className="back-button"
+                onClick={() => navigate('/')} // Navigate back to the dashboard
+            >
+                ← Back to Dashboard
+            </button>
+
             <h2>Calendar View</h2>
             <p>Select a month to view your entries.</p>
 
