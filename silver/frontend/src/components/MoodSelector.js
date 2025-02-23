@@ -1,28 +1,45 @@
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSmile, faFrown, faMeh, faGrinBeam, faTired } from '@fortawesome/free-solid-svg-icons';
+import {
+  FaSmile,       // Happy
+  FaFrown,       // Sad
+  FaMeh,         // Neutral
+  FaGrinBeam,    // Excited
+  FaTired,       // Tired
+  FaAngry,       // Angry
+  FaFlushed,     // Stressed
+  FaSurprise,    // Shocked
+  FaSmileBeam,   // Calm
+  FaQuestionCircle, // Confused
+  FaHeart,       // Loved
+} from 'react-icons/fa';
 
 const MoodSelector = ({ mood, setMood }) => {
   const moods = [
-    { icon: faSmile, label: 'happy', color: 'green' },
-    { icon: faMeh, label: 'neutral', color: 'blue' },
-    { icon: faFrown, label: 'sad', color: 'purple' },
-    { icon: faGrinBeam, label: 'excited', color: 'orange' },
-    { icon: faTired, label: 'tired', color: 'red' },
+    { icon: FaSmile, label: 'happy', color: 'green' },
+    { icon: FaMeh, label: 'neutral', color: 'gray' },
+    { icon: FaFrown, label: 'sad', color: 'blue' },
+    { icon: FaGrinBeam, label: 'excited', color: 'orange' },
+    { icon: FaTired, label: 'tired', color: 'red' },
+    { icon: FaAngry, label: 'angry', color: 'darkred' },          // New mood
+    { icon: FaFlushed, label: 'stressed', color: 'darkorange' },  // New mood
+    { icon: FaSurprise, label: 'shocked', color: 'gold' },        // New mood
+    { icon: FaSmileBeam, label: 'calm', color: 'lightblue' },     // New mood
+    { icon: FaQuestionCircle, label: 'confused', color: 'purple' }, // New mood
+    { icon: FaHeart, label: 'loved', color: 'pink' },             // New mood
   ];
 
   return (
-    <div>
+    <div className="mood-selector">
       <h4>Select Your Mood</h4>
-      <div style={{ display: 'flex', gap: '10px', cursor: 'pointer' }}>
-        {moods.map(({ icon, label, color }) => (
-          <FontAwesomeIcon
+      <div className="mood-icons">
+        {moods.map(({ icon: Icon, label, color }) => (
+          <Icon
             key={label}
-            icon={icon}
             size="2x"
             color={mood === label ? color : 'gray'}
             onClick={() => setMood(label)}
-            title={label.charAt(0).toUpperCase() + label.slice(1)} // Adds tooltip on hover
+            title={label.charAt(0).toUpperCase() + label.slice(1)} // Tooltip on hover
+            className="mood-icon"
           />
         ))}
       </div>

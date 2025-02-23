@@ -1,62 +1,132 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import '../styles/VoiceToText.css';
 
-const VoiceToText = () => {
-    const [isListening, setIsListening] = useState(false);   // Track if the microphone is listening
-    const [transcript, setTranscript] = useState('');         // Store the recognized speech
+const VoiceToText = ({ onTranscriptUpdate, onCancel }) => {
+  const [isListening, setIsListening] = useState(false);
+  const [transcript, setTranscript] = useState('');
+  const [isEditing, setIsEditing] = useState(false); // State for editing mode
+  const [editedTranscript, setEditedTranscript] = useState(''); // State for edited transcript
+  const recognitionRef = useRef(null); // Use a ref to store the recognition object
 
-    // Web Speech API setup
+  useEffect(() => {
+    // Initialize SpeechRecognition
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
+    recognitionRef.current = new SpeechRecognition();
 
-    recognition.continuous = true;      // Keep recognizing until stopped
-    recognition.interimResults = true;  // Allow partial results
-    recognition.lang = 'en-US';         // Language setting
+    recognitionRef.current.continuous = true; // Keep listening until stopped
+    recognitionRef.current.interimResults = false; // Only use final results
+    recognitionRef.current.lang = 'en-US'; // Set language
 
-    // Handle speech recognition start
-    const startListening = () => {
-        setIsListening(true);
-        recognition.start();
-    };
-
-    // Handle speech recognition stop
-    const stopListening = () => {
-        setIsListening(false);
-        recognition.stop();
-    };
-
-    // Handle recognized speech (onresult event)
-    recognition.onresult = (event) => {
-        let currentTranscript = '';
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-            currentTranscript += event.results[i][0].transcript;
+    // Handle speech recognition results
+    recognitionRef.current.onresult = (event) => {
+      let currentTranscript = '';
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        if (event.results[i].isFinal) {
+          currentTranscript += event.results[i][0].transcript + ' ';
         }
-        setTranscript(currentTranscript);
+      }
+      setTranscript((prevTranscript) => prevTranscript + currentTranscript);
     };
 
-    // Error handling (optional)
-    recognition.onerror = (event) => {
-        console.error("Speech recognition error detected: ", event.error);
+    // Handle errors
+    recognitionRef.current.onerror = (event) => {
+      console.error('Speech recognition error:', event.error);
+      setIsListening(false);
     };
 
-    return (
-        <div>
-            <h2>Voice to Text</h2>
-            <button 
-                onClick={isListening ? stopListening : startListening} 
-                style={{ backgroundColor: isListening ? 'red' : 'green', color: 'white' }}
-            >
-                {isListening ? 'Stop' : 'Start'} Listening
+    // Cleanup on component unmount
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop(); // Stop recognition when the component unmounts
+      }
+    };
+  }, []); // No dependencies needed
+
+  // Start/stop listening
+  const toggleListening = () => {
+    if (isListening) {
+      recognitionRef.current.stop();
+    } else {
+      setTranscript(''); // Reset transcript when starting a new session
+      recognitionRef.current.start();
+    }
+    setIsListening((prev) => !prev);
+  };
+
+  // Handle editing the transcript
+  const handleEdit = () => {
+    setIsEditing(true);
+    setEditedTranscript(transcript); // Initialize the edited transcript with the current transcript
+  };
+
+  // Save the edited transcript
+  const handleSaveEdit = () => {
+    setTranscript(editedTranscript); // Update the transcript with the edited version
+    setIsEditing(false); // Exit editing mode
+  };
+
+  // Cancel editing
+  const handleCancelEdit = () => {
+    setIsEditing(false); // Exit editing mode without saving
+  };
+
+  // Pass the transcript to the parent component when the user is done
+  const handleDone = () => {
+    onTranscriptUpdate(transcript.trim()); // Trim any trailing spaces
+  };
+
+  // Cancel the transcription
+  const handleCancel = () => {
+    setTranscript(''); // Reset the transcript
+    onCancel(); // Notify the parent component
+  };
+
+  return (
+    <div className="voice-to-text">
+      <button
+        onClick={toggleListening}
+        style={{ backgroundColor: isListening ? 'red' : 'green', color: 'white' }}
+      >
+        {isListening ? 'Stop Listening' : 'Start Listening'}
+      </button>
+
+      {isEditing ? (
+        <div className="edit-transcript-container">
+          <textarea
+            value={editedTranscript}
+            onChange={(e) => setEditedTranscript(e.target.value)}
+            className="edit-transcript-textarea"
+          />
+          <div className="edit-buttons">
+            <button onClick={handleSaveEdit} className="save-edit-button">
+              Save
             </button>
-
-            <div style={{ marginTop: '20px', padding: '10px', border: '1px solid gray', minHeight: '100px' }}>
-                {transcript ? (
-                    <p>{transcript}</p>
-                ) : (
-                    <p>Start speaking and your words will appear here...</p>
-                )}
-            </div>
+            <button onClick={handleCancelEdit} className="cancel-edit-button">
+              Cancel Edit
+            </button>
+          </div>
         </div>
-    );
+      ) : (
+        <div className="transcript-container">
+          <p>{transcript || 'Start speaking and your words will appear here...'}</p>
+        </div>
+      )}
+
+      {!isListening && transcript && !isEditing && (
+        <div className="action-buttons">
+          <button onClick={handleEdit} className="edit-button">
+            Edit Transcript
+          </button>
+          <button onClick={handleDone} className="done-button">
+            Use This Transcript
+          </button>
+          <button onClick={handleCancel} className="cancel-button">
+            Cancel
+          </button>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default VoiceToText;

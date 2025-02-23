@@ -1,14 +1,14 @@
 .search-form-container {
     margin: 100px 0 20px 0; /* Adjust the top margin to push it below the navbar */
   }
-
-.search-form {
+  
+  .search-form {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
-}
-
-.search-bar-wrapper {
+  }
+  
+  .search-bar-wrapper {
     display: flex;
     align-items: center;
     flex: 1;
@@ -16,9 +16,9 @@
     border-radius: 25px; /* Rounded corners */
     padding: 5px 10px;
     border: 1px solid #444; /* Dark border */
-}
-
-.search-input {
+  }
+  
+  .search-input {
     flex: 1;
     padding: 10px;
     border: none;
@@ -26,13 +26,13 @@
     color: #ffffff; /* White text */
     font-size: 16px;
     outline: none; /* Remove outline */
-}
-
-.search-input::placeholder {
+  }
+  
+  .search-input::placeholder {
     color: #888; /* Light gray placeholder */
-}
-
-.clear-button {
+  }
+  
+  .clear-button {
     background: none;
     border: none;
     color: #888; /* Light gray for the clear button */
@@ -40,13 +40,15 @@
     font-size: 16px;
     padding: 0 10px;
     transition: color 0.3s ease;
-}
-
-.clear-button:hover {
+  }
+  
+  .clear-button:hover {
     color: #ffffff; /* White on hover */
-}
-
-.search-button {
+  }
+  
+  .search-button {
+    display: flex;
+    align-items: center;
     margin-left: 10px;
     padding: 10px 20px;
     border-radius: 25px; /* Rounded corners */
@@ -56,54 +58,48 @@
     cursor: pointer;
     font-size: 16px;
     transition: background-color 0.3s ease;
-}
-
-.search-button:hover {
+  }
+  
+  .search-button:hover {
     background-color: #1991c6; /* Darker blue on hover */
-}
-
-.filters-container {
+  }
+  
+  .search-icon {
+    margin-right: 8px; /* Add spacing between icon and text */
+  }
+  
+  .filters-container {
     margin-top: 20px;
     border: 1px solid #444; /* Dark border */
     padding: 15px;
     border-radius: 10px; /* Rounded corners */
     background-color: #1c1c1c; /* Slightly lighter than body background */
-}
-
-.filters-heading {
+  }
+  
+  .filters-heading {
     margin-bottom: 10px;
     font-size: 18px;
     font-weight: bold;
     color: #ffffff; /* White text */
-}
-
-.filter-option {
+  }
+  
+  .filter-option {
     margin-bottom: 10px;
     font-size: 16px;
     color: #ffffff; /* White text */
-}
-
-.filter-option label {
+  }
+  
+  .filter-option label {
     cursor: pointer;
     display: flex;
     align-items: center;
-}
-
-.filter-option input[type="checkbox"],
-.filter-option input[type="date"] {
+  }
+  
+  .filter-option input[type="checkbox"] {
     margin-right: 10px;
     accent-color: #1da1f2; /* Twitter Blue for checkboxes */
-}
-
-.filter-option input[type="date"] {
-    background-color: #333; /* Dark background for date input */
-    color: #ffffff; /* White text */
-    border: 1px solid #444; /* Dark border */
-    padding: 5px;
-    border-radius: 5px; /* Rounded corners */
-    outline: none; /* Remove outline */
-}
-
-.filter-option input[type="date"]:focus {
-    border-color: #1da1f2; /* Twitter Blue on focus */
-}
+  }
+  
+  .filter-icon {
+    margin-right: 8px; /* Add spacing between icon and text */
+  }

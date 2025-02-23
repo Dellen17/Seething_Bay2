@@ -31,6 +31,12 @@ class Entry(models.Model):
         ('sad', 'Sad'),
         ('excited', 'Excited'),
         ('tired', 'Tired'),
+        ('angry', 'Angry'),          # New mood
+        ('stressed', 'Stressed'),    # New mood
+        ('shocked', 'Shocked'),      # New mood
+        ('calm', 'Calm'),            # New mood
+        ('confused', 'Confused'),    # New mood
+        ('loved', 'Loved'),          # New mood
     ]
 
     content = models.TextField(blank=True, null=True)
@@ -58,4 +64,4 @@ class Profile(models.Model):
     profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
 
     def __str__(self):
-        return f"{self.user.username}'s Profile"        
+        return f"{self.user.username}'s Profile"

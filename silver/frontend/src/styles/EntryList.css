@@ -1,4 +1,3 @@
-/* Style for the entire entry list */
 .entry-list {
   display: flex;
   flex-direction: column;
@@ -6,9 +5,8 @@
   padding: 20px;
 }
 
-/* Style for each entry item */
 .entry-item {
-  background-color: rgb(7, 6, 6);
+  background-color: #333;
   padding: 20px;
   border-radius: 10px;
   color: #fff;
@@ -17,16 +15,14 @@
 }
 
 .entry-item:hover {
-  background-color: rgba(255, 255, 255, 0.1); 
+  background-color: #444;
 }
 
-/* Styling for the entry content */
 .entry-content {
   font-size: 1.2rem;
   margin-bottom: 15px;
 }
 
-/* Styling for the mood icon */
 .entry-mood {
   display: flex;
   align-items: center;
@@ -38,7 +34,6 @@
   margin-right: 10px;
 }
 
-/* Mood icon styles */
 .mood-icon.happy {
   color: green;
 }
@@ -51,7 +46,14 @@
   color: blue;
 }
 
-/* Styling for images, videos, documents, and audio */
+.mood-icon.excited {
+  color: orange;
+}
+
+.mood-icon.tired {
+  color: red;
+}
+
 .entry-image,
 .entry-video,
 .entry-audio {
@@ -60,23 +62,29 @@
   border-radius: 5px;
 }
 
-/* Styling for document download link */
 .entry-document {
-  color: #1DA1F2;
+  color: #1da1f2;
   font-weight: bold;
   margin-top: 10px;
   display: inline-block;
 }
 
-/* Styling for timestamps */
 .entry-timestamp {
   font-size: 0.9rem;
   color: #bbb;
   margin-top: 10px;
 }
 
-/* Buttons for delete and edit */
+/* Button Container */
+.entry-buttons {
+  display: flex; /* Align buttons horizontally */
+  gap: 10px; /* Add spacing between buttons */
+  margin-top: 10px; /* Add some spacing above the buttons */
+}
+
 .entry-button {
+  display: flex;
+  align-items: center;
   background-color: #ff4d4d;
   color: #fff;
   padding: 10px 20px;
@@ -84,7 +92,6 @@
   border: none;
   cursor: pointer;
   transition: background-color 0.3s;
-  margin-right: 10px;
 }
 
 .entry-button:hover {
@@ -92,9 +99,77 @@
 }
 
 .entry-button.edit {
-  background-color: #1DA1F2;
+  background-color: #1da1f2;
 }
 
 .entry-button.edit:hover {
   background-color: #0d95e8;
+}
+
+.button-icon {
+  margin-right: 8px; /* Add spacing between icon and text */
+}
+
+/* Mood Selector Styles */
+.mood-selector {
+  margin-bottom: 20px;
+}
+
+.mood-icons {
+  display: flex;
+  gap: 15px;
+  cursor: pointer;
+}
+
+.mood-icon {
+  font-size: 30px;
+  transition: color 0.3s ease;
+}
+
+.mood-icon.happy {
+  color: green;
+}
+
+.mood-icon.neutral {
+  color: gray;
+}
+
+.mood-icon.sad {
+  color: blue;
+}
+
+.mood-icon.excited {
+  color: orange;
+}
+
+.mood-icon.tired {
+  color: red;
+}
+
+.mood-icon.angry {
+  color: darkred; /* New mood color */
+}
+
+.mood-icon.stressed {
+  color: darkorange; /* New mood color */
+}
+
+.mood-icon.shocked {
+  color: gold; /* New mood color */
+}
+
+.mood-icon.calm {
+  color: lightblue; /* New mood color */
+}
+
+.mood-icon.confused {
+  color: purple; /* New mood color */
+}
+
+.mood-icon.loved {
+  color: pink; /* New mood color */
+}
+
+.mood-icon:hover {
+  opacity: 0.8;
 }

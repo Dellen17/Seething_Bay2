@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { FaSave, FaTimes, FaImage, FaVideo, FaFile, FaMicrophone } from 'react-icons/fa';
 import '../styles/EditEntry.css';
 
 const EditEntry = ({ entry, onUpdateEntry, onCancel }) => {
@@ -49,6 +50,7 @@ const EditEntry = ({ entry, onUpdateEntry, onCancel }) => {
       if (response.status === 200) {
         onUpdateEntry(response.data);
         navigate('/');
+        window.scrollTo(0, 0); // Scroll to the top of the page
       }
     } catch (err) {
       setError(err.response?.data.detail || 'Failed to update entry. Please try again.');
@@ -84,11 +86,21 @@ const EditEntry = ({ entry, onUpdateEntry, onCancel }) => {
             <option value="happy">Happy</option>
             <option value="neutral">Neutral</option>
             <option value="sad">Sad</option>
+            <option value="excited">Excited</option>
+            <option value="tired">Tired</option>
+            <option value="angry">Angry</option>
+            <option value="stressed">Stressed</option>
+            <option value="shocked">Shocked</option>
+            <option value="calm">Calm</option>
+            <option value="confused">Confused</option>
+            <option value="loved">Loved</option>
           </select>
         </div>
 
         <div className="form-group">
-          <label htmlFor="image">Upload Image</label>
+          <label htmlFor="image">
+            <FaImage className="form-icon" /> Upload Image
+          </label>
           <input
             type="file"
             id="image"
@@ -104,7 +116,9 @@ const EditEntry = ({ entry, onUpdateEntry, onCancel }) => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="video">Upload Video</label>
+          <label htmlFor="video">
+            <FaVideo className="form-icon" /> Upload Video
+          </label>
           <input
             type="file"
             id="video"
@@ -120,7 +134,9 @@ const EditEntry = ({ entry, onUpdateEntry, onCancel }) => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="document">Upload Document</label>
+          <label htmlFor="document">
+            <FaFile className="form-icon" /> Upload Document
+          </label>
           <input
             type="file"
             id="document"
@@ -136,7 +152,9 @@ const EditEntry = ({ entry, onUpdateEntry, onCancel }) => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="voiceNote">Upload Voice Note</label>
+          <label htmlFor="voiceNote">
+            <FaMicrophone className="form-icon" /> Upload Voice Note
+          </label>
           <input
             type="file"
             id="voiceNote"
@@ -153,21 +171,23 @@ const EditEntry = ({ entry, onUpdateEntry, onCancel }) => {
         </div>
 
         <div className="edit-entry-actions">
-                    <button type="submit" className="edit-entry-submit" disabled={loading}>
-                        {loading ? 'Updating...' : 'Update Entry'}
-                    </button>
-                    <button
-                        type="button"
-                        className="edit-entry-cancel"
-                        onClick={() => {
-                            console.log("Cancel button clicked"); // Debugging
-                            onCancel();
-                            navigate('/');
-                        }}
-                    >
-                        Cancel
-                    </button>
-                </div>
+          <button type="submit" className="edit-entry-submit" disabled={loading}>
+            <FaSave className="button-icon" /> {/* Update icon */}
+            <span>{loading ? 'Updating...' : 'Update Entry'}</span>
+          </button>
+          <button
+            type="button"
+            className="edit-entry-cancel"
+            onClick={() => {
+              onCancel();
+              navigate('/');
+              window.scrollTo(0, 0); // Scroll to the top of the page
+            }}
+          >
+            <FaTimes className="button-icon" /> {/* Cancel icon */}
+            <span>Cancel</span>
+          </button>
+        </div>
       </form>
     </div>
   );

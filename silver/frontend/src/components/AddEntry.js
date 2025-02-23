@@ -3,6 +3,7 @@ import axios from 'axios';
 import VoiceToText from './VoiceToText';
 import VoiceNote from './VoiceNote';
 import MoodSelector from './MoodSelector';
+import { FaFileUpload, FaMicrophone, FaKeyboard, FaSave } from 'react-icons/fa';
 import '../styles/AddEntry.css';
 
 const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
@@ -26,6 +27,16 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
       setError('');
     }
   }, [entry]);
+
+  // Update content with transcript when the user clicks "Use This Transcript"
+  const handleTranscriptUpdate = (text) => {
+    setContent(text);
+  };
+
+  // Handle canceling the transcription
+  const handleCancelTranscription = () => {
+    setInputMethod('text'); // Switch back to text input
+  };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -53,7 +64,7 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
 
   const handleStartRecording = () => {
     setIsRecording(true);
-    setAudioBlob(null); // Reset audio blob on new recording start
+    setAudioBlob(null);
   };
 
   const handleSubmit = async (e) => {
@@ -137,15 +148,29 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
       <form className="add-entry-form" onSubmit={handleSubmit}>
         <div className="form-group">
           <label className="form-label">Choose Input Method</label>
-          <select
-            className="form-select"
-            value={inputMethod}
-            onChange={(e) => setInputMethod(e.target.value)}
-          >
-            <option value="text">Text Entry</option>
-            <option value="voiceToText">Voice to Text</option>
-            <option value="voiceNote">Voice Note</option>
-          </select>
+          <div className="input-method-selector">
+            <button
+              type="button"
+              className={`input-method-button ${inputMethod === 'text' ? 'active' : ''}`}
+              onClick={() => setInputMethod('text')}
+            >
+              <FaKeyboard className="input-method-icon" /> Text
+            </button>
+            <button
+              type="button"
+              className={`input-method-button ${inputMethod === 'voiceToText' ? 'active' : ''}`}
+              onClick={() => setInputMethod('voiceToText')}
+            >
+              <FaMicrophone className="input-method-icon" /> Voice to Text
+            </button>
+            <button
+              type="button"
+              className={`input-method-button ${inputMethod === 'voiceNote' ? 'active' : ''}`}
+              onClick={() => setInputMethod('voiceNote')}
+            >
+              <FaMicrophone className="input-method-icon" /> Voice Note
+            </button>
+          </div>
         </div>
 
         {inputMethod === 'text' && (
@@ -159,7 +184,13 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
           </div>
         )}
 
-        {inputMethod === 'voiceToText' && <VoiceToText />}
+        {inputMethod === 'voiceToText' && (
+          <VoiceToText
+            onTranscriptUpdate={handleTranscriptUpdate}
+            onCancel={handleCancelTranscription}
+          />
+        )}
+
         {inputMethod === 'voiceNote' && (
           <VoiceNote
             onAudioRecorded={handleAudioRecorded}
@@ -170,7 +201,9 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
         )}
 
         <div className="form-group">
-          <label className="form-label">Upload File (Image, Video, or Document)</label>
+          <label className="form-label">
+            <FaFileUpload className="form-icon" /> Upload File (Image, Video, or Document)
+          </label>
           <input
             className="form-input"
             type="file"
@@ -198,7 +231,11 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
         <MoodSelector mood={mood} setMood={setMood} />
 
         <button className="form-submit" type="submit" disabled={!isFormValid || isSubmitting}>
-          {isSubmitting ? <span className="spinner"></span> : entry ? 'Update Entry' : 'Add Entry'}
+          {isSubmitting ? <span className="spinner"></span> : (
+            <>
+              <FaSave className="submit-icon" /> {entry ? 'Update Entry' : 'Add Entry'}
+            </>
+          )}
         </button>
       </form>
     </div>
