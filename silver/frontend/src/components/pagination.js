@@ -23,6 +23,14 @@ const Pagination = ({ currentPage = 1, totalPages = 1, onPageChange }) => {
     }
   };
 
+  const handleFirstPage = () => {
+    handlePageClick(1);
+  };
+
+  const handleLastPage = () => {
+    handlePageClick(totalPages);
+  };
+
   const renderPageNumbers = () => {
     const pages = [];
     let startPage = Math.max(1, currentPage - halfVisiblePages);
@@ -88,7 +96,7 @@ const Pagination = ({ currentPage = 1, totalPages = 1, onPageChange }) => {
     <div className="pagination-container">
       <button
         className="pagination-nav-button"
-        onClick={() => onPageChange(1)}
+        onClick={handleFirstPage}
         disabled={currentPage === 1}
         aria-label="Go to first page"
       >
@@ -113,7 +121,7 @@ const Pagination = ({ currentPage = 1, totalPages = 1, onPageChange }) => {
       </button>
       <button
         className="pagination-nav-button"
-        onClick={() => onPageChange(totalPages)}
+        onClick={handleLastPage}
         disabled={currentPage === totalPages}
         aria-label="Go to last page"
       >

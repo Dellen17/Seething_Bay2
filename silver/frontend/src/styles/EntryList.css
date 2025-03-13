@@ -5,6 +5,13 @@
   padding: 20px;
 }
 
+.entry-audio {
+  max-width: 100%;
+  margin-top: 10px;
+  border-radius: 5px;
+  min-height: 50px; /* Ensure minimum height for visibility */
+}
+
 .entry-item {
   background-color: #333;
   padding: 20px;
@@ -26,32 +33,13 @@
 .entry-mood {
   display: flex;
   align-items: center;
+  gap: 10px; /* Add spacing between icon and text */
   margin-bottom: 10px;
 }
 
 .mood-icon {
   font-size: 30px;
-  margin-right: 10px;
-}
-
-.mood-icon.happy {
-  color: green;
-}
-
-.mood-icon.neutral {
-  color: gray;
-}
-
-.mood-icon.sad {
-  color: blue;
-}
-
-.mood-icon.excited {
-  color: orange;
-}
-
-.mood-icon.tired {
-  color: red;
+  transition: opacity 0.3s ease;
 }
 
 .entry-image,
@@ -77,9 +65,9 @@
 
 /* Button Container */
 .entry-buttons {
-  display: flex; /* Align buttons horizontally */
-  gap: 10px; /* Add spacing between buttons */
-  margin-top: 10px; /* Add some spacing above the buttons */
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
 }
 
 .entry-button {
@@ -107,69 +95,5 @@
 }
 
 .button-icon {
-  margin-right: 8px; /* Add spacing between icon and text */
-}
-
-/* Mood Selector Styles */
-.mood-selector {
-  margin-bottom: 20px;
-}
-
-.mood-icons {
-  display: flex;
-  gap: 15px;
-  cursor: pointer;
-}
-
-.mood-icon {
-  font-size: 30px;
-  transition: color 0.3s ease;
-}
-
-.mood-icon.happy {
-  color: green;
-}
-
-.mood-icon.neutral {
-  color: gray;
-}
-
-.mood-icon.sad {
-  color: blue;
-}
-
-.mood-icon.excited {
-  color: orange;
-}
-
-.mood-icon.tired {
-  color: red;
-}
-
-.mood-icon.angry {
-  color: darkred; /* New mood color */
-}
-
-.mood-icon.stressed {
-  color: darkorange; /* New mood color */
-}
-
-.mood-icon.shocked {
-  color: gold; /* New mood color */
-}
-
-.mood-icon.calm {
-  color: lightblue; /* New mood color */
-}
-
-.mood-icon.confused {
-  color: purple; /* New mood color */
-}
-
-.mood-icon.loved {
-  color: pink; /* New mood color */
-}
-
-.mood-icon:hover {
-  opacity: 0.8;
+  margin-right: 8px;
 }

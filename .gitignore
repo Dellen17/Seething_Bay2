@@ -3,6 +3,9 @@
 # Python settings
 gold/backend/settings.py
 
+# env file for the DeepSeek API key
+.env
+
 # Frontend dependencies
 silver/frontend/node_modules
 

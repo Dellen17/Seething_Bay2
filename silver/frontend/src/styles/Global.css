@@ -1,58 +1,59 @@
 /* Set black background for the entire app */
 body {
-    background-color: rgb(7, 6, 6); /* Dark background like Twitter/X */
-    color: #ffffff; /* White text for contrast */
-    font-family: Arial, Helvetica, sans-serif; /* Standard font */
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh; /* Full screen height */
-  }
-  
-  /* Styling for links (usually blue like buttons on Twitter/X) */
-  a {
-    color: #1da1f2; /* Twitter Blue */
-    text-decoration: none;
-  }
-  
-  a:hover {
-    text-decoration: underline;
-  }
-  
-  /* Style for blue buttons */
-  button {
-    background-color: #1da1f2; /* Twitter Blue */
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 20px;
-    transition: background-color 0.3s ease;
-  }
-  
-  button:hover {
-    background-color: #1991c6; /* Darker blue on hover */
-  }
-  
-  /* Input fields */
-  input, textarea {
-    background-color: #070707; /* Dark input field background */
-    color: rgb(255, 255, 255);
-    border: 1px solid #444;
-    padding: 10px;
-    border-radius: 10px;
-    margin-bottom: 10px;
-  }
-  
-  input:focus, textarea:focus {
-    outline: none;
-    border-color: #1da1f2;
-  }
+  background-color: rgb(7, 6, 6); /* Dark background like Twitter/X */
+  color: #ffffff; /* White text for contrast */
+  font-family: Arial, Helvetica, sans-serif; /* Standard font */
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Full screen height */
+}
+
+/* Styling for links (usually blue like buttons on Twitter/X) */
+a {
+  color: #1da1f2; /* Twitter Blue */
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Style for blue buttons */
+button {
+  background-color: #1da1f2; /* Twitter Blue */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 20px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #1991c6; /* Darker blue on hover */
+}
+
+/* Input fields */
+input, textarea {
+  background-color: #070707; /* Dark input field background */
+  color: rgb(255, 255, 255);
+  border: 1px solid #444;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  border-color: #1da1f2;
+}
+
 
 /* Ensure all pages have a black background */
 #root {
   background-color: rgb(7, 6, 6); /* Dark black background */
   min-height: 100vh; /* Ensure the background covers the entire viewport */
-}  
+}

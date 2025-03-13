@@ -1,37 +1,9 @@
 import React from 'react';
-import {
-  FaSmile,       // Happy
-  FaFrown,       // Sad
-  FaMeh,         // Neutral
-  FaGrinBeam,    // Excited
-  FaTired,       // Tired
-  FaAngry,       // Angry
-  FaFlushed,     // Stressed
-  FaSurprise,    // Shocked
-  FaSmileBeam,   // Calm
-  FaQuestionCircle, // Confused
-  FaHeart,       // Loved
-  FaTrash,       // Delete icon
-  FaEdit,        // Edit icon
-} from 'react-icons/fa';
+import { FaTrash, FaEdit } from 'react-icons/fa';
+import { moods } from './MoodSelector'; // Import moods array
 import '../styles/EntryList.css';
 
 const EntryList = ({ entries, handleDelete, handleEdit }) => {
-  // Map mood labels to their corresponding icons and colors
-  const moodIcons = {
-    happy: { icon: FaSmile, color: 'green' },
-    neutral: { icon: FaMeh, color: 'gray' },
-    sad: { icon: FaFrown, color: 'blue' },
-    excited: { icon: FaGrinBeam, color: 'orange' },
-    tired: { icon: FaTired, color: 'red' },
-    angry: { icon: FaAngry, color: 'darkred' },
-    stressed: { icon: FaFlushed, color: 'darkorange' },
-    shocked: { icon: FaSurprise, color: 'gold' },
-    calm: { icon: FaSmileBeam, color: 'lightblue' },
-    confused: { icon: FaQuestionCircle, color: 'purple' },
-    loved: { icon: FaHeart, color: 'pink' },
-  };
-
   if (!entries || entries.length === 0) {
     return <p>No entries to display.</p>;
   }
@@ -39,14 +11,16 @@ const EntryList = ({ entries, handleDelete, handleEdit }) => {
   return (
     <div className="entry-list">
       {entries.map((entry) => {
-        const { icon: MoodIcon, color } = moodIcons[entry.mood] || { icon: null, color: 'gray' }; // Default to gray if mood is not found
+        const moodData = moods.find(m => m.label === entry.mood);
+        const MoodIcon = moodData?.icon;
+        const moodColor = moodData?.color || 'gray'; // Default to gray if mood not found
         return (
           <div key={entry.id} className="entry-item">
             <div className="entry-content" dangerouslySetInnerHTML={{ __html: entry.content }} />
 
             {entry.mood && (
               <div className="entry-mood">
-                <MoodIcon size="30px" color={color} className="mood-icon" />
+                {MoodIcon && <MoodIcon size={20} color={moodColor} className="mood-icon" />}
                 <span>{entry.mood.charAt(0).toUpperCase() + entry.mood.slice(1)}</span>
               </div>
             )}

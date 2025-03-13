@@ -3,6 +3,7 @@ import axios from 'axios';
 import VoiceToText from './VoiceToText';
 import VoiceNote from './VoiceNote';
 import MoodSelector from './MoodSelector';
+import LoadingSpinner from './LoadingSpinner'; // Import the spinner
 import { FaFileUpload, FaMicrophone, FaKeyboard, FaSave } from 'react-icons/fa';
 import '../styles/AddEntry.css';
 
@@ -15,7 +16,7 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
   const [mood, setMood] = useState('');
   const [audioBlob, setAudioBlob] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false); // Loading state for submission
 
   useEffect(() => {
     if (entry) {
@@ -27,16 +28,6 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
       setError('');
     }
   }, [entry]);
-
-  // Update content with transcript when the user clicks "Use This Transcript"
-  const handleTranscriptUpdate = (text) => {
-    setContent(text);
-  };
-
-  // Handle canceling the transcription
-  const handleCancelTranscription = () => {
-    setInputMethod('text'); // Switch back to text input
-  };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -71,16 +62,18 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
     e.preventDefault();
 
     if (isSubmitting) return;
-    if (!content && !selectedFile && !audioBlob) {
-      setError('Please add some content, a file, or a voice note before submitting.');
+
+    // Ensure mood is selected
+    if (!mood) {
+      setError('Please select a mood before submitting.');
       return;
     }
 
-    setIsSubmitting(true);
+    setIsSubmitting(true); // Start loading
     const token = localStorage.getItem('access_token');
     const formData = new FormData();
     if (content) formData.append('content', content);
-    if (mood) formData.append('mood', mood);
+    formData.append('mood', mood); // Mood is now mandatory
 
     if (selectedFile) {
       if (fileType === 'image') {
@@ -135,7 +128,7 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
         setError(`Error: ${err.message}`);
       }
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false); // Stop loading
     }
   };
 
@@ -186,8 +179,8 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
 
         {inputMethod === 'voiceToText' && (
           <VoiceToText
-            onTranscriptUpdate={handleTranscriptUpdate}
-            onCancel={handleCancelTranscription}
+            onTranscriptUpdate={setContent}
+            onCancel={() => setInputMethod('text')}
           />
         )}
 
@@ -231,11 +224,7 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
         <MoodSelector mood={mood} setMood={setMood} />
 
         <button className="form-submit" type="submit" disabled={!isFormValid || isSubmitting}>
-          {isSubmitting ? <span className="spinner"></span> : (
-            <>
-              <FaSave className="submit-icon" /> {entry ? 'Update Entry' : 'Add Entry'}
-            </>
-          )}
+          {isSubmitting ? <LoadingSpinner /> : (entry ? 'Update Entry' : 'Add Entry')}
         </button>
       </form>
     </div>

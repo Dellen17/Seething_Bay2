@@ -1,7 +1,7 @@
 .layout-container {
   display: flex;
   height: 100vh;
-  background-color: #121212; /* Dark background */
+  background-color: rgb(7, 6, 6); /* Dark background */
   color: #fff;
 }
 
@@ -9,6 +9,7 @@
   flex: 1;
   margin-left: 250px; /* Adjust based on sidebar width */
   transition: margin-left 0.3s ease;
+  background-color: rgb(7, 6, 6); /* Ensure consistent background */
 }
 
 .main-content.collapsed {
@@ -17,4 +18,5 @@
 
 .dashboard-content {
   padding: 20px;
+  background-color: rgb(7, 6, 6); /* Ensure consistent background */
 }

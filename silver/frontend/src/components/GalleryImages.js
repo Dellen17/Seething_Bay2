@@ -1,15 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import LoadingSpinner from './LoadingSpinner';
+import { moods } from './MoodSelector'; // Import moods for consistency
 import '../styles/GalleryImages.css';
 
 const GalleryImages = () => {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
-  const fetchAllImages = async () => {
+  const fetchAllImages = useCallback(async () => {
+    setLoading(true);
+    setError('');
     const token = localStorage.getItem('access_token');
     let allEntries = [];
     let nextPage = 'http://127.0.0.1:8000/api/entries/';
@@ -20,51 +24,86 @@ const GalleryImages = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         allEntries = [...allEntries, ...response.data.results.entries];
-        nextPage = response.data.next; // Get the URL for the next page
+        nextPage = response.data.next;
       }
-
       const entriesWithImages = allEntries.filter((entry) => entry.image);
       setImages(entriesWithImages);
     } catch (err) {
-      setError('Failed to fetch images.');
+      console.error('Error fetching images:', err);
+      setError('Failed to fetch images. Please try again.');
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchAllImages();
-  }, []);
+  }, [fetchAllImages]);
 
-  if (loading) return <p className="loading-message">Loading images...</p>;
-  if (error) return <p className="error-message">{error}</p>;
+  const handleRetry = () => {
+    fetchAllImages();
+  };
+
+  const handleImageClick = (entryId) => {
+    navigate(`/edit/${entryId}`);
+  };
 
   return (
     <div className="gallery-images-container">
-      {/* Back Button */}
-      <button
-        className="back-button"
-        onClick={() => navigate('/gallery')} // Navigate back to the Gallery page
-      >
+      <button className="back-button" onClick={() => navigate('/gallery')}>
         ← Back to Gallery
       </button>
 
       <h2>Images</h2>
-      <div className="images-grid">
-        {images.length > 0 ? (
-          images.map((entry) => (
-            <div key={entry.id} className="image-item">
-              <img
-                src={`http://127.0.0.1:8000${entry.image}`}
-                alt={`Entry ${entry.id}`}
-                className="gallery-image"
-              />
-            </div>
-          ))
-        ) : (
-          <p>No images found.</p>
-        )}
-      </div>
+      {loading ? (
+        <div className="loading-container">
+          <LoadingSpinner />
+          <p className="loading-message">Loading images...</p>
+        </div>
+      ) : error ? (
+        <div className="error-container">
+          <p className="error-message">{error}</p>
+          <button className="retry-button" onClick={handleRetry}>
+            Retry
+          </button>
+        </div>
+      ) : images.length > 0 ? (
+        <div className="images-grid">
+          {images.map((entry) => {
+            const moodData = moods.find((m) => m.label === entry.mood);
+            const MoodIcon = moodData?.icon;
+            return (
+              <div
+                key={entry.id}
+                className="image-item"
+                onClick={() => handleImageClick(entry.id)}
+              >
+                <img
+                  src={`http://127.0.0.1:8000${entry.image}`}
+                  alt={`Entry ${entry.id}`}
+                  className="gallery-image"
+                  loading="lazy"
+                />
+                <div className="image-overlay">
+                  <p className="image-timestamp">
+                    {new Date(entry.timestamp).toLocaleDateString()}
+                  </p>
+                  {entry.mood && (
+                    <div className="image-mood">
+                      {MoodIcon && (
+                        <MoodIcon size="20px" color={moodData?.color} />
+                      )}
+                      <span>{entry.mood.charAt(0).toUpperCase() + entry.mood.slice(1)}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <p className="no-content">No images found.</p>
+      )}
     </div>
   );
 };

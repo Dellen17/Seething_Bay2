@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
-import '../styles/Login.css'; // Import the specific CSS for Login
+import LoadingSpinner from './LoadingSpinner'; // Import the spinner
+import '../styles/Login.css';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false); // Loading state
   const navigate = useNavigate();
 
   // Helper function to get a new access token using the refresh token
@@ -40,6 +42,9 @@ const Login = () => {
       setError('Please fill in both fields');
       return;
     }
+
+    setIsLoading(true); // Start loading
+    setError(''); // Clear any previous errors
 
     try {
       // Try to log in and get the access and refresh tokens
@@ -75,6 +80,8 @@ const Login = () => {
       } else {
         setError('Invalid login credentials. Please try again.');
       }
+    } finally {
+      setIsLoading(false); // Stop loading
     }
   };
 
@@ -101,8 +108,8 @@ const Login = () => {
           onChange={(e) => setPassword(e.target.value)}
           className="login-input"
         />
-        <button type="submit" className="login-button">
-          Login
+        <button type="submit" className="login-button" disabled={isLoading}>
+          {isLoading ? <LoadingSpinner /> : 'Login'} {/* Show spinner when loading */}
         </button>
       </form>
       <p className="redirect-link">

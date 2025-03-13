@@ -1,105 +1,190 @@
 /* CalendarView.css */
 .calendar-view {
-    max-width: 800px;
-    margin: 80px auto 0 auto;
+    max-width: 900px;
+    margin: 80px auto 20px auto;
     padding: 20px;
     text-align: center;
     font-family: Arial, Helvetica, sans-serif;
-    color: #ffffff; /* White text */
-}
-
-.back-button {
-    background-color: #1da1f2; /* Twitter blue */
+    color: #ffffff;
+    background-color: rgb(7, 6, 6); /* Match app background */
+  }
+  
+  .back-button {
+    background-color: #1da1f2;
     color: white;
     border: none;
     padding: 10px 20px;
-    border-radius: 5px;
+    border-radius: 20px; /* Match button style */
     cursor: pointer;
-    margin-bottom: 20px; /* Add some spacing */
+    margin-bottom: 20px;
     font-size: 16px;
-    transition: background-color 0.3s ease;
-}
-
-.back-button:hover {
-    background-color: #0d95e8; /* Darker blue on hover */
-}
-
-.react-calendar {
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .back-button:hover {
+    background-color: #0d95e8;
+    transform: scale(1.05); /* Slight zoom on hover */
+  }
+  
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    color: #bbb;
+  }
+  
+  .error-message {
+    color: #ff4d4d;
+    font-weight: bold;
+  }
+  
+  .react-calendar {
     width: 100%;
     max-width: 600px;
-    margin: 0 auto;
-    border: 1px solid #444; /* Dark border */
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    background-color: #333; /* Dark background */
-    padding: 10px;
-    color: #ffffff; /* White text */
-}
-
-.selected-day-entries {
-    margin-top: 20px;
-    text-align: left;
-    color: #ffffff; /* White text */
-}
-
-.entry-preview {
-    border: 1px solid #444; /* Dark border */
-    border-radius: 8px;
+    margin: 0 auto 20px auto;
+    border: none; /* Remove default border */
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Deeper shadow */
+    background-color: #222; /* Darker background */
     padding: 15px;
+    color: #ffffff;
+  }
+  
+  .react-calendar__tile {
+    transition: background-color 0.2s ease;
+    position: relative;
+    padding-bottom: 30px; /* Add space for the indicator */
+  }
+  
+  .react-calendar__tile--active {
+    background-color: #1da1f2 !important;
+    color: #fff !important;
+  }
+  
+  .react-calendar__tile--now {
+    background-color: rgba(255, 255, 255, 0.1) !important; /* Highlight today */
+    border: 1px solid #1da1f2 !important;
+  }
+  
+  .react-calendar__tile:hover {
+    background-color: #333 !important;
+  }
+  
+  .entry-indicator {
+    color: #1da1f2;
+    font-size: 20px;
+    line-height: 0;
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .selected-day-entries {
+    margin-top: 30px;
+    text-align: left;
+    color: #ffffff;
+  }
+  
+  .selected-day-entries h3 {
+    font-size: 1.5rem;
     margin-bottom: 15px;
-    background-color: #333; /* Dark background */
-}
-
-.entry-header {
+    color: #1da1f2;
+  }
+  
+  .entry-preview {
+    border: none;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: #333;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    cursor: pointer; /* Indicate interactivity */
+  }
+  
+  .entry-preview:hover {
+    background-color: #444;
+    transform: translateY(-2px); /* Slight lift on hover */
+  }
+  
+  .entry-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 10px;
-    font-size: 14px;
-    color: #888; /* Light gray for timestamp and mood */
-}
-
-.entry-timestamp {
+    align-items: center;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    color: #bbb;
+  }
+  
+  .entry-timestamp {
     font-style: italic;
-}
-
-.entry-mood {
+  }
+  
+  .entry-mood {
     font-weight: bold;
-    color: #1da1f2; /* Twitter Blue for mood */
-}
-
-.entry-media-grid {
+    color: #1da1f2;
+  }
+  
+  .entry-content {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+  }
+  
+  .entry-media-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.media-thumbnail {
-    border: 1px solid #444; /* Dark border */
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+  }
+  
+  .media-thumbnail {
     border-radius: 8px;
     overflow: hidden;
-    background-color: #222; /* Slightly darker background */
-}
-
-.entry-image {
+    background-color: #222;
+    transition: transform 0.2s ease;
+  }
+  
+  .media-thumbnail:hover {
+    transform: scale(1.05); /* Slight zoom on hover */
+  }
+  
+  .entry-image,
+  .entry-video,
+  .entry-audio {
     width: 100%;
     height: auto;
     display: block;
-}
-
-.entry-video, .entry-audio {
-    width: 100%;
-    display: block;
-}
-
-.entry-document {
+    border-radius: 8px;
+  }
+  
+  .entry-document {
     display: block;
     padding: 10px;
     text-align: center;
-    color: #1da1f2; /* Twitter Blue for document link */
+    color: #1da1f2;
     text-decoration: none;
-}
-
-.entry-document:hover {
+    font-weight: bold;
+    transition: color 0.3s ease;
+  }
+  
+  .entry-document:hover {
+    color: #0d95e8;
     text-decoration: underline;
-}
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .calendar-view {
+      padding: 10px;
+    }
+  
+    .react-calendar {
+      max-width: 100%;
+    }
+  
+    .entry-media-grid {
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+  }

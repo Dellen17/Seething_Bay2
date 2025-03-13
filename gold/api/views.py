@@ -1,6 +1,9 @@
 from rest_framework import status  # type: ignore
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response  # type: ignore
+import requests # type: ignore
+from django.conf import settings
+import time
 from rest_framework.decorators import api_view, permission_classes  # type: ignore
 from rest_framework_simplejwt.tokens import RefreshToken  # type: ignore
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken # type: ignore
@@ -11,23 +14,51 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from rest_framework.permissions import AllowAny, IsAuthenticated  # type: ignore
 from django.contrib.auth.models import User
-from django.core.files.storage import default_storage
 from .models import Profile
 from .serializers import ProfileSerializer
-from django.db.models import Q
-from django.db.models import Count
+from django.utils import timezone
+from .utils import analyze_sentiment, analyze_summary
+from datetime import timedelta
+from django.db.models import Count, Q
+import os
+import subprocess
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
 from datetime import datetime
 from .models import Entry
 from .serializers import EntrySerializer
 from rest_framework.pagination import PageNumberPagination  # type: ignore
+from urllib.parse import urlencode
 
 User = get_user_model()
 
 # Custom pagination class
 class EntryPagination(PageNumberPagination):
-    page_size = 5  # Number of entries per page
+    page_size = 5
     page_size_query_param = 'page_size'
     max_page_size = 100
+
+    def get_next_link(self):
+        if not self.page.has_next():
+            return None
+        url = self.request.build_absolute_uri()
+        page_number = self.page.next_page_number()
+        params = self.request.GET.copy()
+        params['page'] = page_number
+        # Handle list parameters like mediaType[]
+        params.setlist('mediaType[]', self.request.GET.getlist('mediaType[]'))
+        return f"{url.split('?')[0]}?{urlencode(params, doseq=True)}"  # Add doseq=True
+
+    def get_previous_link(self):
+        if not self.page.has_previous():
+            return None
+        url = self.request.build_absolute_uri()
+        page_number = self.page.previous_page_number()
+        params = self.request.GET.copy()
+        params['page'] = page_number
+        # Handle list parameters like mediaType[]
+        params.setlist('mediaType[]', self.request.GET.getlist('mediaType[]'))
+        return f"{url.split('?')[0]}?{urlencode(params, doseq=True)}"  # Add doseq=True
 
 # User Authentication Views
 @api_view(['POST'])
@@ -136,9 +167,6 @@ def reset_password_confirm(request, uidb64, token):
         user.set_password(new_password)
         user.save()
 
-        # Log the updated password hash (for debugging purposes, make sure to remove in production)
-        print(f"Updated password hash: {user.password}")
-
         # Redirect to the login page of your React app after successful password reset
         frontend_login_url = 'http://localhost:3000/login'  # Adjust URL if needed
         return Response({
@@ -165,21 +193,17 @@ def logout_user(request):
     return Response({"error": "No refresh token provided"}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def search_entries(request):
     """
-    Search and filter entries based on keyword, media type, and date.
+    Search and filter entries based on keyword, media type, and date for the authenticated user.
     """
     keyword = request.GET.get('keyword', '')
-    media_types = request.GET.getlist('mediaType[]', [])  # Handle array input
+    media_types = request.GET.getlist('mediaType[]', [])
     date = request.GET.get('date', '')
 
-    # Debugging: Log received parameters
-    print("Keyword:", keyword)
-    print("Media types:", media_types)
-    print("Date:", date)
-
-    # Base query
-    query = Q()
+    # Start with a base query filtering by the authenticated user
+    query = Q(author=request.user)
 
     # Keyword filtering
     if keyword:
@@ -187,16 +211,18 @@ def search_entries(request):
 
     # Media type filtering
     if media_types:
-        media_query = Q()
-        if 'image' in media_types:
-            media_query |= Q(image__isnull=False) & ~Q(image='')  # Ensure image is not null or empty
-        if 'video' in media_types:
-            media_query |= Q(video__isnull=False) & ~Q(video='')  # Ensure video is not null or empty
-        if 'document' in media_types:
-            media_query |= Q(document__isnull=False) & ~Q(document='')  # Ensure document is not null or empty
-        if 'voice_note' in media_types:
-            media_query |= Q(voice_note__isnull=False) & ~Q(voice_note='')  # Ensure voice_note is not null or empty    
-        query &= media_query
+        # Use OR operator to ensure entries match ANY selected media types
+        media_query = Q()  # Initialize an empty Q object
+        for media_type in media_types:
+            if media_type == 'image':
+                media_query |= Q(image__isnull=False) & ~Q(image='')  # Combine with OR
+            elif media_type == 'video':
+                media_query |= Q(video__isnull=False) & ~Q(video='')  # Combine with OR
+            elif media_type == 'document':
+                media_query |= Q(document__isnull=False) & ~Q(document='')  # Combine with OR
+            elif media_type == 'voice_note':
+                media_query |= Q(voice_note__isnull=False) & ~Q(voice_note='')  # Combine with OR
+        query &= media_query  # Apply the combined media_query to the main query
 
     # Date filtering
     if date:
@@ -206,15 +232,21 @@ def search_entries(request):
         except ValueError:
             return Response({'error': 'Invalid date format. Use YYYY-MM-DD.'}, status=400)
 
-    # Retrieve entries
+    # Retrieve entries for the authenticated user
     entries = Entry.objects.filter(query).order_by('-timestamp')
 
-    # Debugging: Log query and entries
-    print("Final query:", query)
-    print("Filtered entries:", entries)
+    # Paginate the results
+    paginator = EntryPagination()
+    paginated_entries = paginator.paginate_queryset(entries, request)
+    total_pages = paginator.page.paginator.num_pages if paginator.page else 0
+    serializer = EntrySerializer(paginated_entries, many=True)
 
-    serializer = EntrySerializer(entries, many=True)
-    return Response(serializer.data)
+    return paginator.get_paginated_response({
+        'entries': serializer.data,
+        'currentPage': paginator.page.number,
+        'totalPages': total_pages,
+        'totalEntries': paginator.page.paginator.count,
+    })
 
 # Entry Management Views
 @api_view(['GET'])
@@ -248,45 +280,166 @@ def get_entry(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_entry(request):
-    print("Received Data:", request.data)  # Log received data for debugging
-    print("Received Files:", request.FILES)  # Log received files for debugging
-
-    serializer = EntrySerializer(data=request.data)
+    print("Starting create_entry function")
+    serializer = EntrySerializer(data=request.data, context={'request': request})
+    print("Serializer initialized")
 
     if serializer.is_valid():
-        entry = serializer.save(author=request.user)
-        
-        if 'voice_note' in request.FILES:
-            entry.voice_note = request.FILES['voice_note']
-            entry.save()
+        print("Serializer is valid")
+        # Handle voice note
+        voice_note = request.FILES.get('voice_note')
+        if voice_note:
+            print(f"Voice note detected: {voice_note.name}")
+            # Save the original file temporarily
+            temp_path = os.path.join(settings.MEDIA_ROOT, 'temp', voice_note.name)
+            os.makedirs(os.path.dirname(temp_path), exist_ok=True)
+            print(f"Temporary path created: {temp_path}")
+            with open(temp_path, 'wb+') as f:
+                for chunk in voice_note.chunks():
+                    f.write(chunk)
+            print("Temporary file written")
 
+            # Check if conversion is needed (only for .webm files)
+            if voice_note.name.lower().endswith('.webm'):
+                print("Converting .webm to .mp3")
+                output_path = temp_path.replace('.webm', '.mp3')
+                # Remove existing output file to avoid overwrite prompt
+                if os.path.exists(output_path):
+                    os.remove(output_path)
+                    print(f"Removed existing file: {output_path}")
+                try:
+                    print("Starting FFmpeg conversion")
+                    process = subprocess.run([
+                        'C:\\Program Files\\ffmpeg-7.1-full_build\\bin\\ffmpeg.exe',
+                        '-y',
+                        '-i', temp_path,
+                        '-acodec', 'mp3',
+                        '-vn',
+                        '-loglevel', 'error',
+                        output_path
+                    ], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    print("FFmpeg conversion completed")
+                    # Small delay to ensure FFmpeg releases the file
+                    time.sleep(1)
+                    # Read the converted file
+                    with open(output_path, 'rb') as f:
+                        converted_file = ContentFile(f.read(), name=voice_note.name.replace('.webm', '.mp3'))
+                        serializer.validated_data['voice_note'] = converted_file
+                    print("Converted file read and assigned")
+                    # Clean up the converted file
+                    os.remove(output_path)
+                    print("Converted file cleaned up")
+                except subprocess.CalledProcessError as e:
+                    print(f"FFmpeg error: {e}")
+                    return Response({'detail': 'Error converting voice note to MP3.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                except Exception as e:
+                    print(f"Unexpected error: {e}")
+                    return Response({'detail': 'Unexpected error during conversion.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            else:
+                print("File is not .webm, skipping conversion")
+                # Use the original file directly
+                with open(temp_path, 'rb') as f:
+                    serializer.validated_data['voice_note'] = ContentFile(f.read(), name=voice_note.name)
+
+            # Clean up the temp file (only once, after all processing)
+            if os.path.exists(temp_path):
+                os.remove(temp_path)
+                print("Temporary file cleaned up")
+
+        # Save the entry
+        print("Saving entry")
+        serializer.save(author=request.user)
+        print("Entry saved")
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
-    print("Validation Error:", serializer.errors)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    print("Serializer invalid")
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def update_entry(request, pk):
+    print("Starting update_entry function")
     try:
         entry = Entry.objects.get(pk=pk, author=request.user)
     except Entry.DoesNotExist:
+        print("Entry not found")
         return Response({"error": "Entry not found"}, status=status.HTTP_404_NOT_FOUND)
 
     serializer = EntrySerializer(entry, data=request.data, partial=True)
-    
+    print("Serializer initialized")
+
     if serializer.is_valid():
-        updated_entry = serializer.save()
-        
+        print("Serializer is valid")
+        # Analyze the sentiment of the updated content
+        content = request.data.get('content', entry.content)
+        sentiment = analyze_sentiment(content)
+
+        # Save the updated entry with the new sentiment
+        updated_entry = serializer.save(sentiment=sentiment)
+        print("Entry updated with sentiment")
+
+        # Handle voice note conversion if a new voice note is uploaded
         if 'voice_note' in request.FILES:
-            updated_entry.voice_note = request.FILES['voice_note']
+            print(f"New voice note detected: {request.FILES['voice_note'].name}")
+            # Save the original file temporarily
+            temp_path = os.path.join(settings.MEDIA_ROOT, 'temp', request.FILES['voice_note'].name)
+            os.makedirs(os.path.dirname(temp_path), exist_ok=True)
+            print(f"Temporary path created: {temp_path}")
+            with open(temp_path, 'wb+') as f:
+                for chunk in request.FILES['voice_note'].chunks():
+                    f.write(chunk)
+            print("Temporary file written")
+
+            # Check if conversion is needed (only for .webm files)
+            if request.FILES['voice_note'].name.lower().endswith('.webm'):
+                print("Converting .webm to .mp3")
+                output_path = temp_path.replace('.webm', '.mp3')
+                # Remove existing output file to avoid overwrite prompt
+                if os.path.exists(output_path):
+                    os.remove(output_path)
+                    print(f"Removed existing file: {output_path}")
+                try:
+                    print("Starting FFmpeg conversion")
+                    process = subprocess.run([
+                        'C:\\Program Files\\ffmpeg-7.1-full_build\\bin\\ffmpeg.exe',
+                        '-y',
+                        '-i', temp_path,
+                        '-acodec', 'mp3',
+                        '-vn',
+                        '-loglevel', 'error',
+                        output_path
+                    ], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    print("FFmpeg conversion completed")
+                    # Small delay to ensure FFmpeg releases the file
+                    time.sleep(1)
+                    # Read the converted file
+                    with open(output_path, 'rb') as f:
+                        converted_file = ContentFile(f.read(), name=request.FILES['voice_note'].name.replace('.webm', '.mp3'))
+                        updated_entry.voice_note = converted_file
+                    print("Converted file read and assigned")
+                    # Clean up
+                    os.remove(temp_path)
+                    os.remove(output_path)
+                    print("Temporary files cleaned up")
+                except subprocess.CalledProcessError as e:
+                    print(f"FFmpeg error: {e}")
+                    return Response({'detail': 'Error converting voice note to MP3.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                except Exception as e:
+                    print(f"Unexpected error: {e}")
+                    return Response({'detail': 'Unexpected error during conversion.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            else:
+                print("File is not .webm, using original")
+                # Use the original file directly
+                updated_entry.voice_note = request.FILES['voice_note']
+
+            # Save the updated entry with the new voice note
             updated_entry.save()
+            print("Voice note updated")
 
         return Response(serializer.data)
 
+    print("Serializer invalid")
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
@@ -297,7 +450,7 @@ def delete_entry(request, pk):
         return Response({"message": "Entry deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
     except Entry.DoesNotExist:
         return Response({"error": "Entry not found"}, status=status.HTTP_404_NOT_FOUND)
-    
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def user_profile(request):
@@ -314,17 +467,17 @@ def user_profile(request):
 
         # Count entries with images, videos, documents, and voice notes
         entry_counts = Entry.objects.filter(author=user).aggregate(
-            images=Count('image', distinct=True),
-            videos=Count('video', distinct=True),
-            documents=Count('document', distinct=True),
-            voice_notes=Count('voice_note', distinct=True),
+            images=Count('image', filter=Q(image__isnull=False) & ~Q(image="")),  # Exclude null and empty strings
+            videos=Count('video', filter=Q(video__isnull=False) & ~Q(video="")),  # Exclude null and empty strings
+            documents=Count('document', filter=Q(document__isnull=False) & ~Q(document="")),  # Exclude null and empty strings
+            voice_notes=Count('voice_note', filter=Q(voice_note__isnull=False) & ~Q(voice_note="")),  # Exclude null and empty strings
         )
 
         profile_data = {
             'username': user.username,
             'email': user.email,
             'date_joined': user.date_joined,
-            'profile_picture': profile.profile_picture.url if profile.profile_picture else None,  # Use profile instance
+            'profile_picture': profile.profile_picture.url if profile.profile_picture else None,
             'total_entries': total_entries,
             **entry_counts,  # Include image, video, document, and voice note counts
         }
@@ -332,8 +485,6 @@ def user_profile(request):
         return Response(profile_data)
     except Exception as e:
         return Response({'error': str(e)}, status=400)
-
-from django.conf import settings
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -410,3 +561,147 @@ def update_password(request):
     user.set_password(new_password)
     user.save()
     return Response({"message": "Password updated successfully."}, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def mood_tracker(request):
+    # Get optional date filters from query parameters
+    start_date_str = request.GET.get('start_date')
+    end_date_str = request.GET.get('end_date')
+
+    # Filter entries by the authenticated user
+    entries = Entry.objects.filter(author=request.user)
+
+    # Apply date filters if provided
+    if start_date_str:
+        # Parse the start_date string into a naive datetime
+        start_date_naive = datetime.strptime(start_date_str, '%Y-%m-%d')
+        # Make it timezone-aware (using UTC)
+        start_date = timezone.make_aware(start_date_naive, timezone=timezone.utc)
+        entries = entries.filter(timestamp__gte=start_date)
+
+    if end_date_str:
+        # Parse the end_date string into a naive datetime
+        end_date_naive = datetime.strptime(end_date_str, '%Y-%m-%d')
+        # Make it timezone-aware (using UTC)
+        end_date = timezone.make_aware(end_date_naive, timezone=timezone.utc)
+        entries = entries.filter(timestamp__lte=end_date)
+
+    # Filter out entries with null sentiment
+    entries = entries.exclude(sentiment__isnull=True)
+
+    # Group moods by date and count occurrences
+    mood_data = entries.values('timestamp__date', 'mood').annotate(count=Count('mood'))
+
+    # Group sentiments by date and count occurrences
+    sentiment_data = entries.values('timestamp__date', 'sentiment').annotate(count=Count('sentiment'))
+
+    # Calculate mood distribution
+    mood_distribution = entries.values('mood').annotate(count=Count('mood'))
+
+    # Calculate sentiment distribution
+    sentiment_distribution = entries.values('sentiment').annotate(count=Count('sentiment'))
+
+    # Format the response
+    response_data = {
+        'mood_trends': [
+            {
+                'date': entry['timestamp__date'].strftime('%Y-%m-%d'),
+                'mood': entry['mood'],
+                'count': entry['count'],
+            }
+            for entry in mood_data
+        ],
+        'sentiment_trends': [
+            {
+                'date': entry['timestamp__date'].strftime('%Y-%m-%d'),
+                'sentiment': entry['sentiment'],
+                'count': entry['count'],
+            }
+            for entry in sentiment_data
+        ],
+        'mood_distribution': [
+            {
+                'mood': entry['mood'],
+                'count': entry['count'],
+            }
+            for entry in mood_distribution
+        ],
+        'sentiment_distribution': [
+            {
+                'sentiment': entry['sentiment'],
+                'count': entry['count'],
+            }
+            for entry in sentiment_distribution
+        ],
+    }
+
+    return Response(response_data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def generate_summary(request):
+    """
+    Generate a summary of entries for a specific time range.
+    """
+    # Get optional date filters from query parameters
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+
+    # Filter entries by the authenticated user and date range
+    entries = Entry.objects.filter(author=request.user)
+    if start_date:
+        entries = entries.filter(timestamp__gte=start_date)
+    if end_date:
+        entries = entries.filter(timestamp__lte=end_date)
+
+    # Combine entry content into a single string
+    entry_texts = [entry.content for entry in entries if entry.content]
+    combined_text = " ".join(entry_texts)
+
+    # If no entries, return an empty summary
+    if not combined_text:
+        return Response({"summary": "No entries to summarize."})
+
+    # Send the combined text to DeepSeek for summarization
+    try:
+        summary = analyze_summary(combined_text)  # We'll create this function next
+        return Response({"summary": summary})
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
+    
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def cleanup_transcript(request):
+    raw_text = request.data.get('raw_text', '').strip()
+    if not raw_text:
+        return Response({'error': 'No text provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        # Call DeepSeek API for cleanup
+        url = "https://api.deepseek.com/chat/completions"  # Correct endpoint
+        headers = {
+            "Authorization": f"Bearer {settings.DEEPSEEK_API_KEY}",
+            "Content-Type": "application/json",
+        }
+        data = {
+            "model": "deepseek-chat",  # Use the correct model
+            "messages": [
+                {
+                    "role": "user",
+                    "content": f"Convert this spoken text into a polished diary entry: {raw_text}",
+                }
+            ],
+            "max_tokens": 500,  # Adjust as needed
+            "temperature": 0.3,  # Adjust for creativity vs. accuracy
+        }
+        response = requests.post(url, headers=headers, json=data)
+        response.raise_for_status()
+
+        # Extract the cleaned-up text from the response
+        cleaned_text = response.json()["choices"][0]["message"]["content"].strip()
+        return Response({'cleaned_text': cleaned_text}, status=status.HTTP_200_OK)
+    except requests.exceptions.RequestException as e:
+        return Response({'error': f"API request failed: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except (KeyError, IndexError) as e:
+        return Response({'error': f"Failed to parse API response: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

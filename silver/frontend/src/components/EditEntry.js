@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { FaSave, FaTimes, FaImage, FaVideo, FaFile, FaMicrophone } from 'react-icons/fa';
+import LoadingSpinner from './LoadingSpinner';
 import '../styles/EditEntry.css';
 
 const EditEntry = ({ entry, onUpdateEntry, onCancel }) => {
@@ -16,7 +17,7 @@ const EditEntry = ({ entry, onUpdateEntry, onCancel }) => {
   const [existingVoiceNote, setExistingVoiceNote] = useState(entry?.voice_note || '');
   const [mood, setMood] = useState(entry?.mood || '');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
   const handleFileChange = (e, setFile, setExistingFile) => {
@@ -31,37 +32,52 @@ const EditEntry = ({ entry, onUpdateEntry, onCancel }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('access_token');
-    setLoading(true);
-    setError('');
 
+    if (isSubmitting) return;
+
+    // Ensure mood is selected
+    if (!mood) {
+      setError('Please select a mood before submitting.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    const token = localStorage.getItem('access_token');
     const formData = new FormData();
     formData.append('content', content);
     formData.append('mood', mood);
+
     if (selectedImage) formData.append('image', selectedImage);
     if (selectedVideo) formData.append('video', selectedVideo);
     if (selectedDocument) formData.append('document', selectedDocument);
-    if (selectedVoiceNote) formData.append('voice_note', selectedVoiceNote);
+    if (selectedVoiceNote) formData.append('voice_note', selectedVoiceNote, 'voice_note.webm');
 
     try {
       const response = await axios.put(`http://127.0.0.1:8000/api/entries/${entry.id}/update/`, formData, {
-        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
       });
-      if (response.status === 200) {
-        onUpdateEntry(response.data);
-        navigate('/');
-        window.scrollTo(0, 0); // Scroll to the top of the page
-      }
+      onUpdateEntry(response.data);
+      navigate('/');
+      window.scrollTo(0, 0);
     } catch (err) {
-      setError(err.response?.data.detail || 'Failed to update entry. Please try again.');
+      if (err.response) {
+        setError(`Error: ${err.response.status} - ${err.response.data.detail || 'Failed to update entry. Please try again.'}`);
+      } else if (err.request) {
+        setError('No response received from the server. Please check your network connection.');
+      } else {
+        setError(`Error: ${err.message}`);
+      }
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
   return (
     <div className="edit-entry-container">
-      <h2 className="edit-entry-title">Edit Entry</h2>
+      <h2>Edit Entry</h2>
       {error && <p className="edit-entry-error">{error}</p>}
       <form className="edit-entry-form" onSubmit={handleSubmit}>
         <div className="form-group">
@@ -165,15 +181,19 @@ const EditEntry = ({ entry, onUpdateEntry, onCancel }) => {
           {existingVoiceNote && !selectedVoiceNote && (
             <div className="existing-file-preview">
               <h4>Current Voice Note:</h4>
-              <audio src={existingVoiceNote} controls className="edit-entry-audio-preview" />
+              <audio src={existingVoiceNote} controls className="edit-entry-audio-preview" type="audio/mpeg" />
             </div>
           )}
         </div>
 
         <div className="edit-entry-actions">
-          <button type="submit" className="edit-entry-submit" disabled={loading}>
-            <FaSave className="button-icon" /> {/* Update icon */}
-            <span>{loading ? 'Updating...' : 'Update Entry'}</span>
+          <button type="submit" className="edit-entry-submit" disabled={isSubmitting}>
+            {isSubmitting ? <LoadingSpinner /> : (
+              <>
+                <FaSave className="button-icon" />
+                <span>Update Entry</span>
+              </>
+            )}
           </button>
           <button
             type="button"
@@ -181,10 +201,10 @@ const EditEntry = ({ entry, onUpdateEntry, onCancel }) => {
             onClick={() => {
               onCancel();
               navigate('/');
-              window.scrollTo(0, 0); // Scroll to the top of the page
+              window.scrollTo(0, 0);
             }}
           >
-            <FaTimes className="button-icon" /> {/* Cancel icon */}
+            <FaTimes className="button-icon" />
             <span>Cancel</span>
           </button>
         </div>

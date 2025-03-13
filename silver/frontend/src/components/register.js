@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import LoadingSpinner from './LoadingSpinner'; // Import the spinner
 import '../styles/Register.css';
 
 const Register = () => {
@@ -9,7 +10,7 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // Loading state
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
@@ -28,7 +29,8 @@ const Register = () => {
       return;
     }
 
-    setLoading(true);
+    setIsLoading(true); // Start loading
+    setError(''); // Clear any previous errors
 
     try {
       const response = await axios.post('http://127.0.0.1:8000/api/register/', {
@@ -41,7 +43,7 @@ const Register = () => {
       navigate('/login');
     } catch (error) {
       console.error(error.response?.data);
-      
+
       // Check if the error is related to duplicate email
       if (error.response?.data?.email) {
         setError('This email is already registered');
@@ -49,7 +51,7 @@ const Register = () => {
         setError('Registration failed. Please try again.');
       }
     } finally {
-      setLoading(false);
+      setIsLoading(false); // Stop loading
     }
   };
 
@@ -94,8 +96,8 @@ const Register = () => {
           onChange={(e) => setConfirmPassword(e.target.value)}
           className="register-input"
         />
-        <button type="submit" disabled={loading} className="register-button">
-          {loading ? 'Registering...' : 'Register'}
+        <button type="submit" disabled={isLoading} className="register-button">
+          {isLoading ? <LoadingSpinner /> : 'Register'} {/* Show spinner when loading */}
         </button>
       </form>
     </div>

@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import register_user, login_user, logout_user, create_entry, get_entries, get_entry, update_entry, delete_entry
 from .views import search_entries, reset_password, reset_password_confirm, user_profile, upload_profile_picture, get_entries_by_month
-from .views import update_email, update_password
+from .views import update_email, update_password, mood_tracker, generate_summary, cleanup_transcript
 
 urlpatterns = [
     
@@ -17,6 +17,9 @@ urlpatterns = [
     path('entries/<int:pk>/', get_entry, name='get_entry'),  # Get a single entry
     path('entries/<int:pk>/update/', update_entry, name='update_entry'),  # Update entry
     path('entries/<int:pk>/delete/', delete_entry, name='delete_entry'),  # Delete entry
+    path('mood-tracker/', mood_tracker, name='mood_tracker'),
+    path('generate-summary/', generate_summary, name='generate_summary'),
+    path('cleanup-transcript/', cleanup_transcript, name='cleanup_transcript'),
     path('update-email/', update_email, name='update_email'),
     path('update-password/', update_password, name='update_password'),
     path('password-reset/', reset_password, name='reset_password' ),  # Reset password

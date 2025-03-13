@@ -31,22 +31,27 @@ class Entry(models.Model):
         ('sad', 'Sad'),
         ('excited', 'Excited'),
         ('tired', 'Tired'),
-        ('angry', 'Angry'),          # New mood
-        ('stressed', 'Stressed'),    # New mood
-        ('shocked', 'Shocked'),      # New mood
-        ('calm', 'Calm'),            # New mood
-        ('confused', 'Confused'),    # New mood
-        ('loved', 'Loved'),          # New mood
+        ('angry', 'Angry'),
+        ('stressed', 'Stressed'),
+        ('shocked', 'Shocked'),
+        ('calm', 'Calm'),
+        ('confused', 'Confused'),
+        ('loved', 'Loved'),
+    ]
+
+    SENTIMENT_CHOICES = [
+        ('positive', 'Positive'),
+        ('negative', 'Negative'),
+        ('neutral', 'Neutral'),
     ]
 
     content = models.TextField(blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    
-    # Mood field is optional (blank=True)
-    mood = models.CharField(max_length=10, choices=MOOD_CHOICES, blank=True, null=True)  # Allow blank mood
+    mood = models.CharField(max_length=10, choices=MOOD_CHOICES)  # User-selected mood
+    sentiment = models.CharField(max_length=10, choices=SENTIMENT_CHOICES, blank=True, null=True)  # AI-analyzed sentiment
 
-    # File fields
+    # File fields (unchanged)
     image = models.ImageField(upload_to='entry_images/', blank=True, null=True, validators=[validate_file_size])
     video = models.FileField(upload_to='entry_videos/', blank=True, null=True, validators=[validate_file_size, validate_video_type])
     document = models.FileField(upload_to='entry_documents/', blank=True, null=True, validators=[validate_file_size, validate_document_type])

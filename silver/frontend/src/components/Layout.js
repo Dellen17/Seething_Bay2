@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react'; // Add useCallback
 import Navbar from './Navbar';
 import SideNav from './SideNav';
 import '../styles/Layout.css';
@@ -6,9 +6,10 @@ import '../styles/Layout.css';
 const Layout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
+  // Memoize the toggleSidebar function
+  const toggleSidebar = useCallback(() => {
+    setIsSidebarOpen((prev) => !prev);
+  }, []);
 
   return (
     <div className="layout-container">

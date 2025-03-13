@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
-import { FaSearch, FaFile, FaImage, FaVideo, FaMicrophone } from 'react-icons/fa'; // Import icons
+import { FaSearch, FaFile, FaImage, FaVideo, FaMicrophone } from 'react-icons/fa';
+import LoadingSpinner from './LoadingSpinner';
 import '../styles/SearchForm.css';
 
-const SearchForm = ({ filters, setFilters, onSearch, onClear }) => {
+const SearchForm = ({ filters, setFilters, onSearch, onClear, isLoading }) => {
   const [showFilters, setShowFilters] = useState(false);
 
   const handleSearch = (e) => {
     e.preventDefault();
-    onSearch(filters); // Use the filters state directly
+    onSearch(filters, 1);
   };
 
   const toggleFilters = () => {
     setShowFilters(!showFilters);
   };
 
+  // Clear all filters and fetch unfiltered entries
   const clearSearch = () => {
-    setFilters({ keyword: '', mediaType: [], date: '' }); // Reset all filters
-    if (onClear) onClear();
+    setFilters({ keyword: '', mediaType: [], date: '' });
+    if (onClear) onClear(); // Trigger the unfiltered fetch
   };
 
   // Handle keyword change
@@ -25,13 +27,13 @@ const SearchForm = ({ filters, setFilters, onSearch, onClear }) => {
     setFilters((prevFilters) => ({ ...prevFilters, keyword: value }));
   };
 
-  // Handle media type filter change
+  // Handle media type filter change (single selection)
   const handleMediaTypeChange = (e) => {
     const { value, checked } = e.target;
     setFilters((prevFilters) => {
-      const mediaType = checked
-        ? [...prevFilters.mediaType, value] // Add to list if checked
-        : prevFilters.mediaType.filter((type) => type !== value); // Remove if unchecked
+      const mediaType = checked ? [value] : [];
+      // If unchecking, trigger unfiltered fetch
+      if (!checked && onClear) onClear();
       return { ...prevFilters, mediaType };
     });
   };
@@ -43,12 +45,12 @@ const SearchForm = ({ filters, setFilters, onSearch, onClear }) => {
           <input
             type="text"
             placeholder="Search your entries"
-            value={filters.keyword} // Bind to filters.keyword
+            value={filters.keyword}
             onClick={toggleFilters}
-            onChange={handleKeywordChange} // Update filters.keyword
+            onChange={handleKeywordChange}
             className="search-input"
           />
-          {filters.keyword && (
+          {(filters.keyword || filters.mediaType.length > 0) && (
             <button
               type="button"
               onClick={clearSearch}
@@ -58,9 +60,15 @@ const SearchForm = ({ filters, setFilters, onSearch, onClear }) => {
             </button>
           )}
         </div>
-        <button type="submit" className="search-button">
-          <FaSearch className="search-icon" /> {/* Search icon */}
-          <span>Search</span>
+        <button type="submit" className="search-button" disabled={isLoading}>
+          {isLoading ? (
+            <LoadingSpinner />
+          ) : (
+            <>
+              <FaSearch className="search-icon" />
+              <span>Search</span>
+            </>
+          )}
         </button>
       </form>
 
@@ -74,9 +82,10 @@ const SearchForm = ({ filters, setFilters, onSearch, onClear }) => {
                 type="checkbox"
                 name="mediaType"
                 value="document"
+                checked={filters.mediaType.includes('document')}
                 onChange={handleMediaTypeChange}
               />
-              <FaFile className="filter-icon" /> {/* Document icon */}
+              <FaFile className="filter-icon" />
               <span>Documents</span>
             </label>
           </div>
@@ -87,9 +96,10 @@ const SearchForm = ({ filters, setFilters, onSearch, onClear }) => {
                 type="checkbox"
                 name="mediaType"
                 value="image"
+                checked={filters.mediaType.includes('image')}
                 onChange={handleMediaTypeChange}
               />
-              <FaImage className="filter-icon" /> {/* Image icon */}
+              <FaImage className="filter-icon" />
               <span>Images</span>
             </label>
           </div>
@@ -100,9 +110,10 @@ const SearchForm = ({ filters, setFilters, onSearch, onClear }) => {
                 type="checkbox"
                 name="mediaType"
                 value="video"
+                checked={filters.mediaType.includes('video')}
                 onChange={handleMediaTypeChange}
               />
-              <FaVideo className="filter-icon" /> {/* Video icon */}
+              <FaVideo className="filter-icon" />
               <span>Videos</span>
             </label>
           </div>
@@ -113,9 +124,10 @@ const SearchForm = ({ filters, setFilters, onSearch, onClear }) => {
                 type="checkbox"
                 name="mediaType"
                 value="voice_note"
+                checked={filters.mediaType.includes('voice_note')}
                 onChange={handleMediaTypeChange}
               />
-              <FaMicrophone className="filter-icon" /> {/* Voice note icon */}
+              <FaMicrophone className="filter-icon" />
               <span>Voice Notes</span>
             </label>
           </div>

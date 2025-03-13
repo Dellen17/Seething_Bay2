@@ -1,85 +1,121 @@
 .gallery-container {
   max-width: 1200px;
-  margin: 80px auto 20px auto; /* Push content below the top nav */
+  margin: 80px auto 20px auto;
   padding: 20px;
-  color: #ffffff; /* White text */
+  color: #ffffff;
+  background-color: rgb(7, 6, 6); /* Match app background consistently */
+  min-height: calc(100vh - 120px); /* Ensure full height minus header/padding */
 }
 
 .back-button {
   display: flex;
   align-items: center;
-  background-color: #1da1f2; /* Twitter blue */
+  background-color: #1da1f2;
   color: white;
   border: none;
   padding: 10px 20px;
-  border-radius: 5px;
+  border-radius: 20px; /* Consistent with other buttons */
   cursor: pointer;
-  margin-bottom: 20px; /* Add some spacing */
+  margin-bottom: 20px;
   font-size: 16px;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .back-button:hover {
-  background-color: #0d95e8; /* Darker blue on hover */
+  background-color: #0d95e8;
+  transform: scale(1.05); /* Slight zoom */
 }
 
 .back-icon {
-  margin-right: 10px; /* Add spacing between icon and text */
+  margin-right: 10px;
 }
 
 .gallery-options {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
+  gap: 20px; /* Better spacing */
   margin-top: 20px;
+  flex-wrap: wrap; /* Responsive wrapping */
 }
 
 .gallery-option {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #1da1f2; /* Twitter blue */
+  background-color: #1da1f2;
   color: white;
   padding: 20px;
   border-radius: 10px;
   text-decoration: none;
   font-size: 18px;
-  transition: background-color 0.3s ease;
+  width: 120px; /* Fixed width for consistency */
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .gallery-option:hover {
-  background-color: #0d95e8; /* Darker blue on hover */
+  background-color: #0d95e8;
+  transform: translateY(-2px); /* Slight lift */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.gallery-option.active {
+  background-color: #0d95e8;
+  box-shadow: 0 0 0 3px #1da1f2 inset; /* Subtle border for active state */
 }
 
 .gallery-icon {
-  font-size: 24px; /* Adjust icon size */
-  margin-bottom: 10px; /* Add spacing between icon and text */
+  font-size: 28px; /* Slightly larger icons */
+  margin-bottom: 10px;
 }
 
-/* Styles for Gallery Images, Videos, and Voice Notes */
+.gallery-content {
+  margin-top: 30px;
+  background-color: rgb(7, 6, 6); /* Ensure content area matches background */
+}
+
+.gallery-placeholder {
+  text-align: center;
+  color: #bbb;
+  font-size: 1.2rem;
+}
+
+/* Styles for subpages */
 .gallery-images-container,
 .gallery-videos-container,
 .gallery-voice-notes-container {
   max-width: 1200px;
-  margin: 80px auto 20px auto;
+  margin: 20px auto;
   padding: 20px;
   color: #ffffff;
+  background-color: #222; /* Darker background for content */
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .images-grid,
 .videos-grid,
 .voice-notes-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 20px;
 }
 
 .image-item,
 .video-item,
 .voice-note-item {
-  border: 1px solid #444; /* Dark border */
+  border: none;
   border-radius: 8px;
   overflow: hidden;
-  background-color: #333; /* Dark background */
+  background-color: #333;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.image-item:hover,
+.video-item:hover,
+.voice-note-item:hover {
+  transform: scale(1.05); /* Slight zoom on hover */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .gallery-image,
@@ -88,25 +124,46 @@
   width: 100%;
   height: auto;
   display: block;
+  border-radius: 8px;
 }
 
-/* Additional styles for videos and voice notes */
 .gallery-video {
-  height: 200px; /* Set a fixed height for video thumbnails */
-  object-fit: cover; /* Ensure videos maintain aspect ratio */
+  height: 200px;
+  object-fit: cover;
 }
 
 .gallery-voice-note {
   padding: 10px;
+  width: 100%;
 }
 
-/* Error and Loading Messages */
 .error-message {
-  color: #ff6b6b; /* Red for error messages */
+  color: #ff4d4d; /* Adjusted to match error color elsewhere */
   margin-top: 10px;
+  font-weight: bold;
 }
 
 .loading-message {
-  color: #1da1f2; /* Twitter Blue for loading messages */
+  color: #1da1f2;
   margin-top: 10px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .gallery-options {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .gallery-option {
+    width: 100%;
+    max-width: 200px;
+  }
+
+  .images-grid,
+  .videos-grid,
+  .voice-notes-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
 }

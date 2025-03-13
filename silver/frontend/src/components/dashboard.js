@@ -15,34 +15,44 @@ const Dashboard = () => {
   const [editingEntry, setEditingEntry] = useState(null);
   const [showEditor, setShowEditor] = useState(false);
   const [filters, setFilters] = useState({ keyword: '', mediaType: [], date: '' });
+  const [isSearchLoading, setIsSearchLoading] = useState(false);
+  const [isFiltered, setIsFiltered] = useState(false); // Track if filters are applied
 
   const navigate = useNavigate();
   const { id } = useParams();
 
   // Fetch filtered entries based on search form inputs
-  const handleSearch = async (filters) => {
+  const handleSearch = async (filters, page = 1) => {
+    setIsSearchLoading(true);
     try {
       const params = {
         keyword: filters.keyword || '',
         date: filters.date || '',
+        page: page,
       };
-
-      filters.mediaType.forEach((type) => {
-        params[`mediaType[]`] = type;
-      });
+      if (filters.mediaType.length > 0) {
+        params['mediaType[]'] = filters.mediaType;
+      }
 
       const response = await axios.get('http://127.0.0.1:8000/api/search/', {
         params,
         headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
       });
 
-      setEntries(response.data);
+      const { entries, currentPage, totalPages } = response.data.results;
+      setEntries(entries);
+      setTotalPages(totalPages);
+      setCurrentPage(currentPage);
+      setIsFiltered(true); // Mark as filtered
     } catch (error) {
       console.error('Error fetching filtered entries:', error);
+      if (error.response?.status === 401) navigate('/login');
+    } finally {
+      setIsSearchLoading(false);
     }
   };
 
-  // Fetch entries for the current page
+  // Fetch unfiltered entries (only for initial load)
   const fetchEntries = useCallback(async () => {
     const token = localStorage.getItem('access_token');
     try {
@@ -52,16 +62,19 @@ const Dashboard = () => {
       );
       setEntries(response.data.results.entries || []);
       setTotalPages(response.data.results.totalPages);
+      setIsFiltered(false); // Mark as unfiltered
     } catch (err) {
       console.error('Failed to fetch entries', err);
       if (err.response?.status === 401) navigate('/login');
     }
   }, [currentPage, navigate]);
 
-  // Fetch entries on component mount or page change
+  // Initial fetch only on mount (not on every page change)
   useEffect(() => {
-    fetchEntries();
-  }, [fetchEntries]);
+    if (!isFiltered) {
+      fetchEntries();
+    }
+  }, [fetchEntries, isFiltered]);
 
   // Set editing entry based on URL parameter
   useEffect(() => {
@@ -86,8 +99,12 @@ const Dashboard = () => {
 
   // Re-fetch entries after adding a new one
   const handleEntryAdded = () => {
-    fetchEntries();
-    setShowEditor(false); // Close the form after adding an entry
+    if (isFiltered) {
+      handleSearch(filters, currentPage); // Reapply filters if filtered
+    } else {
+      fetchEntries();
+    }
+    setShowEditor(false);
   };
 
   // Set the entry to be edited
@@ -105,20 +122,25 @@ const Dashboard = () => {
     setEditingEntry(null);
   };
 
-  // Function to handle canceling the edit
+  // Handle canceling the edit
   const handleCancelEdit = () => {
-    setEditingEntry(null); // Reset the editing entry
+    setEditingEntry(null);
   };
 
   // Handle pagination page change
   const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
+    setCurrentPage(pageNumber); // Update current page
+    if (isFiltered) {
+      handleSearch(filters, pageNumber); // Use search endpoint with filters
+    } else {
+      fetchEntries(); // Fetch unfiltered entries
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const toggleEditor = () => {
     setShowEditor((prev) => !prev);
-    window.scrollTo({ top: 0, behavior: 'smooth' }); // Add this line to scroll to the top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -127,10 +149,10 @@ const Dashboard = () => {
         filters={filters}
         setFilters={setFilters}
         onSearch={handleSearch}
-        onClear={fetchEntries}
+        onClear={fetchEntries} // Reset to unfiltered state
+        isLoading={isSearchLoading}
       />
 
-      {/* "+" Button to toggle editor */}
       <button
         className="toggle-editor-button"
         onClick={toggleEditor}
@@ -139,15 +161,13 @@ const Dashboard = () => {
         {showEditor ? '✖' : '+'}
       </button>
 
-      {/* Conditionally render the editor */}
       {showEditor && (
         <AddEntry 
           onEntryAdded={handleEntryAdded} 
-          setShowEditor={setShowEditor} // Pass setShowEditor as a prop
+          setShowEditor={setShowEditor}
         />
       )}
 
-      {/* Conditionally render the edit form or entry list */}
       {editingEntry ? (
         <EditEntry 
           entry={editingEntry} 
@@ -162,7 +182,6 @@ const Dashboard = () => {
         />
       )}
 
-      {/* Pagination component */}
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}

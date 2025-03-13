@@ -13,21 +13,22 @@ import {
   FaHeart,       // Loved
 } from 'react-icons/fa';
 
-const MoodSelector = ({ mood, setMood }) => {
-  const moods = [
-    { icon: FaSmile, label: 'happy', color: 'green' },
-    { icon: FaMeh, label: 'neutral', color: 'gray' },
-    { icon: FaFrown, label: 'sad', color: 'blue' },
-    { icon: FaGrinBeam, label: 'excited', color: 'orange' },
-    { icon: FaTired, label: 'tired', color: 'red' },
-    { icon: FaAngry, label: 'angry', color: 'darkred' },          // New mood
-    { icon: FaFlushed, label: 'stressed', color: 'darkorange' },  // New mood
-    { icon: FaSurprise, label: 'shocked', color: 'gold' },        // New mood
-    { icon: FaSmileBeam, label: 'calm', color: 'lightblue' },     // New mood
-    { icon: FaQuestionCircle, label: 'confused', color: 'purple' }, // New mood
-    { icon: FaHeart, label: 'loved', color: 'pink' },             // New mood
-  ];
+// Export the moods array as the single source of truth
+export const moods = [
+  { icon: FaSmile, label: 'happy', color: 'green' },
+  { icon: FaMeh, label: 'neutral', color: 'gray' },
+  { icon: FaFrown, label: 'sad', color: 'blue' },
+  { icon: FaGrinBeam, label: 'excited', color: 'orange' },
+  { icon: FaTired, label: 'tired', color: 'red' },
+  { icon: FaAngry, label: 'angry', color: 'darkred' },
+  { icon: FaFlushed, label: 'stressed', color: 'darkorange' },
+  { icon: FaSurprise, label: 'shocked', color: 'gold' },
+  { icon: FaSmileBeam, label: 'calm', color: 'lightblue' },
+  { icon: FaQuestionCircle, label: 'confused', color: 'purple' },
+  { icon: FaHeart, label: 'loved', color: 'pink' },
+];
 
+const MoodSelector = ({ mood, setMood }) => {
   return (
     <div className="mood-selector">
       <h4>Select Your Mood</h4>
@@ -35,7 +36,7 @@ const MoodSelector = ({ mood, setMood }) => {
         {moods.map(({ icon: Icon, label, color }) => (
           <Icon
             key={label}
-            size="2x"
+            size="20px"
             color={mood === label ? color : 'gray'}
             onClick={() => setMood(label)}
             title={label.charAt(0).toUpperCase() + label.slice(1)} // Tooltip on hover

@@ -1,8 +1,29 @@
 .gallery-voice-notes-container {
   max-width: 1200px;
-  margin: 80px auto 20px auto;
+  margin: 20px auto; /* Adjusted to fit within Gallery layout */
   padding: 20px;
   color: #ffffff;
+  background-color: #222; /* Darker background */
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  overflow: visible; /* Ensure no overflow hides content */
+}
+
+.back-button {
+  background-color: #1da1f2;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  font-size: 16px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.back-button:hover {
+  background-color: #0d95e8;
+  transform: scale(1.05);
 }
 
 .voice-notes-grid {
@@ -12,29 +33,103 @@
 }
 
 .voice-note-item {
-  border: 1px solid #444;
+  position: relative; /* For overlay positioning */
+  border: none;
   border-radius: 8px;
-  overflow: hidden;
+  /* Remove or correct overflow: hidden */
+  overflow: visible; /* Allow content to overflow instead of clipping */
   background-color: #333;
   padding: 10px;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  cursor: pointer; /* Indicate interactivity */
+  min-height: 150px; /* Retain minimum height for layout consistency */
+  max-height: none; /* Correct invalid max-height: hidden to none or a specific value like 200px if needed */
+}
+
+.voice-note-item:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .gallery-voice-note {
   width: 100%;
+  display: block;
+  border-radius: 8px;
+  margin-bottom: 10px; /* Add space below audio player */
+  min-height: 50px; /* Ensure minimum height for visibility */
 }
 
-.back-button {
-  background-color: #1da1f2; /* Twitter blue */
+.voice-note-overlay {
+  position: absolute;
+  bottom: 10px; /* Adjust for padding */
+  left: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.7); /* Semi-transparent black */
+  color: #fff;
+  padding: 8px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 5px;
+}
+
+.voice-note-item:hover .voice-note-overlay {
+  opacity: 1;
+}
+
+.voice-note-timestamp {
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.voice-note-mood {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  margin-top: 5px;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: #bbb;
+}
+
+.error-container {
+  text-align: center;
+}
+
+.error-message {
+  color: #ff4d4d;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.retry-button {
+  background-color: #1da1f2;
   color: white;
   border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
+  padding: 8px 16px;
+  border-radius: 20px;
   cursor: pointer;
-  margin-bottom: 20px; /* Add some spacing */
-  font-size: 16px;
   transition: background-color 0.3s ease;
 }
 
-.back-button:hover {
-  background-color: #0d95e8; /* Darker blue on hover */
+.retry-button:hover {
+  background-color: #0d95e8;
+}
+
+.no-content {
+  color: #bbb;
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .voice-notes-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
 }
