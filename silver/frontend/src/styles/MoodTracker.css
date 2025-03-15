@@ -2,10 +2,13 @@
   max-width: 1200px;
   margin: 80px auto 20px auto;
   padding: 20px;
-  background-color: rgb(7, 6, 6); /* Match app background */
+  background-color: rgb(7, 6, 6);
   border-radius: 10px;
   color: #fff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
 .back-button {
@@ -13,7 +16,7 @@
   color: white;
   border: none;
   padding: 10px 20px;
-  border-radius: 20px; /* Consistent with other buttons */
+  border-radius: 20px;
   cursor: pointer;
   margin-bottom: 20px;
   font-size: 16px;
@@ -22,7 +25,7 @@
 
 .back-button:hover {
   background-color: #0d95e8;
-  transform: scale(1.05); /* Slight zoom */
+  transform: scale(1.05);
 }
 
 .time-range-filter {
@@ -80,7 +83,7 @@
   padding: 15px;
   border-radius: 10px;
   margin-bottom: 20px;
-  transition: max-height 0.3s ease; /* Smooth collapse animation */
+  transition: max-height 0.3s ease;
 }
 
 .summary-toggle {
@@ -118,6 +121,9 @@
   gap: 20px;
   max-width: 100%;
   padding: 10px;
+  width: 100%; /* Ensure it doesn't exceed parent */
+  box-sizing: border-box;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
 .chart-container {
@@ -129,10 +135,12 @@
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   transition: transform 0.2s ease;
+  width: 100%; /* Ensure it fits within parent */
+  box-sizing: border-box;
 }
 
 .chart-container:hover {
-  transform: translateY(-2px); /* Slight lift on hover */
+  transform: translateY(-2px);
 }
 
 .chart-container h3 {
@@ -140,29 +148,97 @@
   margin-bottom: 15px;
 }
 
+.chart-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 100%; /* Prevent chart from exceeding container */
+  height: 300px;
+  overflow: hidden; /* Hide any overflow from chart elements */
+}
+
 .sentiment-pie-chart {
   max-width: 350px;
   margin: 0 auto;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
+/* Mobile Adjustments */
+@media (max-width: 576px) {
   .mood-tracker-container {
+    margin: 20px auto;
     padding: 15px;
+    overflow-x: hidden; /* Reinforce no horizontal scrolling */
   }
 
-  .chart-container {
-    min-width: 100%;
+  .back-button,
+  .summary-button {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
   }
 
   .time-range-filter {
     flex-direction: column;
     align-items: flex-start;
     gap: 5px;
+    width: 100%; /* Ensure it fits within parent */
   }
 
-  .summary-button,
-  .back-button {
+  .time-range-filter select {
     width: 100%;
+    padding: 6px 10px;
+    font-size: 14px;
+  }
+
+  .summary-container {
+    width: 100%;
+  }
+
+  .summary-container p {
+    font-size: 0.9rem;
+  }
+
+  .charts-container {
+    flex-direction: column;
+    gap: 15px;
+    overflow-x: hidden; /* Reinforce no horizontal scrolling */
+  }
+
+  .chart-container {
+    min-width: 100%;
+    max-width: 100%; /* Ensure it doesn't exceed viewport */
+    padding: 10px;
+  }
+
+  .chart-wrapper {
+    height: 250px;
+    max-width: 100%; /* Reinforce chart width constraint */
+  }
+
+  .sentiment-pie-chart {
+    max-width: 250px;
+  }
+}
+
+/* Larger Screens */
+@media (min-width: 768px) {
+  .mood-tracker-container {
+    margin: 80px auto 20px auto;
+    padding: 20px;
+  }
+
+  .back-button,
+  .summary-button {
+    width: auto;
+    padding: 10px 20px;
+    font-size: 16px;
+  }
+
+  .time-range-filter {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .time-range-filter select {
+    width: auto;
   }
 }

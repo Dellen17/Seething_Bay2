@@ -1,12 +1,14 @@
 .gallery-voice-notes-container {
   max-width: 1200px;
-  margin: 20px auto; /* Adjusted to fit within Gallery layout */
+  margin: 20px auto;
   padding: 20px;
   color: #ffffff;
-  background-color: #222; /* Darker background */
+  background-color: #222;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  overflow: visible; /* Ensure no overflow hides content */
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .back-button {
@@ -19,6 +21,11 @@
   margin-bottom: 20px;
   font-size: 16px;
   transition: background-color 0.3s ease, transform 0.2s ease;
+  width: 100%;
+  max-width: 200px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .back-button:hover {
@@ -28,22 +35,26 @@
 
 .voice-notes-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 20px;
+  width: 100%;
 }
 
 .voice-note-item {
-  position: relative; /* For overlay positioning */
+  position: relative;
   border: none;
   border-radius: 8px;
-  /* Remove or correct overflow: hidden */
-  overflow: visible; /* Allow content to overflow instead of clipping */
+  overflow: visible;
   background-color: #333;
   padding: 10px;
   transition: transform 0.2s ease, box-shadow 0.3s ease;
-  cursor: pointer; /* Indicate interactivity */
-  min-height: 150px; /* Retain minimum height for layout consistency */
-  max-height: none; /* Correct invalid max-height: hidden to none or a specific value like 200px if needed */
+  cursor: pointer;
+  min-height: 150px;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .voice-note-item:hover {
@@ -55,21 +66,24 @@
   width: 100%;
   display: block;
   border-radius: 8px;
-  margin-bottom: 10px; /* Add space below audio player */
-  min-height: 50px; /* Ensure minimum height for visibility */
+  margin-bottom: 10px;
+  min-height: 50px; /* Match the Entry List styling */
+  background-color: #444;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .voice-note-overlay {
   position: absolute;
-  bottom: 10px; /* Adjust for padding */
+  bottom: 10px;
   left: 10px;
   right: 10px;
-  background: rgba(0, 0, 0, 0.7); /* Semi-transparent black */
+  background: rgba(0, 0, 0, 0.7);
   color: #fff;
   padding: 8px;
   opacity: 0;
   transition: opacity 0.3s ease;
   border-radius: 5px;
+  text-align: center;
 }
 
 .voice-note-item:hover .voice-note-overlay {
@@ -128,8 +142,40 @@
 }
 
 /* Responsive adjustments */
-@media (max-width: 768px) {
+@media (max-width: 576px) {
+  .gallery-voice-notes-container {
+    margin: 20px auto;
+    padding: 15px;
+    overflow-x: hidden;
+  }
+
+  .back-button {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+
   .voice-notes-grid {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+
+  .voice-note-item {
+    padding: 8px;
+    min-height: 120px;
+  }
+}
+
+/* Larger Screens */
+@media (min-width: 768px) {
+  .gallery-voice-notes-container {
+    padding: 20px;
+  }
+
+  .back-button {
+    width: auto;
+    max-width: none;
+  }
+
+  .voice-notes-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   }
 }

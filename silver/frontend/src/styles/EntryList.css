@@ -3,22 +3,26 @@
   flex-direction: column;
   gap: 20px;
   padding: 20px;
+  width: 100%; /* Ensure full width */
+  box-sizing: border-box; /* Include padding in width calculation */
 }
 
 .entry-audio {
   max-width: 100%;
   margin-top: 10px;
   border-radius: 5px;
-  min-height: 50px; /* Ensure minimum height for visibility */
+  min-height: 50px;
 }
 
 .entry-item {
   background-color: #333;
-  padding: 20px;
+  padding: 15px; /* Reduced padding for mobile */
   border-radius: 10px;
   color: #fff;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   transition: background-color 0.3s ease;
+  width: 100%; /* Full width on mobile */
+  box-sizing: border-box;
 }
 
 .entry-item:hover {
@@ -26,14 +30,15 @@
 }
 
 .entry-content {
-  font-size: 1.2rem;
+  font-size: 1.1rem; /* Slightly smaller font for mobile */
   margin-bottom: 15px;
+  word-wrap: break-word; /* Ensure text wraps */
 }
 
 .entry-mood {
   display: flex;
   align-items: center;
-  gap: 10px; /* Add spacing between icon and text */
+  gap: 10px;
   margin-bottom: 10px;
 }
 
@@ -68,6 +73,7 @@
   display: flex;
   gap: 10px;
   margin-top: 10px;
+  flex-wrap: wrap; /* Allow buttons to wrap if needed */
 }
 
 .entry-button {
@@ -75,11 +81,12 @@
   align-items: center;
   background-color: #ff4d4d;
   color: #fff;
-  padding: 10px 20px;
+  padding: 8px 16px; /* Slightly smaller padding for mobile */
   border-radius: 5px;
   border: none;
   cursor: pointer;
   transition: background-color 0.3s;
+  font-size: 0.9rem; /* Smaller font for mobile */
 }
 
 .entry-button:hover {
@@ -96,4 +103,41 @@
 
 .button-icon {
   margin-right: 8px;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 576px) {
+  .entry-list {
+    padding: 10px; /* Reduce padding on mobile */
+    gap: 15px; /* Smaller gap between entries */
+  }
+
+  .entry-item {
+    padding: 10px; /* Further reduce padding */
+  }
+
+  .entry-content {
+    font-size: 1rem; /* Even smaller font for better fit */
+  }
+
+  .entry-button {
+    padding: 6px 12px; /* Smaller buttons for mobile */
+    font-size: 0.85rem;
+  }
+}
+
+/* Larger Screens */
+@media (min-width: 768px) {
+  .entry-item {
+    padding: 20px; /* Restore original padding */
+  }
+
+  .entry-content {
+    font-size: 1.2rem; /* Restore original font size */
+  }
+
+  .entry-button {
+    padding: 10px 20px; /* Restore original button size */
+    font-size: 1rem;
+  }
 }

@@ -1,22 +1,32 @@
 .layout-container {
   display: flex;
   height: 100vh;
-  background-color: rgb(7, 6, 6); /* Dark background */
+  background-color: rgb(7, 6, 6);
   color: #fff;
 }
 
 .main-content {
   flex: 1;
-  margin-left: 250px; /* Adjust based on sidebar width */
+  margin-left: 250px; /* Default for desktop expanded */
   transition: margin-left 0.3s ease;
-  background-color: rgb(7, 6, 6); /* Ensure consistent background */
+  background-color: rgb(7, 6, 6);
 }
 
 .main-content.collapsed {
-  margin-left: 60px; /* Adjust based on collapsed sidebar width */
+  margin-left: 60px; /* Desktop collapsed */
+}
+
+@media (max-width: 576px) {
+  .main-content {
+    margin-left: 0; /* Full width on mobile */
+  }
+
+  .main-content.collapsed {
+    margin-left: 0; /* Ensure no margin when sidebar is hidden */
+  }
 }
 
 .dashboard-content {
   padding: 20px;
-  background-color: rgb(7, 6, 6); /* Ensure consistent background */
+  background-color: rgb(7, 6, 6);
 }

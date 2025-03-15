@@ -1,10 +1,13 @@
 /* Container for the dashboard content */
 .dashboard-content {
   padding: 20px;
-  background-color: rgb(7, 6, 6); /* Dark background */
+  background-color: rgb(7, 6, 6);
   color: #fff;
-  flex: 1; /* Take up remaining space in the layout */
-  overflow-y: auto; /* Allow scrolling if content overflows */
+  flex: 1;
+  overflow-y: auto;
+  width: 100%; /* Ensure full width */
+  box-sizing: border-box;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
 /* Style for the entry list */
@@ -19,11 +22,11 @@
   display: flex;
   justify-content: center;
   gap: 10px;
-  margin-top: 20px; /* Add some space above the pagination */
+  margin-top: 20px;
 }
 
 .pagination button {
-  background-color: #1DA1F2; /* Twitter blue */
+  background-color: #1DA1F2;
   color: #fff;
   border: none;
   padding: 10px 20px;
@@ -33,7 +36,7 @@
 }
 
 .pagination button:hover {
-  background-color: #0d95e8; /* Slightly darker blue */
+  background-color: #0d95e8;
 }
 
 /* Form container for Add/Edit entry */
@@ -41,7 +44,9 @@
   background-color: #333;
   padding: 20px;
   border-radius: 5px;
-  margin-bottom: 20px; /* Add space below the form */
+  margin-bottom: 20px;
+  width: 100%; /* Ensure form fits within dashboard */
+  box-sizing: border-box;
 }
 
 .add-edit-entry-form input {
@@ -54,46 +59,31 @@
   border-radius: 5px;
 }
 
-/* Style for the Logout button */
-.logout-button {
-  background-color: #ff4d4d;
-  color: #fff;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  border: none;
-  transition: background-color 0.3s;
-}
-
-.logout-button:hover {
-  background-color: #e60000;
-}
-
 /* Style for the "+" toggle editor button */
 .toggle-editor-button {
-  background-color: #1DA1F2; /* Twitter blue */
+  background-color: #1DA1F2;
   color: #fff;
   border: none;
   font-size: 1.5rem;
   padding: 10px 15px;
   border-radius: 50%;
   cursor: pointer;
-  position: fixed; /* Fixed position for floating effect */
-  bottom: 20px; /* Position at the bottom */
-  right: 20px; /* Position at the right */
-  z-index: 1000; /* Ensure it's above other content */
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
   transition: background-color 0.3s, transform 0.2s;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add a subtle shadow */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .toggle-editor-button:hover {
-  background-color: #0d95e8; /* Slightly darker blue */
-  transform: scale(1.1); /* Slight zoom effect */
+  background-color: #0d95e8;
+  transform: scale(1.1);
 }
 
 .toggle-editor-button:focus {
   outline: none;
-  box-shadow: 0 0 0 3px #1DA1F2; /* Add a focus outline */
+  box-shadow: 0 0 0 3px #1DA1F2;
 }
 
 /* Entry item styling */
@@ -101,23 +91,38 @@
   background-color: #333;
   padding: 15px;
   border-radius: 5px;
-  margin-bottom: 10px; /* Add space between entries */
-}
-
-.entry-item:hover {
-  background-color: #444; /* Slightly lighter on hover */
+  margin-bottom: 10px;
 }
 
 /* Responsive adjustments */
-@media (max-width: 768px) {
+@media (max-width: 576px) {
   .dashboard-content {
-    padding: 10px; /* Reduce padding on smaller screens */
+    padding: 10px; /* Reduce padding on mobile */
+    overflow-x: hidden; /* Reinforce no horizontal scrolling */
   }
 
   .toggle-editor-button {
-    bottom: 10px; /* Adjust position for smaller screens */
-    right: 10px;
-    font-size: 1.2rem; /* Smaller button on mobile */
+    bottom: 15px;
+    right: 15px;
+    font-size: 1.2rem;
     padding: 8px 12px;
+  }
+
+  .entry-item {
+    margin-bottom: 5px; /* Reduce margin for tighter stacking */
+  }
+}
+
+/* Larger Screens */
+@media (min-width: 768px) {
+  .dashboard-content {
+    padding: 20px;
+  }
+
+  .toggle-editor-button {
+    bottom: 20px;
+    right: 20px;
+    font-size: 1.5rem;
+    padding: 10px 15px;
   }
 }

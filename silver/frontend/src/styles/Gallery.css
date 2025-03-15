@@ -5,6 +5,9 @@
   color: #ffffff;
   background-color: rgb(7, 6, 6); /* Match app background consistently */
   min-height: calc(100vh - 120px); /* Ensure full height minus header/padding */
+  width: 100%; /* Ensure full width */
+  box-sizing: border-box;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
 .back-button {
@@ -19,6 +22,10 @@
   margin-bottom: 20px;
   font-size: 16px;
   transition: background-color 0.3s ease, transform 0.2s ease;
+  width: 100%; /* Full width on mobile */
+  max-width: 200px; /* Limit width on larger screens */
+  margin-left: auto;
+  margin-right: auto; /* Center the button */
 }
 
 .back-button:hover {
@@ -72,6 +79,8 @@
 .gallery-content {
   margin-top: 30px;
   background-color: rgb(7, 6, 6); /* Ensure content area matches background */
+  width: 100%; /* Ensure full width */
+  box-sizing: border-box;
 }
 
 .gallery-placeholder {
@@ -91,6 +100,9 @@
   background-color: #222; /* Darker background for content */
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  width: 100%; /* Ensure full width */
+  box-sizing: border-box;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
 .images-grid,
@@ -99,6 +111,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 20px;
+  width: 100%; /* Ensure grid fits container */
 }
 
 .image-item,
@@ -165,5 +178,14 @@
   .videos-grid,
   .voice-notes-grid {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+
+  .gallery-container {
+    padding: 15px;
+  }
+
+  .back-button {
+    font-size: 14px;
+    padding: 8px 16px;
   }
 }

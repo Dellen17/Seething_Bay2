@@ -4,7 +4,7 @@ import { Chart, CategoryScale, LinearScale, PointElement, LineElement, Title, To
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from './LoadingSpinner';
-import { moods } from './MoodSelector'; // Import moods array
+import { moods } from './MoodSelector';
 import '../styles/MoodTracker.css';
 
 // Register Chart.js components
@@ -15,15 +15,14 @@ const MoodTracker = () => {
   const [sentimentTrends, setSentimentTrends] = useState([]);
   const [moodDistribution, setMoodDistribution] = useState([]);
   const [sentimentDistribution, setSentimentDistribution] = useState([]);
-  const [timeRange, setTimeRange] = useState('7'); // Default to last 7 days
+  const [timeRange, setTimeRange] = useState('7');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [summary, setSummary] = useState('');
   const [isSummaryLoading, setIsSummaryLoading] = useState(false);
-  const [isSummaryOpen, setIsSummaryOpen] = useState(false); // For collapsible summary
+  const [isSummaryOpen, setIsSummaryOpen] = useState(false);
   const navigate = useNavigate();
 
-  // Fetch mood data
   const fetchMoodData = useCallback(async () => {
     setLoading(true);
     setError('');
@@ -47,7 +46,6 @@ const MoodTracker = () => {
     }
   }, [timeRange, navigate]);
 
-  // Calculate start date based on time range
   const getStartDate = (range) => {
     const endDate = new Date();
     const startDate = new Date(endDate);
@@ -55,12 +53,10 @@ const MoodTracker = () => {
     return startDate.toISOString().split('T')[0];
   };
 
-  // Fetch mood data on component mount or time range change
   useEffect(() => {
     fetchMoodData();
   }, [fetchMoodData]);
 
-  // Fetch summary
   const fetchSummary = async () => {
     setIsSummaryLoading(true);
     setError('');
@@ -71,7 +67,7 @@ const MoodTracker = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSummary(response.data.summary);
-      setIsSummaryOpen(true); // Open summary on fetch
+      setIsSummaryOpen(true);
     } catch (error) {
       console.error('Error fetching summary:', error);
       setError('Failed to load summary. Please try again.');
@@ -80,28 +76,25 @@ const MoodTracker = () => {
     }
   };
 
-  // Map mood colors from moods array
   const moodColors = moods.reduce((acc, mood) => {
     acc[mood.label] = mood.color;
     return acc;
   }, {});
 
-  // Format data for Line Chart (Mood Trends)
   const moodLineChartData = {
-    labels: [...new Set(moodTrends.map((entry) => entry.date))], // Unique dates
+    labels: [...new Set(moodTrends.map((entry) => entry.date))],
     datasets: Object.keys(moodColors).map((mood) => ({
       label: mood.charAt(0).toUpperCase() + mood.slice(1),
       data: moodTrends
         .filter((entry) => entry.mood === mood)
         .map((entry) => ({ x: entry.date, y: entry.count })),
       borderColor: moodColors[mood],
-      backgroundColor: `${moodColors[mood]}33`, // 20% opacity
+      backgroundColor: `${moodColors[mood]}33`,
       tension: 0.4,
       fill: false,
     })),
   };
 
-  // Format data for Line Chart (Sentiment Trends)
   const sentimentLineChartData = {
     labels: sentimentTrends.map((entry) => entry.date),
     datasets: [
@@ -115,7 +108,6 @@ const MoodTracker = () => {
     ],
   };
 
-  // Format data for Pie Chart (Mood Distribution)
   const moodPieChartData = {
     labels: moodDistribution.map((entry) => entry.mood),
     datasets: [
@@ -126,36 +118,89 @@ const MoodTracker = () => {
     ],
   };
 
-  // Format data for Pie Chart (Sentiment Distribution)
   const sentimentPieChartData = {
     labels: sentimentDistribution.map((entry) => entry.sentiment),
     datasets: [
       {
         data: sentimentDistribution.map((entry) => entry.count),
-        backgroundColor: ['#4CAF50', '#F44336', '#9E9E9E'], // Positive, Negative, Neutral
+        backgroundColor: ['#4CAF50', '#F44336', '#9E9E9E'],
       },
     ],
   };
 
-  // Chart options
+  // Responsive Chart Options
   const lineChartOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
-      legend: { display: true, position: 'top' },
-      title: { display: true, text: 'Mood and Sentiment Trends Over Time', color: '#fff' },
-      tooltip: { enabled: true }, // Enable tooltips
+      legend: {
+        display: true,
+        position: window.innerWidth < 576 ? 'bottom' : 'top',
+        labels: {
+          color: '#fff',
+          font: {
+            size: window.innerWidth < 576 ? 10 : 12,
+          },
+        },
+      },
+      title: {
+        display: true,
+        text: 'Mood and Sentiment Trends Over Time',
+        color: '#fff',
+        font: {
+          size: window.innerWidth < 576 ? 14 : 16,
+        },
+      },
+      tooltip: { enabled: true },
     },
     scales: {
-      x: { title: { display: true, text: 'Date', color: '#fff' }, ticks: { color: '#bbb' } },
-      y: { title: { display: true, text: 'Count', color: '#fff' }, ticks: { color: '#bbb' } },
+      x: {
+        title: { display: true, text: 'Date', color: '#fff' },
+        ticks: {
+          color: '#bbb',
+          font: {
+            size: window.innerWidth < 576 ? 10 : 12,
+          },
+          maxRotation: window.innerWidth < 576 ? 45 : 0,
+          minRotation: window.innerWidth < 576 ? 45 : 0,
+          maxTicksLimit: window.innerWidth < 576 ? 5 : 10, // Limit number of ticks on mobile
+          autoSkip: true, // Automatically skip labels to prevent overlap
+        },
+      },
+      y: {
+        title: { display: true, text: 'Count', color: '#fff' },
+        ticks: {
+          color: '#bbb',
+          font: {
+            size: window.innerWidth < 576 ? 10 : 12,
+          },
+        },
+      },
     },
   };
 
   const pieChartOptions = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
-      legend: { display: true, position: 'bottom', labels: { color: '#fff' } },
-      title: { display: true, text: 'Distribution', color: '#fff' },
+      legend: {
+        display: true,
+        position: window.innerWidth < 576 ? 'bottom' : 'bottom',
+        labels: {
+          color: '#fff',
+          font: {
+            size: window.innerWidth < 576 ? 10 : 12,
+          },
+        },
+      },
+      title: {
+        display: true,
+        text: 'Distribution',
+        color: '#fff',
+        font: {
+          size: window.innerWidth < 576 ? 14 : 16,
+        },
+      },
     },
   };
 
@@ -206,22 +251,28 @@ const MoodTracker = () => {
         <div className="charts-container">
           <div className="chart-container">
             <h3>Mood Trends</h3>
-            <Line data={moodLineChartData} options={lineChartOptions} />
+            <div className="chart-wrapper">
+              <Line data={moodLineChartData} options={lineChartOptions} />
+            </div>
           </div>
 
           <div className="chart-container">
             <h3>Sentiment Trends</h3>
-            <Line data={sentimentLineChartData} options={lineChartOptions} />
+            <div className="chart-wrapper">
+              <Line data={sentimentLineChartData} options={lineChartOptions} />
+            </div>
           </div>
 
           <div className="chart-container">
             <h3>Mood Distribution</h3>
-            <Pie data={moodPieChartData} options={pieChartOptions} />
+            <div className="chart-wrapper">
+              <Pie data={moodPieChartData} options={pieChartOptions} />
+            </div>
           </div>
 
           <div className="chart-container">
             <h3>Sentiment Distribution</h3>
-            <div className="sentiment-pie-chart">
+            <div className="chart-wrapper sentiment-pie-chart">
               <Pie data={sentimentPieChartData} options={pieChartOptions} />
             </div>
           </div>

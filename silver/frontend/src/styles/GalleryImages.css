@@ -6,6 +6,9 @@
   background-color: #222; /* Darker background */
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  width: 100%; /* Ensure full width within viewport */
+  box-sizing: border-box;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
 .back-button {
@@ -18,6 +21,11 @@
   margin-bottom: 20px;
   font-size: 16px;
   transition: background-color 0.3s ease, transform 0.2s ease;
+  width: 100%; /* Full width on mobile for better touch interaction */
+  max-width: 200px; /* Limit width on larger screens */
+  display: block; /* Ensure proper centering */
+  margin-left: auto;
+  margin-right: auto; /* Center the button */
 }
 
 .back-button:hover {
@@ -27,8 +35,9 @@
 
 .images-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Adjusted for better fit */
   gap: 20px;
+  width: 100%; /* Ensure grid fits container */
 }
 
 .image-item {
@@ -39,6 +48,8 @@
   background-color: #333;
   transition: transform 0.2s ease, box-shadow 0.3s ease;
   cursor: pointer; /* Indicate interactivity */
+  width: 100%; /* Ensure full width within grid */
+  box-sizing: border-box;
 }
 
 .image-item:hover {
@@ -64,6 +75,7 @@
   padding: 10px;
   opacity: 0;
   transition: opacity 0.3s ease;
+  text-align: center; /* Center overlay text */
 }
 
 .image-item:hover .image-overlay {
@@ -78,6 +90,7 @@
 .image-mood {
   display: flex;
   align-items: center;
+  justify-content: center; /* Center mood content */
   gap: 8px;
   font-size: 1rem;
   margin-top: 5px;
@@ -122,12 +135,39 @@
 }
 
 /* Responsive adjustments */
-@media (max-width: 768px) {
+@media (max-width: 576px) {
+  .gallery-images-container {
+    margin: 20px auto;
+    padding: 15px; /* Reduce padding on mobile */
+    overflow-x: hidden; /* Reinforce no horizontal scrolling */
+  }
+
+  .back-button {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+
   .images-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Smaller items on mobile */
   }
 
   .gallery-image {
     height: 150px; /* Smaller height on mobile */
+  }
+}
+
+/* Larger Screens */
+@media (min-width: 768px) {
+  .gallery-images-container {
+    padding: 20px;
+  }
+
+  .back-button {
+    width: auto;
+    max-width: none;
+  }
+
+  .images-grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   }
 }

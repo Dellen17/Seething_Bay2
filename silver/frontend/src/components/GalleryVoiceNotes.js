@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import LazyLoad from 'react-lazy-load';
 import LoadingSpinner from './LoadingSpinner';
-import { moods } from './MoodSelector'; // Import moods for consistency
+import { moods } from './MoodSelector';
 import '../styles/GalleryVoiceNotes.css';
 
 const GalleryVoiceNotes = () => {
@@ -27,12 +26,13 @@ const GalleryVoiceNotes = () => {
         allEntries = [...allEntries, ...response.data.results.entries];
         nextPage = response.data.next;
       }
-      // Filtering voice notes
       const entriesWithVoiceNotes = allEntries.filter((entry) => {
-        return entry.voice_note && 
-          typeof entry.voice_note === 'string' && 
-          entry.voice_note.trim() !== '' && 
-          entry.voice_note.includes('/media/voice_notes/');
+        return (
+          entry.voice_note &&
+          typeof entry.voice_note === 'string' &&
+          entry.voice_note.trim() !== '' &&
+          entry.voice_note.includes('/media/voice_notes/')
+        );
       });
       setVoiceNotes(entriesWithVoiceNotes);
     } catch (err) {
@@ -86,15 +86,13 @@ const GalleryVoiceNotes = () => {
                 onClick={() => handleVoiceNoteClick(entry.id)}
               >
                 {entry.voice_note && (
-                  <LazyLoad height={50} offset={100}>
-                    <audio
-                      src={`http://127.0.0.1:8000${entry.voice_note}`}
-                      controls
-                      className="gallery-voice-note"
-                    >
-                      Your browser does not support audio.
-                    </audio>
-                  </LazyLoad>
+                  <audio
+                    src={`http://127.0.0.1:8000${entry.voice_note}`}
+                    controls
+                    className="gallery-voice-note"
+                  >
+                    Your browser does not support audio.
+                  </audio>
                 )}
                 <div className="voice-note-overlay">
                   <p className="voice-note-timestamp">

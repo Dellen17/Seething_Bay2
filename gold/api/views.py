@@ -18,13 +18,12 @@ from .models import Profile
 from .serializers import ProfileSerializer
 from django.utils import timezone
 from .utils import analyze_sentiment, analyze_summary
-from datetime import timedelta
 from django.db.models import Count, Q
 import os
 import subprocess
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
-from datetime import datetime
+from datetime import datetime, timedelta, timezone as dt_timezone
 from .models import Entry
 from .serializers import EntrySerializer
 from rest_framework.pagination import PageNumberPagination  # type: ignore
@@ -577,14 +576,14 @@ def mood_tracker(request):
         # Parse the start_date string into a naive datetime
         start_date_naive = datetime.strptime(start_date_str, '%Y-%m-%d')
         # Make it timezone-aware (using UTC)
-        start_date = timezone.make_aware(start_date_naive, timezone=timezone.utc)
+        start_date = timezone.make_aware(start_date_naive, timezone=dt_timezone.utc)
         entries = entries.filter(timestamp__gte=start_date)
 
     if end_date_str:
         # Parse the end_date string into a naive datetime
         end_date_naive = datetime.strptime(end_date_str, '%Y-%m-%d')
         # Make it timezone-aware (using UTC)
-        end_date = timezone.make_aware(end_date_naive, timezone=timezone.utc)
+        end_date = timezone.make_aware(end_date_naive, timezone=dt_timezone.utc)
         entries = entries.filter(timestamp__lte=end_date)
 
     # Filter out entries with null sentiment
