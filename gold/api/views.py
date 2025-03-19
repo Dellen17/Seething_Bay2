@@ -1,18 +1,23 @@
-from rest_framework import status  # type: ignore
+import binascii
+from django.db import transaction
+from django.shortcuts import redirect
+from rest_framework import status # type: ignore
 from django.contrib.auth import get_user_model
-from rest_framework.response import Response  # type: ignore
+from rest_framework.response import Response # type: ignore
 import requests # type: ignore
 from django.conf import settings
 import time
-from rest_framework.decorators import api_view, permission_classes  # type: ignore
-from rest_framework_simplejwt.tokens import RefreshToken  # type: ignore
+from rest_framework.decorators import api_view, permission_classes, authentication_classes # type: ignore
+from rest_framework_simplejwt.tokens import RefreshToken # type: ignore
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken # type: ignore
+from rest_framework.authentication import SessionAuthentication # type: ignore
 from django.contrib.auth import authenticate
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
-from rest_framework.permissions import AllowAny, IsAuthenticated  # type: ignore
+from rest_framework.permissions import AllowAny, IsAuthenticated # type: ignore
 from django.contrib.auth.models import User
 from .models import Profile
 from .serializers import ProfileSerializer
@@ -26,7 +31,7 @@ from django.core.files.storage import default_storage
 from datetime import datetime, timedelta, timezone as dt_timezone
 from .models import Entry
 from .serializers import EntrySerializer
-from rest_framework.pagination import PageNumberPagination  # type: ignore
+from rest_framework.pagination import PageNumberPagination # type: ignore
 from urllib.parse import urlencode
 
 User = get_user_model()
@@ -44,9 +49,8 @@ class EntryPagination(PageNumberPagination):
         page_number = self.page.next_page_number()
         params = self.request.GET.copy()
         params['page'] = page_number
-        # Handle list parameters like mediaType[]
         params.setlist('mediaType[]', self.request.GET.getlist('mediaType[]'))
-        return f"{url.split('?')[0]}?{urlencode(params, doseq=True)}"  # Add doseq=True
+        return f"{url.split('?')[0]}?{urlencode(params, doseq=True)}"
 
     def get_previous_link(self):
         if not self.page.has_previous():
@@ -55,9 +59,8 @@ class EntryPagination(PageNumberPagination):
         page_number = self.page.previous_page_number()
         params = self.request.GET.copy()
         params['page'] = page_number
-        # Handle list parameters like mediaType[]
         params.setlist('mediaType[]', self.request.GET.getlist('mediaType[]'))
-        return f"{url.split('?')[0]}?{urlencode(params, doseq=True)}"  # Add doseq=True
+        return f"{url.split('?')[0]}?{urlencode(params, doseq=True)}"
 
 # User Authentication Views
 @api_view(['POST'])
@@ -73,7 +76,6 @@ def register_user(request):
         user = User.objects.create_user(username=username, password=password, email=email)
         return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
     return Response({"error": "All fields are required"}, status=status.HTTP_400_BAD_REQUEST)
-
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -92,7 +94,6 @@ def login_user(request):
         })
     return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
-
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def refresh_token(request):
@@ -109,7 +110,6 @@ def refresh_token(request):
     except (TokenError, InvalidToken):
         return Response({"error": "Invalid refresh token"}, status=status.HTTP_401_UNAUTHORIZED)
 
-
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def reset_password(request):
@@ -123,29 +123,37 @@ def reset_password(request):
         token = token_generator.make_token(user)
         uid = urlsafe_base64_encode(force_bytes(user.pk))
 
-        # Update the reset link to point to your React app’s reset password confirm route
+        # Construct the reset link for the React frontend
         reset_link = f"http://localhost:3000/reset-password-confirm/{uid}/{token}"
 
-        # Send email with reset link
-        send_mail(
-            'Password Reset Request',
-            f'Please use the following link to reset your password: {reset_link}',
-            'your-email@example.com',
-            [email],
-            fail_silently=False,
-        )
+        # Send HTML email using the template
+        subject = 'Password Reset Request'
+        message = render_to_string('reset_password.html', {'url': reset_link})
+        email_msg = EmailMessage(subject, message, settings.EMAIL_HOST_USER, [email])
+        email_msg.content_subtype = "html"  # Send as HTML
+        email_msg.send()
+
         return Response({"message": "Password reset email sent. Please check your inbox."}, status=status.HTTP_200_OK)
 
     except User.DoesNotExist:
         return Response({"error": "User with this email does not exist"}, status=status.HTTP_404_NOT_FOUND)
+
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def reset_password_confirm(request, uidb64, token):
     try:
         # Decode the user ID
-        uid = force_str(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
+        try:
+            uid = force_str(urlsafe_base64_decode(uidb64))
+        except (ValueError, TypeError, binascii.Error) as e:
+            return Response({"error": "Invalid user ID format"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Retrieve the user
+        try:
+            user = User.objects.get(pk=uid)
+        except User.DoesNotExist:
+            return Response({"error": "Invalid user"}, status=status.HTTP_400_BAD_REQUEST)
 
         # Validate the token
         token_generator = PasswordResetTokenGenerator()
@@ -162,21 +170,22 @@ def reset_password_confirm(request, uidb64, token):
         if new_password != confirm_password:
             return Response({"error": "Passwords do not match"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Set the new password and save the user
-        user.set_password(new_password)
-        user.save()
+        # Set the new password and save the user within a transaction
+        with transaction.atomic():
+            user.set_password(new_password)
+            user.save()
 
-        # Redirect to the login page of your React app after successful password reset
-        frontend_login_url = 'http://localhost:3000/login'  # Adjust URL if needed
+        # Return success with a flag for frontend redirect
         return Response({
             "message": "Password reset successful. You will be redirected to login.",
-            "redirect_url": frontend_login_url
+            "success": True,
+            "redirect_url": "http://localhost:3000/login"
         }, status=status.HTTP_200_OK)
 
-    except User.DoesNotExist:
-        return Response({"error": "Invalid user"}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
-        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        # Log the exception for debugging
+        print(f"Unexpected error in reset_password_confirm: {str(e)}")
+        return Response({"error": "An unexpected error occurred. Please try again later."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -264,7 +273,6 @@ def get_entries(request):
         'totalEntries': paginator.page.paginator.count,
     })
 
-
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_entry(request, pk):
@@ -274,7 +282,6 @@ def get_entry(request, pk):
         return Response(serializer.data)
     except Entry.DoesNotExist:
         return Response({"error": "Entry not found"}, status=status.HTTP_404_NOT_FOUND)
-
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -704,3 +711,12 @@ def cleanup_transcript(request):
         return Response({'error': f"API request failed: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     except (KeyError, IndexError) as e:
         return Response({'error': f"Failed to parse API response: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([SessionAuthentication])
+def social_login_redirect(request):
+    user = request.user
+    refresh = RefreshToken.for_user(user)
+    redirect_url = f"http://127.0.0.1:3000/login?access={str(refresh.access_token)}&refresh={str(refresh)}"
+    return redirect(redirect_url)

@@ -1,20 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
-import LoadingSpinner from './LoadingSpinner'; // Import the spinner
+import LoadingSpinner from './LoadingSpinner';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import '../styles/ResetPasswordConfirm.css';
 
 const ResetPasswordConfirm = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState('');
-  const { uidb64, token } = useParams(); // Capture uidb64 and token from URL
+  const { uidb64, token } = useParams();
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false); // Loading state
+  const [isLoading, setIsLoading] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Function to validate password
   const validatePassword = (password) => {
-    return password.length >= 8; // Minimum 8 characters
+    return password.length >= 8;
   };
 
   const handleSubmit = async (e) => {
@@ -32,8 +35,8 @@ const ResetPasswordConfirm = () => {
       return;
     }
 
-    setIsLoading(true); // Start loading
-    setMessage(''); // Clear any previous messages
+    setIsLoading(true);
+    setMessage('');
 
     try {
       // Send the new password to Django backend using uidb64 and token
@@ -41,57 +44,79 @@ const ResetPasswordConfirm = () => {
         new_password: newPassword,
         confirm_password: confirmPassword,
       });
-      setMessage('Password reset successful. Click here to log in.');
+      setMessage(response.data.message || 'Password reset successful.');
 
-      // Clear inputs on success
       setNewPassword('');
       setConfirmPassword('');
     } catch (error) {
-      setMessage(error.response?.data?.detail || 'An error occurred. Please try again.');
+      // Display the exact error message from the backend
+      setMessage(error.response?.data?.error || 'An error occurred. Please try again.');
     } finally {
-      setIsLoading(false); // Stop loading
+      setIsLoading(false);
     }
   };
+
+  // Toggle visibility for new password
+  const toggleNewPasswordVisibility = () => {
+    setShowNewPassword(!showNewPassword);
+  };
+
+  // Toggle visibility for confirm password
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+
+  // Auto-redirect on success
+  useEffect(() => {
+    if (message.includes('successful')) {
+      const timer = setTimeout(() => navigate('/login'), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [message, navigate]);
 
   return (
     <div className="reset-password-confirm-container">
       <h2 className="reset-password-confirm-title">Confirm Password Reset</h2>
       <form onSubmit={handleSubmit} className="reset-password-confirm-form">
         <label htmlFor="new-password" className="reset-password-confirm-label">New Password:</label>
-        <input
-          id="new-password"
-          type="password"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-          required
-          className="reset-password-confirm-input"
-        />
+        <div className="password-input-container">
+          <input
+            id="new-password"
+            type={showNewPassword ? 'text' : 'password'}
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            required
+            className="reset-password-confirm-input"
+            placeholder="New Password"
+          />
+          <span className="password-toggle-icon" onClick={toggleNewPasswordVisibility}>
+            {showNewPassword ? <FaEyeSlash /> : <FaEye />}
+          </span>
+        </div>
         <label htmlFor="confirm-password" className="reset-password-confirm-label">Confirm New Password:</label>
-        <input
-          id="confirm-password"
-          type="password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          required
-          className="reset-password-confirm-input"
-        />
+        <div className="password-input-container">
+          <input
+            id="confirm-password"
+            type={showConfirmPassword ? 'text' : 'password'}
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+            className="reset-password-confirm-input"
+            placeholder="Confirm New Password"
+          />
+          <span className="password-toggle-icon" onClick={toggleConfirmPasswordVisibility}>
+            {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+          </span>
+        </div>
         <button
           type="submit"
           disabled={isLoading}
           className="reset-password-confirm-button"
         >
-          {isLoading ? <LoadingSpinner /> : 'Reset Password'} {/* Show spinner when loading */}
+          {isLoading ? <LoadingSpinner /> : 'Reset Password'}
         </button>
       </form>
-      {message && (
-        <p
-          className="reset-password-confirm-message"
-          onClick={() => navigate('/login')} // Allow manual navigation
-          style={{ cursor: 'pointer', textDecoration: 'underline' }}
-        >
-          {message}
-        </p>
-      )}
+      {message && <p className="reset-password-confirm-message">{message}</p>}
     </div>
   );
 };

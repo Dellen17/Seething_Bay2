@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import LoadingSpinner from './LoadingSpinner'; // Import the spinner
+import LoadingSpinner from './LoadingSpinner';
+import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Import eye icons
 import '../styles/Register.css';
 
 const Register = () => {
@@ -10,7 +11,9 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false); // Loading state
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // State for password visibility
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // State for confirm password visibility
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
@@ -29,8 +32,8 @@ const Register = () => {
       return;
     }
 
-    setIsLoading(true); // Start loading
-    setError(''); // Clear any previous errors
+    setIsLoading(true);
+    setError('');
 
     try {
       const response = await axios.post('http://127.0.0.1:8000/api/register/', {
@@ -39,20 +42,27 @@ const Register = () => {
         password: password,
       });
       console.log(response.data);
-      // Redirect user to login page upon successful registration
       navigate('/login');
     } catch (error) {
       console.error(error.response?.data);
-
-      // Check if the error is related to duplicate email
       if (error.response?.data?.email) {
         setError('This email is already registered');
       } else {
         setError('Registration failed. Please try again.');
       }
     } finally {
-      setIsLoading(false); // Stop loading
+      setIsLoading(false);
     }
+  };
+
+  // Toggle password visibility
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  // Toggle confirm password visibility
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
   };
 
   return (
@@ -78,26 +88,36 @@ const Register = () => {
           onChange={(e) => setEmail(e.target.value)}
           className="register-input"
         />
-        <input
-          id="register-password"
-          name="password"
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="register-input"
-        />
-        <input
-          id="register-confirm-password"
-          name="confirmPassword"
-          type="password"
-          placeholder="Confirm Password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          className="register-input"
-        />
+        <div className="password-input-container">
+          <input
+            id="register-password"
+            name="password"
+            type={showPassword ? 'text' : 'password'}
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="register-input password-input"
+          />
+          <span className="password-toggle-icon" onClick={togglePasswordVisibility}>
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
+          </span>
+        </div>
+        <div className="password-input-container">
+          <input
+            id="register-confirm-password"
+            name="confirmPassword"
+            type={showConfirmPassword ? 'text' : 'password'}
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            className="register-input password-input"
+          />
+          <span className="password-toggle-icon" onClick={toggleConfirmPasswordVisibility}>
+            {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+          </span>
+        </div>
         <button type="submit" disabled={isLoading} className="register-button">
-          {isLoading ? <LoadingSpinner /> : 'Register'} {/* Show spinner when loading */}
+          {isLoading ? <LoadingSpinner /> : 'Register'}
         </button>
       </form>
     </div>

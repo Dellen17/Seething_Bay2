@@ -7,6 +7,7 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
+    path('social/', include('social_django.urls', namespace='social')),
     path('api/', include('api.urls')),
 ]
 

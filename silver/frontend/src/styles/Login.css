@@ -7,6 +7,9 @@
   padding: 30px;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  width: 100%; /* Ensure full width */
+  box-sizing: border-box;
+  min-height: calc(100vh - 60px); /* Match Gallery's full-height approach */
 }
 
 .login-header {
@@ -36,6 +39,8 @@
   background-color: #333;
   color: #fff;
   font-size: 1rem;
+  width: 100%; /* Ensure consistent width */
+  box-sizing: border-box; /* Include padding and border in width */
 }
 
 .login-input:focus {
@@ -52,10 +57,16 @@
   cursor: pointer;
   font-size: 1rem;
   margin-top: 15px;
+  width: 100%; /* Ensure it matches the Google button width */
 }
 
 .login-button:hover {
   background-color: #1991e1; /* Darker blue */
+}
+
+.login-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
 }
 
 .redirect-link {
@@ -88,4 +99,139 @@
   border: none;
   color: #1da1f2;
   cursor: pointer;
+}
+
+/* New styles for the "or" separator and login options */
+.login-options {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.separator {
+  display: flex;
+  align-items: center;
+  margin: 15px 0;
+  width: 100%;
+  text-align: center;
+  position: relative;
+}
+
+.separator::before,
+.separator::after {
+  content: '';
+  flex-grow: 1;
+  height: 1px;
+  background-color: #666; /* Light gray line */
+  margin: 0 10px;
+}
+
+.or-text {
+  padding: 0 10px;
+  color: #666; /* Match the line color */
+  font-size: 14px;
+  background-color: #1c1c1c; /* Match container background to avoid overlap */
+  z-index: 1;
+}
+
+.google-login {
+  width: 100%;
+  text-align: center;
+}
+
+.google-button {
+  background-color: #4285f4; /* Google blue */
+  color: #fff;
+  padding: 12px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  width: 100%;
+  transition: background-color 0.3s;
+}
+
+.google-button:hover {
+  background-color: #357abd; /* Darker blue */
+}
+
+.google-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+/* New styles for password visibility toggle */
+.password-input-container {
+  position: relative;
+  width: 100%;
+}
+
+.password-input {
+  padding-right: 40px; /* Space for icon on the right */
+  /* Inherit other styles from .login-input */
+}
+
+.password-toggle-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #1da1f2; /* Twitter blue for consistency */
+  font-size: 1.2rem; /* Slightly larger icon */
+}
+
+.password-toggle-icon:hover {
+  color: #1991e1; /* Darker blue on hover */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .login-container {
+    padding: 15px; /* Reduce padding on mobile */
+    margin: 10px; /* Add slight margin for spacing */
+    min-height: calc(100vh - 20px); /* Adjust for smaller screens */
+  }
+
+  .login-header {
+    font-size: 1.5rem; /* Smaller header */
+    margin-bottom: 15px;
+  }
+
+  .login-input {
+    padding: 8px; /* Slightly smaller padding */
+    margin: 8px 0;
+    font-size: 0.9rem; /* Smaller font size */
+  }
+
+  .login-button,
+  .google-button {
+    padding: 10px; /* Slightly smaller button padding */
+    font-size: 0.9rem; /* Smaller font size */
+  }
+
+  .password-toggle-icon {
+    font-size: 1rem; /* Smaller icon on mobile */
+    right: 8px; /* Adjust position for smaller padding */
+  }
+
+  .error-message {
+    font-size: 0.8rem; /* Smaller error message */
+    margin-bottom: 15px;
+  }
+
+  .redirect-link,
+  .forgot-password {
+    font-size: 0.9rem; /* Smaller text */
+    margin-top: 10px;
+  }
+
+  .separator {
+    margin: 10px 0; /* Reduce separator margin */
+  }
+
+  .or-text {
+    font-size: 12px; /* Smaller "or" text */
+  }
 }
