@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaSignOutAlt } from 'react-icons/fa'; // Import logout icon
+import { FaSignOutAlt } from 'react-icons/fa';
 
 const Logout = () => {
   const navigate = useNavigate();

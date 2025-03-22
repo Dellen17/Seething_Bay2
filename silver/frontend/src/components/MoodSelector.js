@@ -1,16 +1,16 @@
 import React from 'react';
 import {
-  FaSmile,       // Happy
-  FaFrown,       // Sad
-  FaMeh,         // Neutral
-  FaGrinBeam,    // Excited
-  FaTired,       // Tired
-  FaAngry,       // Angry
-  FaFlushed,     // Stressed
-  FaSurprise,    // Shocked
-  FaSmileBeam,   // Calm
-  FaQuestionCircle, // Confused
-  FaHeart,       // Loved
+  FaSmile,
+  FaFrown,
+  FaMeh,
+  FaGrinBeam,
+  FaTired,
+  FaAngry,
+  FaFlushed,
+  FaSurprise,
+  FaSmileBeam,
+  FaQuestionCircle,
+  FaHeart,
 } from 'react-icons/fa';
 
 // Export the moods array as the single source of truth
@@ -39,7 +39,7 @@ const MoodSelector = ({ mood, setMood }) => {
             size="20px"
             color={mood === label ? color : 'gray'}
             onClick={() => setMood(label)}
-            title={label.charAt(0).toUpperCase() + label.slice(1)} // Tooltip on hover
+            title={label.charAt(0).toUpperCase() + label.slice(1)}
             className="mood-icon"
           />
         ))}

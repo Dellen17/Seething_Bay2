@@ -6,7 +6,7 @@
     text-align: center;
     font-family: Arial, Helvetica, sans-serif;
     color: #ffffff;
-    background-color: rgb(7, 6, 6); /* Match app background */
+    background-color: rgb(7, 6, 6);
   }
   
   .back-button {
@@ -14,7 +14,7 @@
     color: white;
     border: none;
     padding: 10px 20px;
-    border-radius: 20px; /* Match button style */
+    border-radius: 20px;
     cursor: pointer;
     margin-bottom: 20px;
     font-size: 16px;
@@ -23,7 +23,7 @@
   
   .back-button:hover {
     background-color: #0d95e8;
-    transform: scale(1.05); /* Slight zoom on hover */
+    transform: scale(1.05);
   }
   
   .loading-container {
@@ -43,10 +43,10 @@
     width: 100%;
     max-width: 600px;
     margin: 0 auto 20px auto;
-    border: none; /* Remove default border */
+    border: none;
     border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Deeper shadow */
-    background-color: #222; /* Darker background */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    background-color: #222;
     padding: 15px;
     color: #ffffff;
   }
@@ -54,7 +54,7 @@
   .react-calendar__tile {
     transition: background-color 0.2s ease;
     position: relative;
-    padding-bottom: 30px; /* Add space for the indicator */
+    padding-bottom: 30px;
   }
   
   .react-calendar__tile--active {
@@ -63,7 +63,7 @@
   }
   
   .react-calendar__tile--now {
-    background-color: rgba(255, 255, 255, 0.1) !important; /* Highlight today */
+    background-color: rgba(255, 255, 255, 0.1) !important;
     border: 1px solid #1da1f2 !important;
   }
   
@@ -101,12 +101,12 @@
     background-color: #333;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     transition: background-color 0.3s ease, transform 0.2s ease;
-    cursor: pointer; /* Indicate interactivity */
+    cursor: pointer;
   }
   
   .entry-preview:hover {
     background-color: #444;
-    transform: translateY(-2px); /* Slight lift on hover */
+    transform: translateY(-2px);
   }
   
   .entry-header {
@@ -147,7 +147,7 @@
   }
   
   .media-thumbnail:hover {
-    transform: scale(1.05); /* Slight zoom on hover */
+    transform: scale(1.05);
   }
   
   .entry-image,

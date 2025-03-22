@@ -1,15 +1,15 @@
 /* Login page specific styles */
 .login-container {
-  background-color: #1c1c1c; /* Dark background */
+  background-color: #1c1c1c;
   color: #ffffff;
   max-width: 400px;
   margin: 0 auto;
   padding: 30px;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  width: 100%; /* Ensure full width */
+  width: 100%;
   box-sizing: border-box;
-  min-height: calc(100vh - 60px); /* Match Gallery's full-height approach */
+  min-height: calc(100vh - 60px);
 }
 
 .login-header {
@@ -39,17 +39,17 @@
   background-color: #333;
   color: #fff;
   font-size: 1rem;
-  width: 100%; /* Ensure consistent width */
-  box-sizing: border-box; /* Include padding and border in width */
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .login-input:focus {
-  border-color: #1da1f2; /* Blue focus color */
+  border-color: #1da1f2;
   outline: none;
 }
 
 .login-button {
-  background-color: #1da1f2; /* Twitter blue */
+  background-color: #1da1f2;
   color: #fff;
   padding: 12px;
   border-radius: 5px;
@@ -57,11 +57,11 @@
   cursor: pointer;
   font-size: 1rem;
   margin-top: 15px;
-  width: 100%; /* Ensure it matches the Google button width */
+  width: 100%;
 }
 
 .login-button:hover {
-  background-color: #1991e1; /* Darker blue */
+  background-color: #1991e1;
 }
 
 .login-button:disabled {
@@ -101,7 +101,6 @@
   cursor: pointer;
 }
 
-/* New styles for the "or" separator and login options */
 .login-options {
   display: flex;
   flex-direction: column;
@@ -123,15 +122,15 @@
   content: '';
   flex-grow: 1;
   height: 1px;
-  background-color: #666; /* Light gray line */
+  background-color: #666;
   margin: 0 10px;
 }
 
 .or-text {
   padding: 0 10px;
-  color: #666; /* Match the line color */
+  color: #666;
   font-size: 14px;
-  background-color: #1c1c1c; /* Match container background to avoid overlap */
+  background-color: #1c1c1c;
   z-index: 1;
 }
 
@@ -141,7 +140,7 @@
 }
 
 .google-button {
-  background-color: #4285f4; /* Google blue */
+  background-color: #4285f4;
   color: #fff;
   padding: 12px;
   border-radius: 5px;
@@ -153,7 +152,7 @@
 }
 
 .google-button:hover {
-  background-color: #357abd; /* Darker blue */
+  background-color: #357abd;
 }
 
 .google-button:disabled {
@@ -161,15 +160,13 @@
   cursor: not-allowed;
 }
 
-/* New styles for password visibility toggle */
 .password-input-container {
   position: relative;
   width: 100%;
 }
 
 .password-input {
-  padding-right: 40px; /* Space for icon on the right */
-  /* Inherit other styles from .login-input */
+  padding-right: 40px;
 }
 
 .password-toggle-icon {
@@ -178,60 +175,60 @@
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
-  color: #1da1f2; /* Twitter blue for consistency */
-  font-size: 1.2rem; /* Slightly larger icon */
+  color: #1da1f2;
+  font-size: 1.2rem;
 }
 
 .password-toggle-icon:hover {
-  color: #1991e1; /* Darker blue on hover */
+  color: #1991e1;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .login-container {
-    padding: 15px; /* Reduce padding on mobile */
-    margin: 10px; /* Add slight margin for spacing */
-    min-height: calc(100vh - 20px); /* Adjust for smaller screens */
+    padding: 15px;
+    margin: 10px;
+    min-height: calc(100vh - 20px);
   }
 
   .login-header {
-    font-size: 1.5rem; /* Smaller header */
+    font-size: 1.5rem;
     margin-bottom: 15px;
   }
 
   .login-input {
-    padding: 8px; /* Slightly smaller padding */
+    padding: 8px;
     margin: 8px 0;
-    font-size: 0.9rem; /* Smaller font size */
+    font-size: 0.9rem;
   }
 
   .login-button,
   .google-button {
-    padding: 10px; /* Slightly smaller button padding */
-    font-size: 0.9rem; /* Smaller font size */
+    padding: 10px;
+    font-size: 0.9rem;
   }
 
   .password-toggle-icon {
-    font-size: 1rem; /* Smaller icon on mobile */
-    right: 8px; /* Adjust position for smaller padding */
+    font-size: 1rem;
+    right: 8px;
   }
 
   .error-message {
-    font-size: 0.8rem; /* Smaller error message */
+    font-size: 0.8rem;
     margin-bottom: 15px;
   }
 
   .redirect-link,
   .forgot-password {
-    font-size: 0.9rem; /* Smaller text */
+    font-size: 0.9rem;
     margin-top: 10px;
   }
 
   .separator {
-    margin: 10px 0; /* Reduce separator margin */
+    margin: 10px 0;
   }
 
   .or-text {
-    font-size: 12px; /* Smaller "or" text */
+    font-size: 12px;
   }
 }

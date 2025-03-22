@@ -50,7 +50,7 @@
   }
 
   .back-button {
-    background-color: #1da1f2; /* Twitter blue */
+    background-color: #1da1f2;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -63,11 +63,11 @@
   }
   
   .back-button:hover {
-    background-color: #0d95e8; /* Darker blue on hover */
-    transform: scale(1.05); /* Slight zoom */
+    background-color: #0d95e8;
+    transform: scale(1.05);
   }
   
   .back-button:focus {
     outline: none;
-    box-shadow: 0 0 0 3px #1da1f2; /* Focus ring */
+    box-shadow: 0 0 0 3px #1da1f2;
   }  

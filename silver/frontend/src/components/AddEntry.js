@@ -3,7 +3,7 @@ import axios from 'axios';
 import VoiceToText from './VoiceToText';
 import VoiceNote from './VoiceNote';
 import MoodSelector from './MoodSelector';
-import LoadingSpinner from './LoadingSpinner'; // Import the spinner
+import LoadingSpinner from './LoadingSpinner';
 import { FaFileUpload, FaMicrophone, FaKeyboard, FaSave } from 'react-icons/fa';
 import '../styles/AddEntry.css';
 
@@ -16,7 +16,7 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
   const [mood, setMood] = useState('');
   const [audioBlob, setAudioBlob] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false); // Loading state for submission
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (entry) {
@@ -69,11 +69,11 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
       return;
     }
 
-    setIsSubmitting(true); // Start loading
+    setIsSubmitting(true);
     const token = localStorage.getItem('access_token');
     const formData = new FormData();
     if (content) formData.append('content', content);
-    formData.append('mood', mood); // Mood is now mandatory
+    formData.append('mood', mood);
 
     if (selectedFile) {
       if (fileType === 'image') {
@@ -128,7 +128,7 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
         setError(`Error: ${err.message}`);
       }
     } finally {
-      setIsSubmitting(false); // Stop loading
+      setIsSubmitting(false);
     }
   };
 

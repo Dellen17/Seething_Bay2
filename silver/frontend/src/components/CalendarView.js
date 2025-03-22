@@ -4,7 +4,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from './LoadingSpinner';
-import { moods } from './MoodSelector'; // Import moods array
+import { moods } from './MoodSelector';
 import '../styles/CalendarView.css';
 
 const CalendarView = () => {

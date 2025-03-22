@@ -24,8 +24,6 @@ urlpatterns = [
     path('update-password/', update_password, name='update_password'),
     path('password-reset/', reset_password, name='reset_password'),
     path('reset-password-confirm/<uidb64>/<token>/', reset_password_confirm, name='reset_password_confirm'),
-    
-    # Google OAuth2 Routes
     path('auth/google/', auth, {'backend': 'google-oauth2'}, name='google_login'),
     path('social-login-redirect/', social_login_redirect, name='social_login_redirect'),
 ]

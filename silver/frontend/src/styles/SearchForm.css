@@ -1,5 +1,5 @@
 .search-form-container {
-    margin: 100px 0 20px 0; /* Adjust the top margin to push it below the navbar */
+    margin: 100px 0 20px 0;
   }
   
   .search-form {
@@ -12,30 +12,30 @@
     display: flex;
     align-items: center;
     flex: 1;
-    background-color: #333; /* Dark background for search bar */
-    border-radius: 25px; /* Rounded corners */
+    background-color: #333;
+    border-radius: 25px;
     padding: 5px 10px;
-    border: 1px solid #444; /* Dark border */
+    border: 1px solid #444;
   }
   
   .search-input {
     flex: 1;
     padding: 10px;
     border: none;
-    background-color: transparent; /* Transparent background */
-    color: #ffffff; /* White text */
+    background-color: transparent;
+    color: #ffffff;
     font-size: 16px;
-    outline: none; /* Remove outline */
+    outline: none;
   }
   
   .search-input::placeholder {
-    color: #888; /* Light gray placeholder */
+    color: #888;
   }
   
   .clear-button {
     background: none;
     border: none;
-    color: #888; /* Light gray for the clear button */
+    color: #888;
     cursor: pointer;
     font-size: 16px;
     padding: 0 10px;
@@ -43,7 +43,7 @@
   }
   
   .clear-button:hover {
-    color: #ffffff; /* White on hover */
+    color: #ffffff;
   }
   
   .search-button {
@@ -51,8 +51,8 @@
     align-items: center;
     margin-left: 10px;
     padding: 10px 20px;
-    border-radius: 25px; /* Rounded corners */
-    background-color: #1da1f2; /* Twitter Blue */
+    border-radius: 25px;
+    background-color: #1da1f2;
     color: white;
     border: none;
     cursor: pointer;
@@ -61,32 +61,32 @@
   }
   
   .search-button:hover {
-    background-color: #1991c6; /* Darker blue on hover */
+    background-color: #1991c6;
   }
   
   .search-icon {
-    margin-right: 8px; /* Add spacing between icon and text */
+    margin-right: 8px;
   }
   
   .filters-container {
     margin-top: 20px;
-    border: 1px solid #444; /* Dark border */
+    border: 1px solid #444;
     padding: 15px;
-    border-radius: 10px; /* Rounded corners */
-    background-color: #1c1c1c; /* Slightly lighter than body background */
+    border-radius: 10px;
+    background-color: #1c1c1c;
   }
   
   .filters-heading {
     margin-bottom: 10px;
     font-size: 18px;
     font-weight: bold;
-    color: #ffffff; /* White text */
+    color: #ffffff;
   }
   
   .filter-option {
     margin-bottom: 10px;
     font-size: 16px;
-    color: #ffffff; /* White text */
+    color: #ffffff;
   }
   
   .filter-option label {
@@ -97,9 +97,9 @@
   
   .filter-option input[type="checkbox"] {
     margin-right: 10px;
-    accent-color: #1da1f2; /* Twitter Blue for checkboxes */
+    accent-color: #1da1f2;
   }
   
   .filter-icon {
-    margin-right: 8px; /* Add spacing between icon and text */
+    margin-right: 8px;
   }

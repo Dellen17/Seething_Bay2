@@ -16,7 +16,7 @@ const Dashboard = () => {
   const [showEditor, setShowEditor] = useState(false);
   const [filters, setFilters] = useState({ keyword: '', mediaType: [], date: '' });
   const [isSearchLoading, setIsSearchLoading] = useState(false);
-  const [isFiltered, setIsFiltered] = useState(false); // Track if filters are applied
+  const [isFiltered, setIsFiltered] = useState(false);
 
   const navigate = useNavigate();
   const { id } = useParams();
@@ -43,7 +43,7 @@ const Dashboard = () => {
       setEntries(entries);
       setTotalPages(totalPages);
       setCurrentPage(currentPage);
-      setIsFiltered(true); // Mark as filtered
+      setIsFiltered(true);
     } catch (error) {
       console.error('Error fetching filtered entries:', error);
       if (error.response?.status === 401) navigate('/login');
@@ -62,7 +62,7 @@ const Dashboard = () => {
       );
       setEntries(response.data.results.entries || []);
       setTotalPages(response.data.results.totalPages);
-      setIsFiltered(false); // Mark as unfiltered
+      setIsFiltered(false);
     } catch (err) {
       console.error('Failed to fetch entries', err);
       if (err.response?.status === 401) navigate('/login');
@@ -100,7 +100,7 @@ const Dashboard = () => {
   // Re-fetch entries after adding a new one
   const handleEntryAdded = () => {
     if (isFiltered) {
-      handleSearch(filters, currentPage); // Reapply filters if filtered
+      handleSearch(filters, currentPage);
     } else {
       fetchEntries();
     }
@@ -129,11 +129,11 @@ const Dashboard = () => {
 
   // Handle pagination page change
   const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber); // Update current page
+    setCurrentPage(pageNumber);
     if (isFiltered) {
-      handleSearch(filters, pageNumber); // Use search endpoint with filters
+      handleSearch(filters, pageNumber);
     } else {
-      fetchEntries(); // Fetch unfiltered entries
+      fetchEntries();
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -149,7 +149,7 @@ const Dashboard = () => {
         filters={filters}
         setFilters={setFilters}
         onSearch={handleSearch}
-        onClear={fetchEntries} // Reset to unfiltered state
+        onClear={fetchEntries}
         isLoading={isSearchLoading}
       />
 

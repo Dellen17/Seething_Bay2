@@ -1,18 +1,18 @@
-/* Set black background for the entire app */
+/* Black background for the entire app */
 body {
-  background-color: rgb(7, 6, 6); /* Dark background like Twitter/X */
-  color: #ffffff; /* White text for contrast */
-  font-family: Arial, Helvetica, sans-serif; /* Standard font */
+  background-color: rgb(7, 6, 6);
+  color: #ffffff;
+  font-family: Arial, Helvetica, sans-serif;
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Full screen height */
+  min-height: 100vh;
 }
 
-/* Styling for links (usually blue like buttons on Twitter/X) */
+/* Styling for links */
 a {
-  color: #1da1f2; /* Twitter Blue */
+  color: #1da1f2;
   text-decoration: none;
 }
 
@@ -22,7 +22,7 @@ a:hover {
 
 /* Style for blue buttons */
 button {
-  background-color: #1da1f2; /* Twitter Blue */
+  background-color: #1da1f2;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -33,12 +33,12 @@ button {
 }
 
 button:hover {
-  background-color: #1991c6; /* Darker blue on hover */
+  background-color: #1991c6;
 }
 
 /* Input fields */
 input, textarea {
-  background-color: #070707; /* Dark input field background */
+  background-color: #070707;
   color: rgb(255, 255, 255);
   border: 1px solid #444;
   padding: 10px;
@@ -54,6 +54,6 @@ input:focus, textarea:focus {
 
 /* Ensure all pages have a black background */
 #root {
-  background-color: rgb(7, 6, 6); /* Dark black background */
-  min-height: 100vh; /* Ensure the background covers the entire viewport */
+  background-color: rgb(7, 6, 6);
+  min-height: 100vh;
 }

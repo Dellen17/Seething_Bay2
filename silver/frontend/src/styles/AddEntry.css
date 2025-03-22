@@ -8,7 +8,7 @@
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.3);
   width: 100%;
   box-sizing: border-box;
-  overflow-x: hidden; /* Prevent horizontal scrolling */
+  overflow-x: hidden;
 }
 
 .form-title {
@@ -29,7 +29,7 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
-  width: 100%; /* Ensure form fits within container */
+  width: 100%;
 }
 
 .form-group {
@@ -55,7 +55,7 @@
   padding: 10px;
   color: #fff;
   font-size: 0.95rem;
-  width: 100%; /* Ensure inputs fit within parent */
+  width: 100%;
   box-sizing: border-box;
 }
 
@@ -70,7 +70,7 @@
 
 .file-preview img,
 .file-preview video {
-  max-width: 100%; /* Ensure preview scales to fit */
+  max-width: 100%;
   height: auto;
   border-radius: 6px;
 }
@@ -94,7 +94,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  width: 100%; /* Full width for consistency */
+  width: 100%;
 }
 
 .form-submit:disabled {
@@ -120,12 +120,11 @@
   }
 }
 
-/* Input Method Selector */
 .input-method-selector {
   display: flex;
   gap: 10px;
   margin-bottom: 15px;
-  flex-wrap: wrap; /* Allow buttons to wrap on small screens */
+  flex-wrap: wrap;
 }
 
 .input-method-button {
@@ -140,8 +139,8 @@
   font-size: 0.95rem;
   cursor: pointer;
   transition: background 0.3s;
-  flex: 1; /* Allow buttons to grow equally */
-  min-width: 0; /* Prevent overflow */
+  flex: 1;
+  min-width: 0;
 }
 
 .input-method-button.active {
@@ -157,17 +156,14 @@
   font-size: 1rem;
 }
 
-/* Form Icons */
 .form-icon {
   margin-right: 8px;
 }
 
-/* Submit Button Icon */
 .submit-icon {
   margin-right: 8px;
 }
 
-/* Mood Selector */
 .mood-selector {
   margin-bottom: 20px;
 }
@@ -175,7 +171,7 @@
 .mood-icons {
   display: flex;
   gap: 15px;
-  flex-wrap: wrap; /* Allow mood icons to wrap on small screens */
+  flex-wrap: wrap;
   justify-content: center;
 }
 
@@ -213,7 +209,7 @@
   .add-entry-container {
     margin: 20px auto;
     padding: 15px;
-    overflow-x: hidden; /* Reinforce no horizontal scrolling */
+    overflow-x: hidden;
   }
 
   .form-title {
@@ -221,11 +217,11 @@
   }
 
   .input-method-selector {
-    flex-direction: column; /* Stack buttons vertically on mobile */
+    flex-direction: column;
   }
 
   .input-method-button {
-    width: 100%; /* Full width on mobile */
+    width: 100%;
   }
 
   .form-textarea,
@@ -245,12 +241,12 @@
   }
 
   .mood-icon {
-    font-size: 24px; /* Smaller icons on mobile */
+    font-size: 24px;
   }
 
   .file-preview img,
   .file-preview video {
-    max-width: 100%; /* Ensure preview fits */
+    max-width: 100%;
   }
 }
 

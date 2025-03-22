@@ -26,18 +26,17 @@ def analyze_sentiment(text):
         response.raise_for_status()
         result = response.json()["choices"][0]["message"]["content"].strip().lower()
         
-        # Ensure the result is one of the valid sentiments
         valid_sentiments = ["positive", "negative", "neutral"]
         if result in valid_sentiments:
             return result
         else:
-            return "neutral"  # Fallback to neutral if the result is invalid
+            return "neutral"
     except requests.exceptions.RequestException as e:
         print(f"Error calling DeepSeek API: {e}")
-        return "neutral"  # Fallback to neutral if the API call fails
+        return "neutral"
     except (KeyError, IndexError) as e:
         print(f"Error parsing DeepSeek API response: {e}")
-        return "neutral"  # Fallback if response format is unexpected 
+        return "neutral"
     
 def analyze_summary(text):
     """
@@ -56,7 +55,7 @@ def analyze_summary(text):
                 "content": f"Summarize these diary entries in 2-3 sentences: {text}"
             }
         ],
-        "max_tokens": 150,  # Adjust for longer summaries
+        "max_tokens": 150,
         "temperature": 0.3,
     }
     try:

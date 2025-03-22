@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 
 # Validators
 def validate_file_size(file):
-    max_size_mb = 10  # Set max size to 10MB
+    max_size_mb = 10
     if file.size > max_size_mb * 1024 * 1024:
         raise ValidationError(f"File size exceeds {max_size_mb}MB limit.")
 
@@ -49,9 +49,9 @@ class Entry(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     mood = models.CharField(max_length=10, choices=MOOD_CHOICES)  # User-selected mood
-    sentiment = models.CharField(max_length=10, choices=SENTIMENT_CHOICES, blank=True, null=True)  # AI-analyzed sentiment
+    sentiment = models.CharField(max_length=10, choices=SENTIMENT_CHOICES, blank=True, null=True)
 
-    # File fields (unchanged)
+    # File fields
     image = models.ImageField(upload_to='entry_images/', blank=True, null=True, validators=[validate_file_size])
     video = models.FileField(upload_to='entry_videos/', blank=True, null=True, validators=[validate_file_size, validate_video_type])
     document = models.FileField(upload_to='entry_documents/', blank=True, null=True, validators=[validate_file_size, validate_document_type])
@@ -63,7 +63,7 @@ class Entry(models.Model):
     def __str__(self):
         return f"{self.content[:50]}..." if self.content else "No Content"
     
-# Add Profile Model
+# Profile Model
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)

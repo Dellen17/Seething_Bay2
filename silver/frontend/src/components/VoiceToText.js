@@ -9,8 +9,8 @@ const VoiceToText = ({ onTranscriptUpdate, onCancel }) => {
   const [cleanedTranscript, setCleanedTranscript] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [editedTranscript, setEditedTranscript] = useState('');
-  const [isLoading, setIsLoading] = useState(false); // Loading state
-  const [error, setError] = useState(''); // Error state
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
   const recognitionRef = useRef(null);
 
   useEffect(() => {
@@ -18,9 +18,9 @@ const VoiceToText = ({ onTranscriptUpdate, onCancel }) => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     recognitionRef.current = new SpeechRecognition();
 
-    recognitionRef.current.continuous = true; // Keep listening until stopped
-    recognitionRef.current.interimResults = false; // Only use final results
-    recognitionRef.current.lang = 'en-US'; // Set language
+    recognitionRef.current.continuous = true;
+    recognitionRef.current.interimResults = false;
+    recognitionRef.current.lang = 'en-US';
 
     // Handle speech recognition results
     recognitionRef.current.onresult = (event) => {
@@ -42,7 +42,7 @@ const VoiceToText = ({ onTranscriptUpdate, onCancel }) => {
     // Cleanup on component unmount
     return () => {
       if (recognitionRef.current) {
-        recognitionRef.current.stop(); // Stop recognition when the component unmounts
+        recognitionRef.current.stop();
       }
     };
   }, []);
@@ -52,8 +52,8 @@ const VoiceToText = ({ onTranscriptUpdate, onCancel }) => {
     if (isListening) {
       recognitionRef.current.stop();
     } else {
-      setTranscript(''); // Reset transcript when starting a new session
-      setCleanedTranscript(''); // Reset cleaned transcript
+      setTranscript('');
+      setCleanedTranscript('');
       recognitionRef.current.start();
     }
     setIsListening((prev) => !prev);
@@ -61,10 +61,10 @@ const VoiceToText = ({ onTranscriptUpdate, onCancel }) => {
 
   // Send raw transcript to backend for AI cleanup
   const handleCleanupTranscript = async () => {
-    if (!transcript.trim()) return; // Don't send empty transcript
+    if (!transcript.trim()) return;
 
     setIsLoading(true);
-    setError(''); // Clear any previous errors
+    setError('');
     try {
       const response = await axios.post(
         'http://127.0.0.1:8000/api/cleanup-transcript/',
@@ -75,10 +75,10 @@ const VoiceToText = ({ onTranscriptUpdate, onCancel }) => {
           },
         }
       );
-      setCleanedTranscript(response.data.cleaned_text); // Set cleaned-up transcript
+      setCleanedTranscript(response.data.cleaned_text);
     } catch (error) {
       console.error('Error cleaning up transcript:', error);
-      setError('Failed to clean up transcript. Please try again.'); // User-friendly error message
+      setError('Failed to clean up transcript. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -87,31 +87,31 @@ const VoiceToText = ({ onTranscriptUpdate, onCancel }) => {
   // Handle editing the transcript
   const handleEdit = () => {
     setIsEditing(true);
-    setEditedTranscript(cleanedTranscript || transcript); // Initialize the edited transcript
+    setEditedTranscript(cleanedTranscript || transcript);
   };
 
   // Save the edited transcript
   const handleSaveEdit = () => {
     setTranscript(editedTranscript);
-    setCleanedTranscript(''); // Reset cleaned transcript after editing
-    setIsEditing(false); // Exit editing mode
+    setCleanedTranscript('');
+    setIsEditing(false);
   };
 
   // Cancel editing
   const handleCancelEdit = () => {
-    setIsEditing(false); // Exit editing mode without saving
+    setIsEditing(false);
   };
 
   // Pass the transcript to the parent component when the user is done
   const handleDone = () => {
-    onTranscriptUpdate((cleanedTranscript || transcript).trim()); // Use cleaned transcript if available
+    onTranscriptUpdate((cleanedTranscript || transcript).trim());
   };
 
   // Cancel the transcription
   const handleCancel = () => {
-    setTranscript(''); // Reset the transcript
-    setCleanedTranscript(''); // Reset cleaned transcript
-    onCancel(); // Notify the parent component
+    setTranscript('');
+    setCleanedTranscript('');
+    onCancel();
   };
 
   return (

@@ -28,7 +28,7 @@
 
 .settings-card {
   background-color: #222;
-  padding: 20px; /* Consistent padding on all sides */
+  padding: 20px;
   border-radius: 8px;
   margin-bottom: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
@@ -48,7 +48,7 @@
   flex-direction: column;
   gap: 15px;
   width: 100%;
-  padding: 0; /* Remove internal padding to allow inputs to align with card edges */
+  padding: 0;
   box-sizing: border-box;
 }
 
@@ -76,9 +76,9 @@
 }
 
 .settings-input {
-  width: calc(100% - 24px); /* Account for padding */
+  width: calc(100% - 24px);
   padding: 12px;
-  margin: 0 12px; /* Add equal margin on both sides */
+  margin: 0 12px;
   border: 1px solid #444;
   border-radius: 8px;
   background-color: #333;
@@ -109,8 +109,8 @@
   font-size: 16px;
   transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-  width: calc(100% - 24px); /* Match input width */
-  margin: 10px 12px; /* Consistent margin with inputs */
+  width: calc(100% - 24px);
+  margin: 10px 12px;
   display: block;
 }
 
@@ -203,10 +203,10 @@
   }
 
   .settings-card {
-    padding: 15px; /* Consistent padding on mobile */
+    padding: 15px;
   }
 
   .settings-form {
-    padding: 0; /* Remove internal padding on mobile */
+    padding: 0;
   }
 }

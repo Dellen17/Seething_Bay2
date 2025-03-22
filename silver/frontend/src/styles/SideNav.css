@@ -3,39 +3,39 @@
   top: 0;
   left: 0;
   bottom: 0;
-  width: 250px; /* Default for desktop */
+  width: 250px;
   background-color: rgb(7, 6, 6);
   backdrop-filter: blur(10px);
   border-right: 1px solid rgba(255, 255, 255, 0.3);
-  transition: width 0.3s ease, transform 0.3s ease; /* Added transform for mobile */
+  transition: width 0.3s ease, transform 0.3s ease;
   z-index: 1000;
 }
 
 .side-nav.collapsed {
-  width: 60px; /* Collapsed for desktop */
+  width: 60px;
 }
 
 .side-nav.collapsed ul {
-  display: none; /* Hide links when collapsed on desktop */
+  display: none;
 }
 
 /* Mobile Styles */
 @media (max-width: 576px) {
   .side-nav {
-    width: 250px; /* Full width when open */
-    transform: translateX(-100%); /* Hidden by default */
+    width: 250px;
+    transform: translateX(-100%);
   }
 
   .side-nav.mobile-open {
-    transform: translateX(0); /* Slide in when open */
+    transform: translateX(0);
   }
 
   .side-nav.collapsed {
-    width: 0; /* Fully hidden when collapsed on mobile */
+    width: 0;
   }
 
   .toggle-sidebar {
-    display: none; /* Hide desktop toggle button on mobile */
+    display: none;
   }
 }
 
@@ -45,21 +45,20 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
-  z-index: 999; /* Below sidebar, above content */
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
 }
 
 .mobile-swipe-area {
   position: fixed;
   top: 0;
   left: 0;
-  width: 30px; /* Swipeable area on left edge */
+  width: 30px;
   height: 100%;
   background: transparent;
   z-index: 998;
 }
 
-/* Existing styles remain unchanged */
 .toggle-sidebar {
   background: none;
   border: none;

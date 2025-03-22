@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import LoadingSpinner from './LoadingSpinner'; // Import LoadingSpinner
+import LoadingSpinner from './LoadingSpinner';
 import '../styles/Settings.css';
 
 const Settings = () => {
@@ -11,7 +11,7 @@ const Settings = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [loading, setLoading] = useState(false); // Loading state
+  const [loading, setLoading] = useState(false);
 
   // Real-time validation for email
   const validateEmail = (email) => {
@@ -48,7 +48,7 @@ const Settings = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setSuccess('Email updated successfully.');
-      setEmail(''); // Clear the field after success
+      setEmail('');
     } catch (err) {
       setError('Failed to update email. Please try again.');
     } finally {
@@ -88,7 +88,7 @@ const Settings = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setSuccess('Password updated successfully.');
-      setPassword(''); // Clear the fields after success
+      setPassword('');
       setConfirmPassword('');
     } catch (err) {
       setError('Failed to update password. Please try again.');

@@ -1,7 +1,7 @@
 .navbar {
   position: fixed;
   top: 0;
-  left: 250px; /* Adjust based on sidebar width */
+  left: 250px;
   right: 0;
   background-color: rgb(7, 6, 6);
   backdrop-filter: blur(10px);
@@ -16,7 +16,7 @@
 }
 
 .navbar.collapsed {
-  left: 60px; /* Adjust based on collapsed sidebar width */
+  left: 60px;
 }
 
 .navbar-logo {
@@ -24,12 +24,11 @@
   font-size: 1.5rem;
   font-weight: bold;
   text-shadow: 0px 0px 10px rgba(0, 242, 255, 0.8);
-  color: #1DA1F2; /* Twitter blue */
+  color: #1DA1F2;
 }
 
-/* Hamburger Menu Icon (Mobile Only) */
 .mobile-hamburger {
-  display: none; /* Hidden by default (desktop) */
+  display: none;
   background: none;
   border: none;
   color: white;
@@ -47,23 +46,23 @@
 /* Mobile Styles */
 @media (max-width: 576px) {
   .navbar {
-    left: 0; /* Fixed position on mobile, not affected by sidebar */
+    left: 0;
   }
 
   .navbar.collapsed {
-    left: 0; /* Ensure it doesn't shift when sidebar is collapsed */
+    left: 0;
   }
 
   .mobile-hamburger {
-    display: block; /* Show hamburger icon on mobile */
+    display: block;
     position: absolute;
-    left: 10px; /* Position in top-left corner */
+    left: 10px;
     top: 50%;
     transform: translateY(-50%);
   }
 
   .navbar-logo {
-    flex: 1; /* Take remaining space */
-    text-align: center; /* Center the logo on mobile */
+    flex: 1;
+    text-align: center;
   }
 }

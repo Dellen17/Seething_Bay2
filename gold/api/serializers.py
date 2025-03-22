@@ -16,33 +16,31 @@ class EntrySerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'author', 'timestamp', 'sentiment']
 
     def validate(self, data):
-        # Ensure mood is provided
         if 'mood' not in data:
             raise serializers.ValidationError("Mood is required.")
         return data
 
     def validate_image(self, value):
-        if value == "":  # Reject empty strings
+        if value == "":
             raise serializers.ValidationError("Image field cannot be empty.")
         return value
 
     def validate_video(self, value):
-        if value == "":  # Reject empty strings
+        if value == "":
             raise serializers.ValidationError("Video field cannot be empty.")
         return value
 
     def validate_document(self, value):
-        if value == "":  # Reject empty strings
+        if value == "":
             raise serializers.ValidationError("Document field cannot be empty.")
         return value
 
     def validate_voice_note(self, value):
-        if value == "":  # Reject empty strings
+        if value == "":
             raise serializers.ValidationError("Voice note field cannot be empty.")
         return value
     
     def create(self, validated_data):
-        # Override create to set the author from the request
         request = self.context.get('request')
         if request:
             validated_data['author'] = request.user

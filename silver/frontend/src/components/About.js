@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/About.css'; // Import the CSS file for styling
+import '../styles/About.css';
 
 const About = () => {
   const navigate = useNavigate();
@@ -9,7 +9,7 @@ const About = () => {
     <div className="about-container">
       <button
         className="back-button"
-        onClick={() => navigate(-1)} // Go back to the previous page
+        onClick={() => navigate(-1)}
         aria-label="Go back"
       >
         ← Back

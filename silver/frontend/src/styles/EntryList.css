@@ -3,8 +3,8 @@
   flex-direction: column;
   gap: 20px;
   padding: 20px;
-  width: 100%; /* Ensure full width */
-  box-sizing: border-box; /* Include padding in width calculation */
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .entry-audio {
@@ -16,12 +16,12 @@
 
 .entry-item {
   background-color: #333;
-  padding: 15px; /* Reduced padding for mobile */
+  padding: 15px;
   border-radius: 10px;
   color: #fff;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   transition: background-color 0.3s ease;
-  width: 100%; /* Full width on mobile */
+  width: 100%;
   box-sizing: border-box;
 }
 
@@ -30,9 +30,9 @@
 }
 
 .entry-content {
-  font-size: 1.1rem; /* Slightly smaller font for mobile */
+  font-size: 1.1rem;
   margin-bottom: 15px;
-  word-wrap: break-word; /* Ensure text wraps */
+  word-wrap: break-word;
 }
 
 .entry-mood {
@@ -73,7 +73,7 @@
   display: flex;
   gap: 10px;
   margin-top: 10px;
-  flex-wrap: wrap; /* Allow buttons to wrap if needed */
+  flex-wrap: wrap;
 }
 
 .entry-button {
@@ -81,12 +81,12 @@
   align-items: center;
   background-color: #ff4d4d;
   color: #fff;
-  padding: 8px 16px; /* Slightly smaller padding for mobile */
+  padding: 8px 16px;
   border-radius: 5px;
   border: none;
   cursor: pointer;
   transition: background-color 0.3s;
-  font-size: 0.9rem; /* Smaller font for mobile */
+  font-size: 0.9rem;
 }
 
 .entry-button:hover {
@@ -108,20 +108,20 @@
 /* Mobile Adjustments */
 @media (max-width: 576px) {
   .entry-list {
-    padding: 10px; /* Reduce padding on mobile */
-    gap: 15px; /* Smaller gap between entries */
+    padding: 10px;
+    gap: 15px;
   }
 
   .entry-item {
-    padding: 10px; /* Further reduce padding */
+    padding: 10px;
   }
 
   .entry-content {
-    font-size: 1rem; /* Even smaller font for better fit */
+    font-size: 1rem;
   }
 
   .entry-button {
-    padding: 6px 12px; /* Smaller buttons for mobile */
+    padding: 6px 12px;
     font-size: 0.85rem;
   }
 }
@@ -129,15 +129,15 @@
 /* Larger Screens */
 @media (min-width: 768px) {
   .entry-item {
-    padding: 20px; /* Restore original padding */
+    padding: 20px;
   }
 
   .entry-content {
-    font-size: 1.2rem; /* Restore original font size */
+    font-size: 1.2rem;
   }
 
   .entry-button {
-    padding: 10px 20px; /* Restore original button size */
+    padding: 10px 20px;
     font-size: 1rem;
   }
 }

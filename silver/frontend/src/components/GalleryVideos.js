@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import LazyLoad from 'react-lazy-load';
 import LoadingSpinner from './LoadingSpinner';
-import { moods } from './MoodSelector'; // Import moods for consistency
+import { moods } from './MoodSelector';
 import '../styles/GalleryVideos.css';
 
 const GalleryVideos = () => {

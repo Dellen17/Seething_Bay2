@@ -1,15 +1,15 @@
-/* Global styles for the Register component */
+/* Styles for the Register component */
 .register-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-color: #121212; /* Dark background similar to Twitter */
+  background-color: #121212;
   color: white;
   font-family: Arial, sans-serif;
   padding: 20px;
-  width: 100%; /* Ensure full width */
+  width: 100%;
   box-sizing: border-box;
 }
 
@@ -17,11 +17,11 @@
   font-size: 2rem;
   margin-bottom: 20px;
   text-align: center;
-  color: #1da1f2; /* Twitter Blue */
+  color: #1da1f2;
 }
 
 .register-error {
-  color: #e0245e; /* Red color for error messages */
+  color: #e0245e;
   margin-bottom: 10px;
   text-align: center;
 }
@@ -42,18 +42,18 @@
   background-color: #1a1a1a;
   color: white;
   font-size: 1rem;
-  width: 100%; /* Ensure consistent width */
-  box-sizing: border-box; /* Include padding and border in width */
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .register-input:focus {
   outline: none;
-  border-color: #1da1f2; /* Highlight input on focus with Twitter blue */
+  border-color: #1da1f2;
 }
 
 .register-button {
   padding: 12px;
-  background-color: #1da1f2; /* Twitter Blue */
+  background-color: #1da1f2;
   color: white;
   border: none;
   border-radius: 5px;
@@ -63,23 +63,21 @@
 }
 
 .register-button:hover {
-  background-color: #1a91da; /* Slightly darker blue on hover */
+  background-color: #1a91da;
 }
 
 .register-button:disabled {
-  background-color: #666; /* Disabled button */
+  background-color: #666;
   cursor: not-allowed;
 }
 
-/* New styles for password visibility toggle */
 .password-input-container {
   position: relative;
   width: 100%;
 }
 
 .password-input {
-  padding-right: 40px; /* Space for icon on the right */
-  /* Inherit other styles from .register-input */
+  padding-right: 40px;
 }
 
 .password-toggle-icon {
@@ -88,48 +86,47 @@
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
-  color: #1da1f2; /* Twitter blue for consistency */
-  font-size: 1.2rem; /* Slightly larger icon */
+  color: #1da1f2;
+  font-size: 1.2rem;
 }
 
 .password-toggle-icon:hover {
-  color: #1a91da; /* Darker blue on hover, matching button hover */
+  color: #1a91da;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
 .register-container {
-  padding: 15px; /* Reduce padding on mobile */
-  min-height: calc(100vh - 30px); /* Adjust for smaller screens */
+  padding: 15px;
+  min-height: calc(100vh - 30px);
 }
 
 .register-heading {
-  font-size: 1.5rem; /* Smaller header */
+  font-size: 1.5rem;
   margin-bottom: 15px;
 }
 
 .register-form {
-  gap: 10px; /* Reduce gap between form elements */
+  gap: 10px;
 }
 
 .register-input {
-  padding: 8px; /* Slightly smaller padding */
+  padding: 8px;
   margin: 5px 0;
-  font-size: 0.9rem; /* Smaller font size */
+  font-size: 0.9rem;
 }
 
 .register-button {
-  padding: 10px; /* Slightly smaller button padding */
-  font-size: 0.9rem; /* Smaller font size */
+  padding: 10px;
+  font-size: 0.9rem;
 }
 
 .password-toggle-icon {
-  font-size: 1rem; /* Smaller icon on mobile */
-  right: 8px; /* Adjust position for smaller padding */
+  font-size: 1rem;
+  right: 8px;
 }
 
 .register-error {
-  font-size: 0.8rem; /* Smaller error message */
+  font-size: 0.8rem;
   margin-bottom: 8px;
 }
 }

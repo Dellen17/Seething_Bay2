@@ -35,7 +35,7 @@ const VoiceNote = ({ onAudioRecorded, resetAudioPreview }) => {
       };
   
       mediaRecorder.onstop = () => {
-        const blob = new Blob(chunks, { type: 'audio/webm' }); // This sets the type to MP3
+        const blob = new Blob(chunks, { type: 'audio/webm' });
         setAudioURL(URL.createObjectURL(blob));
         onAudioRecorded(blob);
       };

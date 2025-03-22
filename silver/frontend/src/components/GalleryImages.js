@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import LoadingSpinner from './LoadingSpinner';
-import { moods } from './MoodSelector'; // Import moods for consistency
+import { moods } from './MoodSelector';
 import '../styles/GalleryImages.css';
 
 const GalleryImages = () => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { FaTrash, FaEdit } from 'react-icons/fa';
-import { moods } from './MoodSelector'; // Import moods array
+import { moods } from './MoodSelector';
 import '../styles/EntryList.css';
 
 const EntryList = ({ entries, handleDelete, handleEdit }) => {
@@ -13,7 +13,7 @@ const EntryList = ({ entries, handleDelete, handleEdit }) => {
       {entries.map((entry) => {
         const moodData = moods.find(m => m.label === entry.mood);
         const MoodIcon = moodData?.icon;
-        const moodColor = moodData?.color || 'gray'; // Default to gray if mood not found
+        const moodColor = moodData?.color || 'gray';
         return (
           <div key={entry.id} className="entry-item">
             <div className="entry-content" dangerouslySetInnerHTML={{ __html: entry.content }} />

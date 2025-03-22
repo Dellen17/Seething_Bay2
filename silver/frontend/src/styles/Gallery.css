@@ -3,11 +3,11 @@
   margin: 80px auto 20px auto;
   padding: 20px;
   color: #ffffff;
-  background-color: rgb(7, 6, 6); /* Match app background consistently */
-  min-height: calc(100vh - 120px); /* Ensure full height minus header/padding */
-  width: 100%; /* Ensure full width */
+  background-color: rgb(7, 6, 6);
+  min-height: calc(100vh - 120px);
+  width: 100%;
   box-sizing: border-box;
-  overflow-x: hidden; /* Prevent horizontal scrolling */
+  overflow-x: hidden;
 }
 
 .back-button {
@@ -17,20 +17,20 @@
   color: white;
   border: none;
   padding: 10px 20px;
-  border-radius: 20px; /* Consistent with other buttons */
+  border-radius: 20px;
   cursor: pointer;
   margin-bottom: 20px;
   font-size: 16px;
   transition: background-color 0.3s ease, transform 0.2s ease;
-  width: 100%; /* Full width on mobile */
-  max-width: 200px; /* Limit width on larger screens */
+  width: 100%;
+  max-width: 200px;
   margin-left: auto;
-  margin-right: auto; /* Center the button */
+  margin-right: auto;
 }
 
 .back-button:hover {
   background-color: #0d95e8;
-  transform: scale(1.05); /* Slight zoom */
+  transform: scale(1.05);
 }
 
 .back-icon {
@@ -40,9 +40,9 @@
 .gallery-options {
   display: flex;
   justify-content: center;
-  gap: 20px; /* Better spacing */
+  gap: 20px;
   margin-top: 20px;
-  flex-wrap: wrap; /* Responsive wrapping */
+  flex-wrap: wrap;
 }
 
 .gallery-option {
@@ -55,31 +55,31 @@
   border-radius: 10px;
   text-decoration: none;
   font-size: 18px;
-  width: 120px; /* Fixed width for consistency */
+  width: 120px;
   transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .gallery-option:hover {
   background-color: #0d95e8;
-  transform: translateY(-2px); /* Slight lift */
+  transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .gallery-option.active {
   background-color: #0d95e8;
-  box-shadow: 0 0 0 3px #1da1f2 inset; /* Subtle border for active state */
+  box-shadow: 0 0 0 3px #1da1f2 inset;
 }
 
 .gallery-icon {
-  font-size: 28px; /* Slightly larger icons */
+  font-size: 28px;
   margin-bottom: 10px;
 }
 
 .gallery-content {
   margin-top: 30px;
-  background-color: rgb(7, 6, 6); /* Ensure content area matches background */
-  width: 100%; /* Ensure full width */
+  background-color: rgb(7, 6, 6);
+  width: 100%;
   box-sizing: border-box;
 }
 
@@ -97,12 +97,12 @@
   margin: 20px auto;
   padding: 20px;
   color: #ffffff;
-  background-color: #222; /* Darker background for content */
+  background-color: #222;
   border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  width: 100%; /* Ensure full width */
+  width: 100%;
   box-sizing: border-box;
-  overflow-x: hidden; /* Prevent horizontal scrolling */
+  overflow-x: hidden;
 }
 
 .images-grid,
@@ -111,7 +111,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 20px;
-  width: 100%; /* Ensure grid fits container */
+  width: 100%;
 }
 
 .image-item,
@@ -127,7 +127,7 @@
 .image-item:hover,
 .video-item:hover,
 .voice-note-item:hover {
-  transform: scale(1.05); /* Slight zoom on hover */
+  transform: scale(1.05);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
@@ -151,7 +151,7 @@
 }
 
 .error-message {
-  color: #ff4d4d; /* Adjusted to match error color elsewhere */
+  color: #ff4d4d;
   margin-top: 10px;
   font-weight: bold;
 }

@@ -5,9 +5,9 @@
   color: #fff;
   flex: 1;
   overflow-y: auto;
-  width: 100%; /* Ensure full width */
+  width: 100%;
   box-sizing: border-box;
-  overflow-x: hidden; /* Prevent horizontal scrolling */
+  overflow-x: hidden;
 }
 
 /* Style for the entry list */
@@ -45,7 +45,7 @@
   padding: 20px;
   border-radius: 5px;
   margin-bottom: 20px;
-  width: 100%; /* Ensure form fits within dashboard */
+  width: 100%;
   box-sizing: border-box;
 }
 
@@ -97,8 +97,8 @@
 /* Responsive adjustments */
 @media (max-width: 576px) {
   .dashboard-content {
-    padding: 10px; /* Reduce padding on mobile */
-    overflow-x: hidden; /* Reinforce no horizontal scrolling */
+    padding: 10px;
+    overflow-x: hidden;
   }
 
   .toggle-editor-button {
@@ -109,7 +109,7 @@
   }
 
   .entry-item {
-    margin-bottom: 5px; /* Reduce margin for tighter stacking */
+    margin-bottom: 5px;
   }
 }
 

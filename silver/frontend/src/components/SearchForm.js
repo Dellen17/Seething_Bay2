@@ -18,7 +18,7 @@ const SearchForm = ({ filters, setFilters, onSearch, onClear, isLoading }) => {
   // Clear all filters and fetch unfiltered entries
   const clearSearch = () => {
     setFilters({ keyword: '', mediaType: [], date: '' });
-    if (onClear) onClear(); // Trigger the unfiltered fetch
+    if (onClear) onClear();
   };
 
   // Handle keyword change

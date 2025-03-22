@@ -2,7 +2,6 @@ from django.contrib import admin
 from django.utils.html import format_html
 from .models import Entry
 
-# Define the custom admin class for Entry
 class EntryAdmin(admin.ModelAdmin):
     list_display = (
         'content_preview', 'author', 'timestamp', 'mood', 
@@ -40,5 +39,4 @@ class EntryAdmin(admin.ModelAdmin):
         return "No Voice Note"
     voice_note_link.short_description = 'Voice Note'
 
-# Register the Entry model with the custom EntryAdmin class
 admin.site.register(Entry, EntryAdmin)
