@@ -6,28 +6,34 @@ import {
 } from 'react-icons/fa';
 import '../styles/SideNav.css';
 
-const SideNav = ({ isSidebarOpen, toggleSidebar }) => {
-  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false); // Mobile-specific state
+const SideNav = ({ isSidebarOpen, toggleSidebar, setToggleMobileSidebar }) => {
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [touchStart, setTouchStart] = useState(null);
   const [touchMove, setTouchMove] = useState(null);
 
-  // Handle screen resize for desktop sidebar
+  const toggleMobileSidebar = () => {
+    setIsMobileSidebarOpen((prev) => !prev);
+  };
+
+  useEffect(() => {
+    setToggleMobileSidebar(() => toggleMobileSidebar);
+  }, [setToggleMobileSidebar]);
+
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 576) {
-        toggleSidebar(); // Use toggleSidebar to collapse if currently open
-        if (isSidebarOpen) toggleSidebar(); // Ensure it collapses on mobile
+        toggleSidebar();
+        if (isSidebarOpen) toggleSidebar();
       } else {
-        setIsMobileSidebarOpen(false); // Close mobile sidebar on desktop
+        setIsMobileSidebarOpen(false);
       }
     };
 
     window.addEventListener('resize', handleResize);
-    handleResize(); // Initial check
+    handleResize();
     return () => window.removeEventListener('resize', handleResize);
-  }, [toggleSidebar, isSidebarOpen]); // Add isSidebarOpen to dependencies
+  }, [toggleSidebar, isSidebarOpen]);
 
-  // Swipe detection for mobile
   const handleTouchStart = (e) => {
     setTouchStart(e.targetTouches[0].clientX);
   };
@@ -40,25 +46,29 @@ const SideNav = ({ isSidebarOpen, toggleSidebar }) => {
     if (touchStart && touchMove) {
       const distance = touchMove - touchStart;
       if (distance > 50 && !isMobileSidebarOpen) {
-        setIsMobileSidebarOpen(true); // Swipe right to open
+        setIsMobileSidebarOpen(true);
       } else if (distance < -50 && isMobileSidebarOpen) {
-        setIsMobileSidebarOpen(false); // Swipe left to close
+        setIsMobileSidebarOpen(false);
       }
     }
     setTouchStart(null);
     setTouchMove(null);
   };
 
-  // Close mobile sidebar when clicking outside
   const handleOverlayClick = () => {
     if (isMobileSidebarOpen) {
       setIsMobileSidebarOpen(false);
     }
   };
 
+  const handleLinkClick = () => {
+    if (window.innerWidth < 576) {
+      setIsMobileSidebarOpen(false);
+    }
+  };
+
   return (
     <>
-      {/* Mobile Overlay */}
       {isMobileSidebarOpen && (
         <div
           className="mobile-overlay"
@@ -69,7 +79,6 @@ const SideNav = ({ isSidebarOpen, toggleSidebar }) => {
         />
       )}
 
-      {/* Sidebar */}
       <aside
         className={`side-nav ${isSidebarOpen ? '' : 'collapsed'} ${
           isMobileSidebarOpen ? 'mobile-open' : ''
@@ -78,45 +87,43 @@ const SideNav = ({ isSidebarOpen, toggleSidebar }) => {
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {/* Toggle Button (Desktop Only) */}
         <button className="toggle-sidebar" onClick={toggleSidebar}>
           {isSidebarOpen ? '✖' : '☰'}
         </button>
 
-        {/* Navigation Links */}
         <ul>
           <li>
-            <Link to="/profile" className="nav-link">
+            <Link to="/profile" className="nav-link" onClick={handleLinkClick}>
               <FaUser className="nav-icon" />
               <span className="nav-text">Profile</span>
             </Link>
           </li>
           <li>
-            <Link to="/calendar" className="nav-link">
+            <Link to="/calendar" className="nav-link" onClick={handleLinkClick}>
               <FaCalendarAlt className="nav-icon" />
               <span className="nav-text">Calendar</span>
             </Link>
           </li>
           <li>
-            <Link to="/gallery" className="nav-link">
+            <Link to="/gallery" className="nav-link" onClick={handleLinkClick}>
               <FaImages className="nav-icon" />
               <span className="nav-text">Gallery</span>
             </Link>
           </li>
           <li>
-            <Link to="/mood-tracker" className="nav-link">
+            <Link to="/mood-tracker" className="nav-link" onClick={handleLinkClick}>
               <FaChartLine className="nav-icon" />
               <span className="nav-text">Mood Tracker</span>
             </Link>
           </li>
           <li>
-            <Link to="/settings" className="nav-link">
+            <Link to="/settings" className="nav-link" onClick={handleLinkClick}>
               <FaCog className="nav-icon" />
               <span className="nav-text">Settings</span>
             </Link>
           </li>
           <li>
-            <Link to="/about" className="nav-link">
+            <Link to="/about" className="nav-link" onClick={handleLinkClick}>
               <FaInfoCircle className="nav-icon" />
               <span className="nav-text">About</span>
             </Link>
@@ -127,7 +134,6 @@ const SideNav = ({ isSidebarOpen, toggleSidebar }) => {
         </ul>
       </aside>
 
-      {/* Mobile Trigger (Swipe Area) */}
       {!isMobileSidebarOpen && window.innerWidth < 576 && (
         <div
           className="mobile-swipe-area"

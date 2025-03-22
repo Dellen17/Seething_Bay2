@@ -11,7 +11,7 @@
   justify-content: space-between;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   z-index: 999;
-  transition: left 0.3s ease; /* Add transition for smooth movement */
+  transition: left 0.3s ease;
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
@@ -25,4 +25,45 @@
   font-weight: bold;
   text-shadow: 0px 0px 10px rgba(0, 242, 255, 0.8);
   color: #1DA1F2; /* Twitter blue */
+}
+
+/* Hamburger Menu Icon (Mobile Only) */
+.mobile-hamburger {
+  display: none; /* Hidden by default (desktop) */
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.mobile-hamburger:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Mobile Styles */
+@media (max-width: 576px) {
+  .navbar {
+    left: 0; /* Fixed position on mobile, not affected by sidebar */
+  }
+
+  .navbar.collapsed {
+    left: 0; /* Ensure it doesn't shift when sidebar is collapsed */
+  }
+
+  .mobile-hamburger {
+    display: block; /* Show hamburger icon on mobile */
+    position: absolute;
+    left: 10px; /* Position in top-left corner */
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .navbar-logo {
+    flex: 1; /* Take remaining space */
+    text-align: center; /* Center the logo on mobile */
+  }
 }

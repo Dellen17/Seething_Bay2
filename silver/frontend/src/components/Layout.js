@@ -5,6 +5,7 @@ import '../styles/Layout.css';
 
 const Layout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [toggleMobileSidebar, setToggleMobileSidebar] = useState(() => () => {});
 
   const toggleSidebar = useCallback(() => {
     setIsSidebarOpen((prev) => !prev);
@@ -12,9 +13,16 @@ const Layout = ({ children }) => {
 
   return (
     <div className="layout-container">
-      <SideNav isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      <SideNav
+        isSidebarOpen={isSidebarOpen}
+        toggleSidebar={toggleSidebar}
+        setToggleMobileSidebar={setToggleMobileSidebar}
+      />
       <div className={`main-content ${isSidebarOpen ? '' : 'collapsed'}`}>
-        <Navbar isSidebarOpen={isSidebarOpen} />
+        <Navbar
+          isSidebarOpen={isSidebarOpen}
+          toggleMobileSidebar={toggleMobileSidebar}
+        />
         <div className="dashboard-content">
           {children}
         </div>
