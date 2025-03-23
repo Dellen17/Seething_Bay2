@@ -224,7 +224,13 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
         <MoodSelector mood={mood} setMood={setMood} />
 
         <button className="form-submit" type="submit" disabled={!isFormValid || isSubmitting}>
-          {isSubmitting ? <LoadingSpinner /> : (entry ? 'Update Entry' : 'Add Entry')}
+          {isSubmitting ? (
+            <LoadingSpinner />
+          ) : (
+            <>
+              <FaSave className="form-icon" /> {entry ? 'Update Entry' : 'Add Entry'}
+            </>
+          )}
         </button>
       </form>
     </div>

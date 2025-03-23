@@ -273,9 +273,7 @@ def get_entry(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_entry(request):
-    print("Starting create_entry function")
     serializer = EntrySerializer(data=request.data, context={'request': request})
-    print("Serializer initialized")
 
     if serializer.is_valid():
         voice_note = request.FILES.get('voice_note')
@@ -306,7 +304,6 @@ def create_entry(request):
                     with open(output_path, 'rb') as f:
                         converted_file = ContentFile(f.read(), name=voice_note.name.replace('.webm', '.mp3'))
                         serializer.validated_data['voice_note'] = converted_file
-                    print("Converted file read and assigned")
                     # Clean up the converted file
                     os.remove(output_path)
                 except subprocess.CalledProcessError as e:
