@@ -44,7 +44,6 @@ const Register = () => {
       console.log(response.data);
       navigate('/login');
     } catch (error) {
-      console.error(error.response?.data);
       if (error.response?.data?.email) {
         setError('This email is already registered');
       } else {

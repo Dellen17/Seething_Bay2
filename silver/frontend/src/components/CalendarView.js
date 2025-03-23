@@ -29,7 +29,6 @@ const CalendarView = () => {
       );
       setEntries(response.data);
     } catch (error) {
-      console.error('Error fetching entries:', error);
       setError('Failed to load entries. Please try again.');
       if (error.response?.status === 401) navigate('/login');
     } finally {
@@ -41,7 +40,6 @@ const CalendarView = () => {
     fetchEntriesForMonth(date);
   }, [date, fetchEntriesForMonth]);
 
-  // Update selectedDayEntries whenever entries or date changes
   useEffect(() => {
     const dayEntries = entries.filter(entry => {
       const entryDate = new Date(entry.timestamp);

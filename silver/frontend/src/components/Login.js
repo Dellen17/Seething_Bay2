@@ -25,7 +25,6 @@ const Login = () => {
         localStorage.setItem('access_token', response.data.access);
         return response.data.access;
       } catch (error) {
-        console.log('Token refresh failed:', error);
         setError('Session expired. Please log in again.');
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');

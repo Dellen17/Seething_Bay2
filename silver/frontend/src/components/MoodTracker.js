@@ -38,7 +38,6 @@ const MoodTracker = () => {
       setMoodDistribution(response.data.mood_distribution);
       setSentimentDistribution(response.data.sentiment_distribution);
     } catch (error) {
-      console.error('Error fetching mood data:', error);
       setError('Failed to load mood data. Please try again.');
       if (error.response?.status === 401) navigate('/login');
     } finally {
@@ -69,7 +68,6 @@ const MoodTracker = () => {
       setSummary(response.data.summary);
       setIsSummaryOpen(true);
     } catch (error) {
-      console.error('Error fetching summary:', error);
       setError('Failed to load summary. Please try again.');
     } finally {
       setIsSummaryLoading(false);

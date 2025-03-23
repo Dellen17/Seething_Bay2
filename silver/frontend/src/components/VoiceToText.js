@@ -35,8 +35,8 @@ const VoiceToText = ({ onTranscriptUpdate, onCancel }) => {
 
     // Handle errors
     recognitionRef.current.onerror = (event) => {
-      console.error('Speech recognition error:', event.error);
       setIsListening(false);
+      setError('An error occurred with speech recognition. Please try again.');
     };
 
     // Cleanup on component unmount
@@ -77,8 +77,7 @@ const VoiceToText = ({ onTranscriptUpdate, onCancel }) => {
       );
       setCleanedTranscript(response.data.cleaned_text);
     } catch (error) {
-      console.error('Error cleaning up transcript:', error);
-      setError('Failed to clean up transcript. Please try again.');
+      setError('Failed to clean up transcript. Please try again later.');
     } finally {
       setIsLoading(false);
     }

@@ -36,7 +36,6 @@ const GalleryVoiceNotes = () => {
       });
       setVoiceNotes(entriesWithVoiceNotes);
     } catch (err) {
-      console.error('Error fetching voice notes:', err);
       setError(`Failed to fetch voice notes. Please try again. Details: ${err.message}`);
     } finally {
       setLoading(false);

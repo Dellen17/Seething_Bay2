@@ -30,7 +30,6 @@ const GalleryVideos = () => {
       const entriesWithVideos = allEntries.filter((entry) => entry.video);
       setVideos(entriesWithVideos);
     } catch (err) {
-      console.error('Error fetching videos:', err);
       setError('Failed to fetch videos. Please try again.');
     } finally {
       setLoading(false);

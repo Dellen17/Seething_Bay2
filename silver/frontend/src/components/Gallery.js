@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { FaImage, FaVideo, FaMicrophone, FaArrowLeft } from 'react-icons/fa';
 import '../styles/Gallery.css';

@@ -33,7 +33,6 @@ const Profile = () => {
                 );
             })
             .catch((error) => {
-                console.error('Error fetching profile:', error.response ? error.response.data : error.message);
                 setError('Failed to load profile.');
             });
     }, []);
@@ -62,7 +61,6 @@ const Profile = () => {
                 setSuccessMessage('Profile picture updated successfully!');
                 setTimeout(() => setSuccessMessage(''), 3000); // Clear after 3 seconds
             } catch (error) {
-                console.error('Error uploading profile picture:', error);
                 setError('Failed to upload profile picture.');
             } finally {
                 setIsUploading(false);

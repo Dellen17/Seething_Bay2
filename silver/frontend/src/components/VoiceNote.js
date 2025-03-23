@@ -4,6 +4,7 @@ const VoiceNote = ({ onAudioRecorded, resetAudioPreview }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [audioURL, setAudioURL] = useState(null);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const initializeMediaRecorder = async () => {
@@ -12,13 +13,12 @@ const VoiceNote = ({ onAudioRecorded, resetAudioPreview }) => {
         const recorder = new MediaRecorder(stream);
         setMediaRecorder(recorder);
       } catch (err) {
-        console.error('Error accessing microphone:', err);
+        setError('Microphone access is required to record voice notes.');
       }
     };
 
     initializeMediaRecorder();
 
-    // Reset the audioURL when the resetAudioPreview function is called
     if (resetAudioPreview) {
       setAudioURL(null);
     }
@@ -28,12 +28,12 @@ const VoiceNote = ({ onAudioRecorded, resetAudioPreview }) => {
     if (mediaRecorder) {
       setIsRecording(true);
       mediaRecorder.start();
-  
+
       const chunks = [];
       mediaRecorder.ondataavailable = (event) => {
         chunks.push(event.data);
       };
-  
+
       mediaRecorder.onstop = () => {
         const blob = new Blob(chunks, { type: 'audio/webm' });
         setAudioURL(URL.createObjectURL(blob));
@@ -52,6 +52,7 @@ const VoiceNote = ({ onAudioRecorded, resetAudioPreview }) => {
   return (
     <div>
       <h3>Record a Voice Note</h3>
+      {error && <p className="error-message">{error}</p>}
       <button onClick={isRecording ? stopRecording : startRecording}>
         {isRecording ? 'Stop Recording' : 'Start Recording'}
       </button>

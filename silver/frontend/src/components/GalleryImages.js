@@ -29,7 +29,6 @@ const GalleryImages = () => {
       const entriesWithImages = allEntries.filter((entry) => entry.image);
       setImages(entriesWithImages);
     } catch (err) {
-      console.error('Error fetching images:', err);
       setError('Failed to fetch images. Please try again.');
     } finally {
       setLoading(false);
