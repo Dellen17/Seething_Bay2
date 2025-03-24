@@ -36,7 +36,7 @@ const Register = () => {
     setError('');
 
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/register/', {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/register/`, {
         username: username,
         email: email,
         password: password,

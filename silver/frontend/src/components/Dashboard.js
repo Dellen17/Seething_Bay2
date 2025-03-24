@@ -34,7 +34,7 @@ const Dashboard = () => {
         params['mediaType[]'] = filters.mediaType;
       }
 
-      const response = await axios.get('http://127.0.0.1:8000/api/search/', {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/search/`, {
         params,
         headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
       });
@@ -57,7 +57,7 @@ const Dashboard = () => {
     const token = localStorage.getItem('access_token');
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/entries/?page=${currentPage}`,
+        `${process.env.REACT_APP_API_URL}/api/entries/?page=${currentPage}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setEntries(response.data.results.entries || []);
@@ -88,7 +88,7 @@ const Dashboard = () => {
   const handleDelete = async (entryId) => {
     const token = localStorage.getItem('access_token');
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/entries/${entryId}/delete/`, {
+      await axios.delete(`${process.env.REACT_APP_API_URL}/api/entries/${entryId}/delete/`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setEntries(entries.filter((entry) => entry.id !== entryId));

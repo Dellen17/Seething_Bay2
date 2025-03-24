@@ -16,7 +16,7 @@ const GalleryImages = () => {
     setError('');
     const token = localStorage.getItem('access_token');
     let allEntries = [];
-    let nextPage = 'http://127.0.0.1:8000/api/entries/';
+    let nextPage = `${process.env.REACT_APP_API_URL}/api/entries/`;
 
     try {
       while (nextPage) {
@@ -78,7 +78,7 @@ const GalleryImages = () => {
                 onClick={() => handleImageClick(entry.id)}
               >
                 <img
-                  src={`http://127.0.0.1:8000${entry.image}`}
+                  src={`${process.env.REACT_APP_API_URL}${entry.image}`}
                   alt={`Entry ${entry.id}`}
                   className="gallery-image"
                   loading="lazy"

@@ -21,14 +21,14 @@ const Profile = () => {
         }
 
         axios
-            .get('http://127.0.0.1:8000/api/user-profile/', {
+            .get(`${process.env.REACT_APP_API_URL}/api/user-profile/`, {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((response) => {
                 setUser(response.data);
                 setProfilePicture(
                     response.data.profile_picture
-                        ? `http://127.0.0.1:8000${response.data.profile_picture}`
+                        ? `${process.env.REACT_APP_API_URL}${response.data.profile_picture}`
                         : null
                 );
             })
@@ -47,7 +47,7 @@ const Profile = () => {
 
             try {
                 const response = await axios.post(
-                    'http://127.0.0.1:8000/api/upload-profile-picture/',
+                    `${process.env.REACT_APP_API_URL}/api/upload-profile-picture/`,
                     formData,
                     {
                         headers: {

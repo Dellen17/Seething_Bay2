@@ -16,7 +16,7 @@ const GalleryVoiceNotes = () => {
     setError('');
     const token = localStorage.getItem('access_token');
     let allEntries = [];
-    let nextPage = 'http://127.0.0.1:8000/api/entries/';
+    let nextPage = `${process.env.REACT_APP_API_URL}/api/entries/`;
 
     try {
       while (nextPage) {
@@ -86,7 +86,7 @@ const GalleryVoiceNotes = () => {
               >
                 {entry.voice_note && (
                   <audio
-                    src={`http://127.0.0.1:8000${entry.voice_note}`}
+                    src={`${process.env.REACT_APP_API_URL}${entry.voice_note}`}
                     controls
                     className="gallery-voice-note"
                   >

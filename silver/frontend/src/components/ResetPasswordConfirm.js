@@ -15,7 +15,6 @@ const ResetPasswordConfirm = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // Function to validate password
   const validatePassword = (password) => {
     return password.length >= 8;
   };
@@ -23,13 +22,11 @@ const ResetPasswordConfirm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate password length
     if (!validatePassword(newPassword)) {
       setMessage('Password must be at least 8 characters long.');
       return;
     }
 
-    // Check if passwords match
     if (newPassword !== confirmPassword) {
       setMessage('Passwords do not match.');
       return;
@@ -39,34 +36,31 @@ const ResetPasswordConfirm = () => {
     setMessage('');
 
     try {
-      // Send the new password to Django backend using uidb64 and token
-      const response = await axios.post(`http://127.0.0.1:8000/api/reset-password-confirm/${uidb64}/${token}/`, {
-        new_password: newPassword,
-        confirm_password: confirmPassword,
-      });
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/reset-password-confirm/${uidb64}/${token}/`, 
+        {
+          new_password: newPassword,
+          confirm_password: confirmPassword,
+        }
+      );
       setMessage(response.data.message || 'Password reset successful.');
-
       setNewPassword('');
       setConfirmPassword('');
     } catch (error) {
-      // Display the exact error message from the backend
       setMessage(error.response?.data?.error || 'An error occurred. Please try again.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Toggle visibility for new password
   const toggleNewPasswordVisibility = () => {
     setShowNewPassword(!showNewPassword);
   };
 
-  // Toggle visibility for confirm password
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
-  // Auto-redirect on success
   useEffect(() => {
     if (message.includes('successful')) {
       const timer = setTimeout(() => navigate('/login'), 2000);

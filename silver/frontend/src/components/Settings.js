@@ -43,7 +43,7 @@ const Settings = () => {
     const token = localStorage.getItem('access_token');
     try {
       await axios.put(
-        'http://127.0.0.1:8000/api/update-email/',
+        `${process.env.REACT_APP_API_URL}/api/update-email/`,
         { email },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -83,7 +83,7 @@ const Settings = () => {
     const token = localStorage.getItem('access_token');
     try {
       await axios.put(
-        'http://127.0.0.1:8000/api/update-password/',
+        `${process.env.REACT_APP_API_URL}/api/update-password/`,
         { password },
         { headers: { Authorization: `Bearer ${token}` } }
       );

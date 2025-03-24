@@ -17,7 +17,7 @@ const GalleryVideos = () => {
     setError('');
     const token = localStorage.getItem('access_token');
     let allEntries = [];
-    let nextPage = 'http://127.0.0.1:8000/api/entries/';
+    let nextPage = `${process.env.REACT_APP_API_URL}/api/entries/`;
 
     try {
       while (nextPage) {
@@ -80,7 +80,7 @@ const GalleryVideos = () => {
               >
                 <LazyLoad height={200} offset={100}>
                   <video
-                    src={`http://127.0.0.1:8000${entry.video}`}
+                    src={`${process.env.REACT_APP_API_URL}${entry.video}`}
                     controls
                     className="gallery-video"
                   />

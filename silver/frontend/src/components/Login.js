@@ -19,7 +19,7 @@ const Login = () => {
     const refresh_token = localStorage.getItem('refresh_token');
     if (refresh_token) {
       try {
-        const response = await axios.post('http://127.0.0.1:8000/api/token/refresh/', {
+        const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/token/refresh/`, {
           refresh: refresh_token,
         });
         localStorage.setItem('access_token', response.data.access);
@@ -45,7 +45,7 @@ const Login = () => {
     setIsLoading(true);
     setError('');
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/login/', {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/login/`, {
         username: username,
         password: password,
       });
@@ -57,7 +57,7 @@ const Login = () => {
         const newAccessToken = await refreshAccessToken();
         if (newAccessToken) {
           try {
-            const response = await axios.post('http://127.0.0.1:8000/api/login/', {
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/login/`, {
               username: username,
               password: password,
             });
@@ -81,7 +81,7 @@ const Login = () => {
     setIsLoading(true);
     setError('');
     try {
-      window.location.href = 'http://127.0.0.1:8000/api/auth/google/';
+      window.location.href = `${process.env.REACT_APP_API_URL}/api/auth/google/`;
     } catch (error) {
       setError('Google login failed. Please try again.');
       setIsLoading(false);

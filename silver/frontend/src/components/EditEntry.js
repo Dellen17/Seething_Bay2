@@ -53,7 +53,7 @@ const EditEntry = ({ entry, onUpdateEntry, onCancel }) => {
     if (selectedVoiceNote) formData.append('voice_note', selectedVoiceNote, 'voice_note.webm');
 
     try {
-      const response = await axios.put(`http://127.0.0.1:8000/api/entries/${entry.id}/update/`, formData, {
+      const response = await axios.put(`${process.env.REACT_APP_API_URL}/api/entries/${entry.id}/update/`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',

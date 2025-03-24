@@ -24,7 +24,7 @@ const CalendarView = () => {
 
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/entries/month/${year}/${month}/`,
+        `${process.env.REACT_APP_API_URL}/api/entries/month/${year}/${month}/`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setEntries(response.data);
@@ -142,7 +142,7 @@ const CalendarView = () => {
                       {entry.image && (
                         <div className="media-thumbnail">
                           <img
-                            src={`http://127.0.0.1:8000${entry.image}`}
+                            src={`${process.env.REACT_APP_API_URL}${entry.image}`}
                             alt="Entry"
                             className="entry-image"
                           />
@@ -151,7 +151,7 @@ const CalendarView = () => {
                       {entry.video && (
                         <div className="media-thumbnail">
                           <video
-                            src={`http://127.0.0.1:8000${entry.video}`}
+                            src={`${process.env.REACT_APP_API_URL}${entry.video}`}
                             controls
                             className="entry-video"
                           />
@@ -160,7 +160,7 @@ const CalendarView = () => {
                       {entry.document && (
                         <div className="media-thumbnail">
                           <a
-                            href={`http://127.0.0.1:8000${entry.document}`}
+                            href={`${process.env.REACT_APP_API_URL}${entry.document}`}
                             download
                             className="entry-document"
                             onClick={(e) => e.stopPropagation()}
@@ -172,7 +172,7 @@ const CalendarView = () => {
                       {entry.voice_note && (
                         <div className="media-thumbnail">
                           <audio
-                            src={`http://127.0.0.1:8000${entry.voice_note}`}
+                            src={`${process.env.REACT_APP_API_URL}${entry.voice_note}`}
                             controls
                             className="entry-audio"
                             onClick={(e) => e.stopPropagation()}

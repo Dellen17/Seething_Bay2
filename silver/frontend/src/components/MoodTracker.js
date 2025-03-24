@@ -28,7 +28,7 @@ const MoodTracker = () => {
     setError('');
     try {
       const token = localStorage.getItem('access_token');
-      const response = await axios.get('http://127.0.0.1:8000/api/mood-tracker/', {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/mood-tracker/`, {
         params: { start_date: getStartDate(timeRange) },
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -61,7 +61,7 @@ const MoodTracker = () => {
     setError('');
     try {
       const token = localStorage.getItem('access_token');
-      const response = await axios.get('http://127.0.0.1:8000/api/generate-summary/', {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/generate-summary/`, {
         params: { start_date: getStartDate(timeRange) },
         headers: { Authorization: `Bearer ${token}` },
       });

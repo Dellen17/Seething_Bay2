@@ -27,14 +27,14 @@ const EntryList = ({ entries, handleDelete, handleEdit }) => {
 
             {entry.image && (
               <img
-                src={`http://127.0.0.1:8000${entry.image}`}
+                src={`${process.env.REACT_APP_API_URL}${entry.image}`}
                 alt="Uploaded Visual"
                 className="entry-image"
               />
             )}
             {entry.video && (
               <video
-                src={`http://127.0.0.1:8000${entry.video}`}
+                src={`${process.env.REACT_APP_API_URL}${entry.video}`}
                 controls
                 className="entry-video"
               >
@@ -42,13 +42,13 @@ const EntryList = ({ entries, handleDelete, handleEdit }) => {
               </video>
             )}
             {entry.document && (
-              <a href={`http://127.0.0.1:8000${entry.document}`} download className="entry-document">
+              <a href={`${process.env.REACT_APP_API_URL}${entry.document}`} download className="entry-document">
                 Download Document
               </a>
             )}
             {entry.voice_note && (
               <audio
-                src={`http://127.0.0.1:8000${entry.voice_note}`}
+                src={`${process.env.REACT_APP_API_URL}${entry.voice_note}`}
                 controls
                 className="entry-audio"
               >
