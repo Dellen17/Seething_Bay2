@@ -92,7 +92,7 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
     try {
       let response;
       if (entry) {
-        response = await axios.put(`http://127.0.0.1:8000/api/entries/${entry.id}/update/`, formData, {
+        response = await axios.put(`${process.env.REACT_APP_API_URL}/api/entries/${entry.id}/update/`, formData, {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'multipart/form-data',
@@ -100,7 +100,7 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
         });
         onUpdateEntry(response.data);
       } else {
-        response = await axios.post('http://127.0.0.1:8000/api/entries/create/', formData, {
+        response = await axios.post(`${process.env.REACT_APP_API_URL}/api/entries/create/`, formData, {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'multipart/form-data',

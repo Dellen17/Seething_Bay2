@@ -278,45 +278,7 @@ def create_entry(request):
     if serializer.is_valid():
         voice_note = request.FILES.get('voice_note')
         if voice_note:
-            temp_path = os.path.join(settings.MEDIA_ROOT, 'temp', voice_note.name)
-            os.makedirs(os.path.dirname(temp_path), exist_ok=True)
-            with open(temp_path, 'wb+') as f:
-                for chunk in voice_note.chunks():
-                    f.write(chunk)
-
-            # Check if conversion is needed (only for .webm files)
-            if voice_note.name.lower().endswith('.webm'):
-                output_path = temp_path.replace('.webm', '.mp3')
-                if os.path.exists(output_path):
-                    os.remove(output_path)
-                try:
-                    process = subprocess.run([
-                        'C:\\Program Files\\ffmpeg-7.1-full_build\\bin\\ffmpeg.exe',
-                        '-y',
-                        '-i', temp_path,
-                        '-acodec', 'mp3',
-                        '-vn',
-                        '-loglevel', 'error',
-                        output_path
-                    ], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                    time.sleep(1)
-                    # Read the converted file
-                    with open(output_path, 'rb') as f:
-                        converted_file = ContentFile(f.read(), name=voice_note.name.replace('.webm', '.mp3'))
-                        serializer.validated_data['voice_note'] = converted_file
-                    # Clean up the converted file
-                    os.remove(output_path)
-                except subprocess.CalledProcessError as e:
-                    return Response({'detail': 'Error converting voice note to MP3.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-                except Exception as e:
-                    return Response({'detail': 'Unexpected error during conversion.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-            else:
-                with open(temp_path, 'rb') as f:
-                    serializer.validated_data['voice_note'] = ContentFile(f.read(), name=voice_note.name)
-
-            # Clean up the temp file
-            if os.path.exists(temp_path):
-                os.remove(temp_path)
+            serializer.validated_data['voice_note'] = voice_note
 
         # Save the entry
         serializer.save(author=request.user)
@@ -342,45 +304,9 @@ def update_entry(request, pk):
         # Save the updated entry with the new sentiment
         updated_entry = serializer.save(sentiment=sentiment)
 
-        # Handle voice note conversion if a new voice note is uploaded
+        # Handle voice note if a new one is uploaded
         if 'voice_note' in request.FILES:
-            # Save the original file temporarily
-            temp_path = os.path.join(settings.MEDIA_ROOT, 'temp', request.FILES['voice_note'].name)
-            os.makedirs(os.path.dirname(temp_path), exist_ok=True)
-            with open(temp_path, 'wb+') as f:
-                for chunk in request.FILES['voice_note'].chunks():
-                    f.write(chunk)
-
-            if request.FILES['voice_note'].name.lower().endswith('.webm'):
-                output_path = temp_path.replace('.webm', '.mp3')
-                if os.path.exists(output_path):
-                    os.remove(output_path)
-                try:
-                    process = subprocess.run([
-                        'C:\\Program Files\\ffmpeg-7.1-full_build\\bin\\ffmpeg.exe',
-                        '-y',
-                        '-i', temp_path,
-                        '-acodec', 'mp3',
-                        '-vn',
-                        '-loglevel', 'error',
-                        output_path
-                    ], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            
-                    # Small delay to ensure FFmpeg releases the file
-                    time.sleep(1)
-
-                    with open(output_path, 'rb') as f:
-                        converted_file = ContentFile(f.read(), name=request.FILES['voice_note'].name.replace('.webm', '.mp3'))
-                        updated_entry.voice_note = converted_file
-                    os.remove(temp_path)
-                    os.remove(output_path)
-                except subprocess.CalledProcessError as e:
-                    return Response({'detail': 'Error converting voice note to MP3.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-                except Exception as e:
-                    return Response({'detail': 'Unexpected error during conversion.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-            else:
-                updated_entry.voice_note = request.FILES['voice_note']
-
+            updated_entry.voice_note = request.FILES['voice_note']
             updated_entry.save()
 
         return Response(serializer.data)
