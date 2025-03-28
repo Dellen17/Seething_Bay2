@@ -3,8 +3,15 @@ from social_django.views import auth  # type: ignore
 from .views import register_user, login_user, logout_user, create_entry, get_entries, get_entry, update_entry, delete_entry
 from .views import search_entries, reset_password, reset_password_confirm, user_profile, upload_profile_picture, get_entries_by_month
 from .views import update_email, update_password, mood_tracker, generate_summary, cleanup_transcript, social_login_redirect
+from rest_framework.decorators import api_view # type: ignore
+from rest_framework.response import Response # type: ignore
+
+@api_view(['GET'])
+def api_root(request):
+    return Response({"message": "Welcome to the Seething Bay API"})
 
 urlpatterns = [
+    path('', api_root, name='api_root'),
     path('register/', register_user, name='register_user'),
     path('login/', login_user, name='login_user'),
     path('logout/', logout_user, name='logout_user'),
