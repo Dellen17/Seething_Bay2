@@ -42,7 +42,7 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "https://seething-bay.vercel.app",  # Add your Vercel URL later
+    "https://frontend-6h6zc44mb-gabriels-projects-aac21a83.vercel.app",
 ]
 
 CORS_ALLOW_HEADERS = [
