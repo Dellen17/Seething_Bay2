@@ -1,0 +1,8 @@
+build:
+  docker:
+    web: gold/Dockerfile
+config:
+  APP_SUBDIR: gold
+setup:
+  buildpacks:
+    - heroku/python
