@@ -558,5 +558,5 @@ def cleanup_transcript(request):
 def social_login_redirect(request):
     user = request.user
     refresh = RefreshToken.for_user(user)
-    redirect_url = f"http://127.0.0.1:3000/login?access={str(refresh.access_token)}&refresh={str(refresh)}"
+    redirect_url = f"https://frontend-6h6zc44mb-gabriels-projects-aac21a83.vercel.app/login?access={str(refresh.access_token)}&refresh={str(refresh)}"
     return redirect(redirect_url)
