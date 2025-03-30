@@ -86,7 +86,7 @@ const GalleryVoiceNotes = () => {
               >
                 {entry.voice_note && (
                   <audio
-                    src={`${process.env.REACT_APP_API_URL}${entry.voice_note}`}
+                    src={entry.voice_note}
                     controls
                     className="gallery-voice-note"
                   >

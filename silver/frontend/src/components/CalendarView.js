@@ -142,7 +142,7 @@ const CalendarView = () => {
                       {entry.image && (
                         <div className="media-thumbnail">
                           <img
-                            src={`${process.env.REACT_APP_API_URL}${entry.image}`}
+                            src={entry.image}  // Removed process.env.REACT_APP_API_URL
                             alt="Entry"
                             className="entry-image"
                           />
@@ -151,7 +151,7 @@ const CalendarView = () => {
                       {entry.video && (
                         <div className="media-thumbnail">
                           <video
-                            src={`${process.env.REACT_APP_API_URL}${entry.video}`}
+                            src={entry.video}  // Removed process.env.REACT_APP_API_URL
                             controls
                             className="entry-video"
                           />
@@ -160,7 +160,7 @@ const CalendarView = () => {
                       {entry.document && (
                         <div className="media-thumbnail">
                           <a
-                            href={`${process.env.REACT_APP_API_URL}${entry.document}`}
+                            href={entry.document}  // Removed process.env.REACT_APP_API_URL
                             download
                             className="entry-document"
                             onClick={(e) => e.stopPropagation()}
@@ -172,7 +172,7 @@ const CalendarView = () => {
                       {entry.voice_note && (
                         <div className="media-thumbnail">
                           <audio
-                            src={`${process.env.REACT_APP_API_URL}${entry.voice_note}`}
+                            src={entry.voice_note}  // Removed process.env.REACT_APP_API_URL
                             controls
                             className="entry-audio"
                             onClick={(e) => e.stopPropagation()}

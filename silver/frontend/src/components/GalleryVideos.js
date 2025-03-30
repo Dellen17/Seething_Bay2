@@ -80,7 +80,7 @@ const GalleryVideos = () => {
               >
                 <LazyLoad height={200} offset={100}>
                   <video
-                    src={`${process.env.REACT_APP_API_URL}${entry.video}`}
+                    src={entry.video}
                     controls
                     className="gallery-video"
                   />

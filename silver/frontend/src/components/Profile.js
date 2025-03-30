@@ -28,7 +28,7 @@ const Profile = () => {
                 setUser(response.data);
                 setProfilePicture(
                     response.data.profile_picture
-                        ? `${process.env.REACT_APP_API_URL}${response.data.profile_picture}`
+                        ? response.data.profile_picture  // Removed process.env.REACT_APP_API_URL
                         : null
                 );
             })

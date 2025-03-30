@@ -78,7 +78,7 @@ const GalleryImages = () => {
                 onClick={() => handleImageClick(entry.id)}
               >
                 <img
-                  src={`${process.env.REACT_APP_API_URL}${entry.image}`}
+                  src={entry.image}  // Removed process.env.REACT_APP_API_URL
                   alt={`Entry ${entry.id}`}
                   className="gallery-image"
                   loading="lazy"
