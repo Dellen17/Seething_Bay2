@@ -34,25 +34,25 @@ const EntryList = ({ entries, handleDelete, handleEdit }) => {
             )}
             {entry.video && (
               <video
-                src={entry.video}  // Removed process.env.REACT_APP_API_URL
+                src={entry.video}
                 controls
                 className="entry-video"
               >
-                Your browser does not support video
+                { /* Your browser does not support video */ }
               </video>
             )}
             {entry.document && (
-              <a href={entry.document} download className="entry-document">  // Removed process.env.REACT_APP_API_URL
+              <a href={entry.document} download className="entry-document">
                 Download Document
               </a>
             )}
             {entry.voice_note && (
               <audio
-                src={entry.voice_note}  // Removed process.env.REACT_APP_API_URL
+                src={entry.voice_note}
                 controls
                 className="entry-audio"
               >
-                Your browser does not support audio
+                {/* Your browser does not support audio */}
               </audio>
             )}
             <p className="entry-timestamp">

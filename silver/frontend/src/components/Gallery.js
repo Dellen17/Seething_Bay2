@@ -6,8 +6,8 @@ import '../styles/Gallery.css';
 const Gallery = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [loading] = useState(false);
+  const [error] = useState('');
 
   // Determine the active gallery option based on the current path
   const getActiveClass = (path) => {
