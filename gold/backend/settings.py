@@ -40,7 +40,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "https://frontend-6h6zc44mb-gabriels-projects-aac21a83.vercel.app",
+    "https://seething-bay97.vercel.app",
 ]
 
 CORS_ALLOW_HEADERS = [
@@ -161,7 +161,7 @@ SOCIAL_AUTH_PIPELINE = (
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/api/social-login-redirect/'
 SOCIAL_AUTH_USERNAME_IS_FULL_EMAIL = False
 
-FRONTEND_URL = "https://frontend-6h6zc44mb-gabriels-projects-aac21a83.vercel.app"
+FRONTEND_URL = "https://seething-bay97.vercel.app"
 
 PASSWORD_RESET_TIMEOUT = 3600
 
