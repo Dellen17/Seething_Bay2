@@ -33,10 +33,6 @@ from .models import Entry
 from .serializers import EntrySerializer
 from rest_framework.pagination import PageNumberPagination # type: ignore
 from urllib.parse import urlencode
-import logging
-
-# Configure logger
-logger = logging.getLogger(__name__)
 
 User = get_user_model()
 
@@ -277,84 +273,45 @@ def get_entry(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_entry(request):
-    logger.info("Received POST request to create an entry")
-
-    # Log the request data and files
-    logger.info(f"Request data: {request.data}")
-    image = request.FILES.get('image')
-    voice_note = request.FILES.get('voice_note')
-    if image:
-        logger.info(f"Image file detected: {image.name}, size: {image.size} bytes")
-    else:
-        logger.info("No image file provided in the request")
-    if voice_note:
-        logger.info(f"Voice note file detected: {voice_note.name}, size: {voice_note.size} bytes")
-    else:
-        logger.info("No voice note file provided in the request")
-
     serializer = EntrySerializer(data=request.data, context={'request': request})
 
     if serializer.is_valid():
-        try:
-            logger.info("Serializer is valid, validated data: %s", serializer.validated_data)
-            # Handle voice note explicitly
-            if voice_note:
-                serializer.validated_data['voice_note'] = voice_note
-                logger.info("Voice note added to validated data")
+        voice_note = request.FILES.get('voice_note')
+        if voice_note:
+            serializer.validated_data['voice_note'] = voice_note
 
-            # Save the entry (this should trigger the S3 upload for image and voice_note)
-            logger.info("Attempting to save the entry")
-            entry = serializer.save(author=request.user)
-            logger.info(f"Entry saved successfully: {entry.id}, image URL: {entry.image.url if entry.image else 'None'}")
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        except Exception as e:
-            logger.error(f"Error saving entry: {str(e)}", exc_info=True)
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    else:
-        logger.warning(f"Serializer validation failed: {serializer.errors}")
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # Save the entry
+        serializer.save(author=request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def update_entry(request, pk):
-    logger.info(f"Received PUT request to update entry {pk}")
-    
     try:
         entry = Entry.objects.get(pk=pk, author=request.user)
-        logger.info(f"Entry {pk} found for user {request.user.username}")
     except Entry.DoesNotExist:
-        logger.warning(f"Entry {pk} not found for user {request.user.username}")
         return Response({"error": "Entry not found"}, status=status.HTTP_404_NOT_FOUND)
 
     serializer = EntrySerializer(entry, data=request.data, partial=True)
 
     if serializer.is_valid():
-        try:
-            logger.info("Serializer is valid, validated data: %s", serializer.validated_data)
-            # Analyze the sentiment of the updated content
-            content = request.data.get('content', entry.content)
-            sentiment = analyze_sentiment(content)
-            logger.info(f"Sentiment analyzed: {sentiment}")
+        # Analyze the sentiment of the updated content
+        content = request.data.get('content', entry.content)
+        sentiment = analyze_sentiment(content)
 
-            # Save the updated entry with the new sentiment
-            updated_entry = serializer.save(sentiment=sentiment)
-            logger.info(f"Entry {pk} updated successfully")
+        # Save the updated entry with the new sentiment
+        updated_entry = serializer.save(sentiment=sentiment)
 
-            # Handle voice note if a new one is uploaded
-            if 'voice_note' in request.FILES:
-                voice_note = request.FILES['voice_note']
-                logger.info(f"New voice note detected: {voice_note.name}, size: {voice_note.size} bytes")
-                updated_entry.voice_note = voice_note
-                updated_entry.save()
-                logger.info(f"Voice note updated for entry {pk}, URL: {updated_entry.voice_note.url if updated_entry.voice_note else 'None'}")
+        # Handle voice note if a new one is uploaded
+        if 'voice_note' in request.FILES:
+            updated_entry.voice_note = request.FILES['voice_note']
+            updated_entry.save()
 
-            return Response(serializer.data)
-        except Exception as e:
-            logger.error(f"Error updating entry {pk}: {str(e)}", exc_info=True)
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    else:
-        logger.warning(f"Serializer validation failed: {serializer.errors}")
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.data)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
@@ -366,41 +323,63 @@ def delete_entry(request, pk):
     except Entry.DoesNotExist:
         return Response({"error": "Entry not found"}, status=status.HTTP_404_NOT_FOUND)
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def user_profile(request):
+    """
+    Fetch user profile with counts of entries, images, videos, documents, and voice notes.
+    """
+    user = request.user
+    try:
+        # Get or create the user's profile
+        profile, created = Profile.objects.get_or_create(user=user)
+
+        # Count total entries
+        total_entries = Entry.objects.filter(author=user).count()
+
+        # Count entries with images, videos, documents, and voice notes
+        entry_counts = Entry.objects.filter(author=user).aggregate(
+            images=Count('image', filter=Q(image__isnull=False) & ~Q(image="")),
+            videos=Count('video', filter=Q(video__isnull=False) & ~Q(video="")),
+            documents=Count('document', filter=Q(document__isnull=False) & ~Q(document="")),
+            voice_notes=Count('voice_note', filter=Q(voice_note__isnull=False) & ~Q(voice_note="")),
+        )
+
+        profile_data = {
+            'username': user.username,
+            'email': user.email,
+            'date_joined': user.date_joined,
+            'profile_picture': profile.profile_picture.url if profile.profile_picture else None,
+            'total_entries': total_entries,
+            **entry_counts,
+        }
+
+        return Response(profile_data)
+    except Exception as e:
+        return Response({'error': str(e)}, status=400)
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def upload_profile_picture(request):
     """
     Upload or update the user's profile picture.
     """
-    logger.info("Received POST request to upload profile picture")
-    
     user = request.user
     profile, created = Profile.objects.get_or_create(user=user)
-    logger.info(f"Profile for user {user.username} retrieved, created: {created}")
 
     if 'profile_picture' in request.FILES:
-        profile_picture = request.FILES['profile_picture']
-        logger.info(f"Profile picture detected: {profile_picture.name}, size: {profile_picture.size} bytes")
-        
-        try:
-            if profile.profile_picture:
-                logger.info(f"Deleting existing profile picture: {profile.profile_picture.path}")
-                default_storage.delete(profile.profile_picture.path)
+        if profile.profile_picture:
+            default_storage.delete(profile.profile_picture.path)
 
-            profile.profile_picture = profile_picture
-            profile.save()
-            logger.info(f"Profile picture saved, URL: {profile.profile_picture.url}")
+        profile.profile_picture = request.FILES['profile_picture']
+        profile.save()
 
-            profile_picture_url = request.build_absolute_uri(profile.profile_picture.url)
-            return Response({
-                'message': 'Profile picture updated successfully.',
-                'profile_picture': profile_picture_url,
-            })
-        except Exception as e:
-            logger.error(f"Error uploading profile picture: {str(e)}", exc_info=True)
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        profile_picture_url = request.build_absolute_uri(profile.profile_picture.url)
+        return Response({
+            'message': 'Profile picture updated successfully.',
+            'profile_picture': profile_picture_url,
+        })
     else:
-        logger.warning("No profile picture file provided in the request")
         return Response({'error': 'No file provided.'}, status=400)
 
 @api_view(['GET'])
