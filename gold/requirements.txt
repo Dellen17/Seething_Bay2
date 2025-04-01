@@ -10,7 +10,6 @@ social-auth-app-django>=5.4
 gunicorn>=23.0
 dj-database-url>=2.3
 pillow>=10.4
-django-storages==1.14.5
 boto3==1.37.23
 botocore==1.37.23
 jmespath==1.0.1

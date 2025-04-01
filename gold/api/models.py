@@ -51,11 +51,11 @@ class Entry(models.Model):
     mood = models.CharField(max_length=10, choices=MOOD_CHOICES)  # User-selected mood
     sentiment = models.CharField(max_length=10, choices=SENTIMENT_CHOICES, blank=True, null=True)
 
-    # File fields
-    image = models.ImageField(upload_to='entry_images/', blank=True, null=True, validators=[validate_file_size])
-    video = models.FileField(upload_to='entry_videos/', blank=True, null=True, validators=[validate_file_size, validate_video_type])
-    document = models.FileField(upload_to='entry_documents/', blank=True, null=True, validators=[validate_file_size, validate_document_type])
-    voice_note = models.FileField(upload_to='voice_notes/', blank=True, null=True, validators=[validate_file_size, validate_audio_type])
+    # File fields (now URLFields to store S3 URLs)
+    image = models.URLField(max_length=500, blank=True, null=True)
+    video = models.URLField(max_length=500, blank=True, null=True)
+    document = models.URLField(max_length=500, blank=True, null=True)
+    voice_note = models.URLField(max_length=500, blank=True, null=True)
 
     class Meta:
         verbose_name_plural = 'entries'
