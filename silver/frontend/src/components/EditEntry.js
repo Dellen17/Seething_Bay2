@@ -47,6 +47,7 @@ const EditEntry = ({ entry, onUpdateEntry, onCancel }) => {
     formData.append('content', content);
     formData.append('mood', mood);
 
+    // Only append new files, not existing URLs
     if (selectedImage) formData.append('image', selectedImage);
     if (selectedVideo) formData.append('video', selectedVideo);
     if (selectedDocument) formData.append('document', selectedDocument);
@@ -63,8 +64,10 @@ const EditEntry = ({ entry, onUpdateEntry, onCancel }) => {
       navigate('/');
       window.scrollTo(0, 0);
     } catch (err) {
+      console.error('Error response:', err.response); // Log the full error response
       if (err.response) {
-        setError(`Error: ${err.response.status} - ${err.response.data.detail || 'Failed to update entry. Please try again.'}`);
+        // Display the full error object to see all validation errors
+        setError(`Error: ${err.response.status} - ${JSON.stringify(err.response.data)}`);
       } else if (err.request) {
         setError('No response received from the server. Please check your network connection.');
       } else {

@@ -120,8 +120,10 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
       // Close the form after successful submission
       setShowEditor(false);
     } catch (err) {
+      console.error('Error response:', err.response); // Log the full error response
       if (err.response) {
-        setError(`Error: ${err.response.status} - ${err.response.data.detail || 'Failed to create or update entry. Please try again.'}`);
+        // Display the full error object to see all validation errors
+        setError(`Error: ${err.response.status} - ${JSON.stringify(err.response.data)}`);
       } else if (err.request) {
         setError('No response received from the server. Please check your network connection.');
       } else {
