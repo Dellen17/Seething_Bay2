@@ -174,8 +174,7 @@ AWS_S3_FILE_OVERWRITE = False  # Prevent overwriting files with the same name
 AWS_DEFAULT_ACL = None  # Use bucket policy for access control
 AWS_S3_SIGNATURE_VERSION = 's3v4'
 
-# Use S3 for media files
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+DEFAULT_FILE_STORAGE = 'api.storage.StrictS3Boto3Storage'
 
 # Keep MEDIA_URL for compatibility
 MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/media/'
