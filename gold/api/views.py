@@ -335,12 +335,11 @@ def update_entry(request, pk):
     try:
         entry = Entry.objects.get(pk=pk, author=request.user)
     except Entry.DoesNotExist:
-        return Response({"error": "Entry not found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"error": "Entry not found or you do not have permission to edit this entry."}, status=status.HTTP_404_NOT_FOUND)
 
-    serializer = EntrySerializer(entry, data=request.data, partial=True)
+    serializer = EntrySerializer(entry, data=request.data, context={'request': request}, partial=True)
 
     if serializer.is_valid():
-        # Handle file uploads
         validated_data = serializer.validated_data
 
         # Define allowed file types
@@ -381,13 +380,12 @@ def update_entry(request, pk):
             voice_note_url = upload_to_s3(voice_note, 'voice_notes', voice_note.name)
             validated_data['voice_note'] = voice_note_url
 
-        # Analyze the sentiment of the updated content
-        content = validated_data.get('content', entry.content)
-        validated_data['sentiment'] = analyze_sentiment(content)
+        # Analyze sentiment if content is updated
+        if 'content' in validated_data:
+            validated_data['sentiment'] = analyze_sentiment(validated_data['content'])
 
-        # Save the updated entry
         serializer.save(**validated_data)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
