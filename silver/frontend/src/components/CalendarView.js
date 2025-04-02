@@ -139,10 +139,10 @@ const CalendarView = () => {
                     </div>
                     {entry.content && <p>{entry.content}</p>}
                     <div className="entry-media-grid">
-                      {entry.image && (
+                      {entry.image_url && (
                         <div className="media-thumbnail">
                           <img
-                            src={entry.image}  // Removed process.env.REACT_APP_API_URL
+                            src={entry.image_url}  // Removed process.env.REACT_APP_API_URL
                             alt="Entry"
                             className="entry-image"
                           />

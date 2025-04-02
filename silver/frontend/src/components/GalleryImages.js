@@ -26,7 +26,7 @@ const GalleryImages = () => {
         allEntries = [...allEntries, ...response.data.results.entries];
         nextPage = response.data.next;
       }
-      const entriesWithImages = allEntries.filter((entry) => entry.image);
+      const entriesWithImages = allEntries.filter((entry) => entry.image_url);
       setImages(entriesWithImages);
     } catch (err) {
       setError('Failed to fetch images. Please try again.');
@@ -78,7 +78,7 @@ const GalleryImages = () => {
                 onClick={() => handleImageClick(entry.id)}
               >
                 <img
-                  src={entry.image}  // Removed process.env.REACT_APP_API_URL
+                  src={entry.image_url}  // Removed process.env.REACT_APP_API_URL
                   alt={`Entry ${entry.id}`}
                   className="gallery-image"
                   loading="lazy"

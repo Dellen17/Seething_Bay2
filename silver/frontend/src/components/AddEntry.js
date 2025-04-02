@@ -62,78 +62,35 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (isSubmitting) return;
-
-    // Ensure mood is selected
+  
     if (!mood) {
       setError('Please select a mood before submitting.');
       return;
     }
-
+  
     setIsSubmitting(true);
-    setError(''); // Clear previous errors
-    setSuccess(''); // Clear previous success message
-
     const token = localStorage.getItem('access_token');
     const formData = new FormData();
-    if (content) formData.append('content', content);
+    formData.append('content', content);
     formData.append('mood', mood);
-
-    if (selectedFile) {
-      if (fileType === 'image') {
-        formData.append('image', selectedFile);
-      } else if (fileType === 'video') {
-        formData.append('video', selectedFile);
-      } else {
-        formData.append('document', selectedFile);
-      }
-    }
-
-    if (audioBlob) {
-      formData.append('voice_note', audioBlob, 'voice_note.webm');
-    }
-
+    if (selectedFile) formData.append('image', selectedFile);
+  
     try {
-      let response;
-      if (entry) {
-        response = await axios.put(`${process.env.REACT_APP_API_URL}/api/entries/${entry.id}/update/`, formData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-        onUpdateEntry(response.data);
-        setSuccess('Entry updated successfully!');
-      } else {
-        response = await axios.post(`${process.env.REACT_APP_API_URL}/api/entries/create/`, formData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-        onEntryAdded(response.data);
-        setSuccess('Entry created successfully!');
-      }
-
-      // Reset form fields
-      setContent('');
-      setSelectedFile(null);
-      setFileType('');
-      setMood('');
-      setAudioBlob(null);
-
-      // Close the form after successful submission
-      setShowEditor(false);
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/entries/create/`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      onAddEntry({ ...response.data, image: response.data.image_url }); // Use image_url instead of image
+      navigate('/');
+      window.scrollTo(0, 0);
     } catch (err) {
-      console.error('Error response:', err.response); // Log the full error response
-      if (err.response && err.response.data) {
-        // Check if the server returned a specific error message
-        if (err.response.data.error) {
-          setError(`Failed to ${entry ? 'update' : 'create'} entry: ${err.response.data.error}`);
-        } else {
-          setError(`Failed to ${entry ? 'update' : 'create'} entry: ${err.response.status} - ${JSON.stringify(err.response.data)}`);
-        }
+      console.error('Error response:', err.response);
+      if (err.response) {
+        setError(`Error: ${err.response.status} - ${JSON.stringify(err.response.data)}`);
       } else if (err.request) {
         setError('No response received from the server. Please check your network connection.');
       } else {

@@ -25,9 +25,9 @@ const EntryList = ({ entries, handleDelete, handleEdit }) => {
               </div>
             )}
 
-            {entry.image && (
+            {entry.image_url && (
               <img
-                src={entry.image}  // Removed process.env.REACT_APP_API_URL
+                src={entry.image_url}  // Removed process.env.REACT_APP_API_URL
                 alt="Uploaded Visual"
                 className="entry-image"
               />
