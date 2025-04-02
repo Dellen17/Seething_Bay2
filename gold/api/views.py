@@ -279,6 +279,9 @@ def get_entry(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_entry(request):
+    # Log the contents of request.FILES for debugging
+    logger.info(f"request.FILES contents: {list(request.FILES.keys())}")
+
     # Remove the image, video, document, and voice_note fields from the serializer data
     # since we'll handle them manually after validation
     data = request.data.copy()
