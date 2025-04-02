@@ -2,6 +2,9 @@ import requests # type: ignore
 import boto3 # type: ignore
 from django.conf import settings
 from django.core.exceptions import ValidationError
+import logging
+
+logger = logging.getLogger(__name__)
 
 def analyze_sentiment(text):
     """
@@ -109,11 +112,13 @@ def upload_to_s3(file_obj, folder, file_name):
             file_obj,
             bucket_name,
             s3_key,
-            ExtraArgs={'ContentType': file_obj.content_type}  # Set the correct content type
+            ExtraArgs={'ACL': 'public-read','ContentType': file_obj.content_type}
         )
 
         # Construct the public URL
         public_url = f"https://{bucket_name}.s3.{settings.AWS_S3_REGION_NAME}.amazonaws.com/{s3_key}"
+        logger.info(f"Successfully uploaded {file_name} to S3 at {public_url}")
         return public_url
     except Exception as e:
+        logger.error(f"Failed to upload {file_name} to S3: {str(e)}")
         raise ValidationError(f"Failed to upload file to S3: {str(e)}") 
