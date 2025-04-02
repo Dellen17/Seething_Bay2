@@ -272,6 +272,11 @@ def get_entry(request, pk):
     except Entry.DoesNotExist:
         return Response({"error": "Entry not found"}, status=status.HTTP_404_NOT_FOUND)
 
+import logging
+
+# Set up logging
+logger = logging.getLogger(__name__)
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_entry(request):
@@ -302,10 +307,14 @@ def create_entry(request):
         # Handle image upload
         if 'image' in request.FILES:
             image = request.FILES['image']
+            logger.info(f"Received image: {image.name}, content_type: {image.content_type}")
             if image.content_type not in allowed_image_types:
+                logger.error(f"Invalid image type: {image.content_type}")
                 return Response({"error": "Only image files (.jpeg, .png, .gif, .bmp) are allowed."}, status=status.HTTP_400_BAD_REQUEST)
             image_url = upload_to_s3(image, 'entry_images', image.name)
+            logger.info(f"Uploaded image to S3, URL: {image_url}")
             entry.image = image_url
+            logger.info(f"Set entry.image to: {entry.image}")
 
         # Handle video upload
         if 'video' in request.FILES:
@@ -336,12 +345,15 @@ def create_entry(request):
             entry.sentiment = analyze_sentiment(serializer.validated_data['content'])
 
         # Save the entry to the database
+        logger.info("Saving entry to database...")
         entry.save()
+        logger.info(f"Entry saved with ID: {entry.id}, image: {entry.image}")
 
         # Serialize the saved entry for the response
         response_serializer = EntrySerializer(entry, context={'request': request})
         return Response(response_serializer.data, status=status.HTTP_201_CREATED)
 
+    logger.error(f"Serializer validation failed: {serializer.errors}")
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['PUT'])
