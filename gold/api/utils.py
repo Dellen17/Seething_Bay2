@@ -107,12 +107,12 @@ def upload_to_s3(file_obj, folder, file_name):
     s3_key = f"media/{folder}/{file_name}"
 
     try:
-        # Upload the file to S3
+        # Upload the file to S3 without setting an ACL
         s3_client.upload_fileobj(
             file_obj,
             bucket_name,
             s3_key,
-            ExtraArgs={'ACL': 'public-read','ContentType': file_obj.content_type}
+            ExtraArgs={'ContentType': file_obj.content_type}
         )
 
         # Construct the public URL
@@ -121,4 +121,4 @@ def upload_to_s3(file_obj, folder, file_name):
         return public_url
     except Exception as e:
         logger.error(f"Failed to upload {file_name} to S3: {str(e)}")
-        raise ValidationError(f"Failed to upload file to S3: {str(e)}") 
+        raise  # Re-raise the exception so the view can handle it

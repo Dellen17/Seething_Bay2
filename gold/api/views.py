@@ -311,38 +311,58 @@ def create_entry(request):
             if image.content_type not in allowed_image_types:
                 logger.error(f"Invalid image type: {image.content_type}")
                 return Response({"error": "Only image files (.jpeg, .png, .gif, .bmp) are allowed."}, status=status.HTTP_400_BAD_REQUEST)
-            image_url = upload_to_s3(image, 'entry_images', image.name)
-            logger.info(f"Uploaded image to S3, URL: {image_url}")
-            entry.image = image_url
-            logger.info(f"Set entry.image to: {entry.image}")
+            try:
+                image_url = upload_to_s3(image, 'entry_images', image.name)
+                logger.info(f"Uploaded image to S3, URL: {image_url}")
+                entry.image = image_url
+                logger.info(f"Set entry.image to: {entry.image}")
+            except Exception as e:
+                logger.error(f"Failed to upload image: {str(e)}")
+                return Response({"error": f"Failed to upload image: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         # Handle video upload
         if 'video' in request.FILES:
             video = request.FILES['video']
             if video.content_type not in allowed_video_types:
                 return Response({"error": "Only video files (.mp4, .avi, .mpeg, .mov) are allowed."}, status=status.HTTP_400_BAD_REQUEST)
-            video_url = upload_to_s3(video, 'entry_videos', video.name)
-            entry.video = video_url
+            try:
+                video_url = upload_to_s3(video, 'entry_videos', video.name)
+                entry.video = video_url
+            except Exception as e:
+                logger.error(f"Failed to upload video: {str(e)}")
+                return Response({"error": f"Failed to upload video: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         # Handle document upload
         if 'document' in request.FILES:
             document = request.FILES['document']
             if document.content_type not in allowed_document_types:
                 return Response({"error": "Only documents (.pdf, .doc, .docx, .txt) are allowed."}, status=status.HTTP_400_BAD_REQUEST)
-            document_url = upload_to_s3(document, 'entry_documents', document.name)
-            entry.document = document_url
+            try:
+                document_url = upload_to_s3(document, 'entry_documents', document.name)
+                entry.document = document_url
+            except Exception as e:
+                logger.error(f"Failed to upload document: {str(e)}")
+                return Response({"error": f"Failed to upload document: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         # Handle voice note upload
         if 'voice_note' in request.FILES:
             voice_note = request.FILES['voice_note']
             if voice_note.content_type not in allowed_audio_types:
                 return Response({"error": "Only audio files (.webm, .mp3, .wav) are allowed."}, status=status.HTTP_400_BAD_REQUEST)
-            voice_note_url = upload_to_s3(voice_note, 'voice_notes', voice_note.name)
-            entry.voice_note = voice_note_url
+            try:
+                voice_note_url = upload_to_s3(voice_note, 'voice_notes', voice_note.name)
+                entry.voice_note = voice_note_url
+            except Exception as e:
+                logger.error(f"Failed to upload voice note: {str(e)}")
+                return Response({"error": f"Failed to upload voice note: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         # Analyze sentiment if content is provided
         if 'content' in serializer.validated_data:
-            entry.sentiment = analyze_sentiment(serializer.validated_data['content'])
+            try:
+                entry.sentiment = analyze_sentiment(serializer.validated_data['content'])
+            except Exception as e:
+                logger.error(f"Failed to analyze sentiment: {str(e)}")
+                # Sentiment analysis failure is non-critical, so we can continue
 
         # Save the entry to the database
         logger.info("Saving entry to database...")
