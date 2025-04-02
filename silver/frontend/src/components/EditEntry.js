@@ -8,7 +8,7 @@ import '../styles/EditEntry.css';
 const EditEntry = ({ entry, onUpdateEntry, onCancel }) => {
   const [content, setContent] = useState(entry?.content || '');
   const [selectedImage, setSelectedImage] = useState(null);
-  const [existingImage, setExistingImage] = useState(entry?.image || '');
+  const [existingImage, setExistingImage] = useState(entry?.image_url || ''); // Updated to use image_url
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [existingVideo, setExistingVideo] = useState(entry?.video || '');
   const [selectedDocument, setSelectedDocument] = useState(null);
@@ -35,7 +35,6 @@ const EditEntry = ({ entry, onUpdateEntry, onCancel }) => {
 
     if (isSubmitting) return;
 
-    // Ensure mood is selected
     if (!mood) {
       setError('Please select a mood before submitting.');
       return;
@@ -47,7 +46,6 @@ const EditEntry = ({ entry, onUpdateEntry, onCancel }) => {
     formData.append('content', content);
     formData.append('mood', mood);
 
-    // Only append new files, not existing URLs
     if (selectedImage) formData.append('image', selectedImage);
     if (selectedVideo) formData.append('video', selectedVideo);
     if (selectedDocument) formData.append('document', selectedDocument);
@@ -60,13 +58,12 @@ const EditEntry = ({ entry, onUpdateEntry, onCancel }) => {
           'Content-Type': 'multipart/form-data',
         },
       });
-      onUpdateEntry(response.data);
+      onUpdateEntry({ ...response.data, image: response.data.image_url }); // Updated to use image_url
       navigate('/');
       window.scrollTo(0, 0);
     } catch (err) {
-      console.error('Error response:', err.response); // Log the full error response
+      console.error('Error response:', err.response);
       if (err.response) {
-        // Display the full error object to see all validation errors
         setError(`Error: ${err.response.status} - ${JSON.stringify(err.response.data)}`);
       } else if (err.request) {
         setError('No response received from the server. Please check your network connection.');

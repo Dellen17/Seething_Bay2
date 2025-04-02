@@ -71,26 +71,64 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
     }
   
     setIsSubmitting(true);
+    setError('');
+    setSuccess('');
+  
     const token = localStorage.getItem('access_token');
     const formData = new FormData();
-    formData.append('content', content);
+    if (content) formData.append('content', content);
     formData.append('mood', mood);
-    if (selectedFile) formData.append('image', selectedFile);
+  
+    if (selectedFile) {
+      if (fileType === 'image') {
+        formData.append('image', selectedFile);
+      } else if (fileType === 'video') {
+        formData.append('video', selectedFile);
+      } else {
+        formData.append('document', selectedFile);
+      }
+    }
+  
+    if (audioBlob) {
+      formData.append('voice_note', audioBlob, 'voice_note.webm');
+    }
   
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/entries/create/`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      onAddEntry({ ...response.data, image: response.data.image_url }); // Use image_url instead of image
-      navigate('/');
-      window.scrollTo(0, 0);
+      let response;
+      if (entry) {
+        response = await axios.put(`${process.env.REACT_APP_API_URL}/api/entries/${entry.id}/update/`, formData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        onUpdateEntry({ ...response.data, image: response.data.image_url }); // Use image_url
+        setSuccess('Entry updated successfully!');
+      } else {
+        response = await axios.post(`${process.env.REACT_APP_API_URL}/api/entries/create/`, formData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        onEntryAdded({ ...response.data, image: response.data.image_url }); // Use image_url
+        setSuccess('Entry created successfully!');
+      }
+  
+      setContent('');
+      setSelectedFile(null);
+      setFileType('');
+      setMood('');
+      setAudioBlob(null);
+      setShowEditor(false);
     } catch (err) {
       console.error('Error response:', err.response);
-      if (err.response) {
-        setError(`Error: ${err.response.status} - ${JSON.stringify(err.response.data)}`);
+      if (err.response && err.response.data) {
+        if (err.response.data.error) {
+          setError(`Failed to ${entry ? 'update' : 'create'} entry: ${err.response.data.error}`);
+        } else {
+          setError(`Failed to ${entry ? 'update' : 'create'} entry: ${err.response.status} - ${JSON.stringify(err.response.data)}`);
+        }
       } else if (err.request) {
         setError('No response received from the server. Please check your network connection.');
       } else {
