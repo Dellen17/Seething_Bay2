@@ -13,6 +13,7 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
   const [fileType, setFileType] = useState('');
   const [inputMethod, setInputMethod] = useState('text');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState(''); // Added success state
   const [mood, setMood] = useState('');
   const [audioBlob, setAudioBlob] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
@@ -26,6 +27,7 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
       setMood(entry.mood || '');
       setAudioBlob(null);
       setError('');
+      setSuccess(''); // Reset success message
     }
   }, [entry]);
 
@@ -70,6 +72,9 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
     }
 
     setIsSubmitting(true);
+    setError(''); // Clear previous errors
+    setSuccess(''); // Clear previous success message
+
     const token = localStorage.getItem('access_token');
     const formData = new FormData();
     if (content) formData.append('content', content);
@@ -99,6 +104,7 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
           },
         });
         onUpdateEntry(response.data);
+        setSuccess('Entry updated successfully!');
       } else {
         response = await axios.post(`${process.env.REACT_APP_API_URL}/api/entries/create/`, formData, {
           headers: {
@@ -107,6 +113,7 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
           },
         });
         onEntryAdded(response.data);
+        setSuccess('Entry created successfully!');
       }
 
       // Reset form fields
@@ -115,15 +122,18 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
       setFileType('');
       setMood('');
       setAudioBlob(null);
-      setError('');
 
       // Close the form after successful submission
       setShowEditor(false);
     } catch (err) {
       console.error('Error response:', err.response); // Log the full error response
-      if (err.response) {
-        // Display the full error object to see all validation errors
-        setError(`Error: ${err.response.status} - ${JSON.stringify(err.response.data)}`);
+      if (err.response && err.response.data) {
+        // Check if the server returned a specific error message
+        if (err.response.data.error) {
+          setError(`Failed to ${entry ? 'update' : 'create'} entry: ${err.response.data.error}`);
+        } else {
+          setError(`Failed to ${entry ? 'update' : 'create'} entry: ${err.response.status} - ${JSON.stringify(err.response.data)}`);
+        }
       } else if (err.request) {
         setError('No response received from the server. Please check your network connection.');
       } else {
@@ -140,6 +150,7 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
     <div className="add-entry-container">
       <h3 className="form-title">{entry ? 'Edit Entry' : 'Add New Entry'}</h3>
       {error && <p className="error-message">{error}</p>}
+      {success && <p className="success-message">{success}</p>} {/* Added success message display */}
       <form className="add-entry-form" onSubmit={handleSubmit}>
         <div className="form-group">
           <label className="form-label">Choose Input Method</label>

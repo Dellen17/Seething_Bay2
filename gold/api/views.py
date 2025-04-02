@@ -35,6 +35,10 @@ from rest_framework.pagination import PageNumberPagination # type: ignore
 from urllib.parse import urlencode
 from django.core.exceptions import ValidationError
 from .utils import upload_to_s3, analyze_sentiment
+import logging
+
+# Set up logging
+logger = logging.getLogger(__name__)
 
 User = get_user_model()
 
@@ -272,11 +276,6 @@ def get_entry(request, pk):
     except Entry.DoesNotExist:
         return Response({"error": "Entry not found"}, status=status.HTTP_404_NOT_FOUND)
 
-import logging
-
-# Set up logging
-logger = logging.getLogger(__name__)
-
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_entry(request):
@@ -361,8 +360,8 @@ def create_entry(request):
             try:
                 entry.sentiment = analyze_sentiment(serializer.validated_data['content'])
             except Exception as e:
-                logger.error(f"Failed to analyze sentiment: {str(e)}")
-                # Sentiment analysis failure is non-critical, so we can continue
+                logger.error(f"Error calling DeepSeek API: {str(e)}")
+                entry.sentiment = 'neutral'  # Fallback to neutral if sentiment analysis fails
 
         # Save the entry to the database
         logger.info("Saving entry to database...")
