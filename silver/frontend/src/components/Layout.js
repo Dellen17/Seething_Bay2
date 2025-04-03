@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react'; // Added useRef
 import Navbar from './Navbar';
 import SideNav from './SideNav';
 import '../styles/Layout.css';
@@ -11,6 +11,9 @@ const Layout = ({ children }) => {
     setIsSidebarOpen((prev) => !prev);
   }, []);
 
+  // Add a ref to the main-content div
+  const mainContentRef = useRef(null);
+
   return (
     <div className="layout-container">
       <SideNav
@@ -18,7 +21,7 @@ const Layout = ({ children }) => {
         toggleSidebar={toggleSidebar}
         setToggleMobileSidebar={setToggleMobileSidebar}
       />
-      <div className={`main-content ${isSidebarOpen ? '' : 'collapsed'}`}>
+      <div className={`main-content ${isSidebarOpen ? '' : 'collapsed'}`} ref={mainContentRef}>
         <Navbar
           isSidebarOpen={isSidebarOpen}
           toggleMobileSidebar={toggleMobileSidebar}
