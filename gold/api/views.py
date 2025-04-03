@@ -406,6 +406,16 @@ def update_entry(request, pk):
         for field, value in serializer.validated_data.items():
             setattr(entry, field, value)
 
+        # Handle file removals
+        if request.data.get('remove_image') == 'true':
+            entry.image = None
+        if request.data.get('remove_video') == 'true':
+            entry.video = None
+        if request.data.get('remove_document') == 'true':
+            entry.document = None
+        if request.data.get('remove_voice_note') == 'true':
+            entry.voice_note = None
+
         # Handle image upload
         if 'image' in request.FILES:
             image = request.FILES['image']

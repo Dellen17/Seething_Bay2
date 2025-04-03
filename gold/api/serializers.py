@@ -1,4 +1,4 @@
-from rest_framework import serializers # type: ignore
+from rest_framework import serializers  # type: ignore
 from .models import Entry, Profile
 
 class EntrySerializer(serializers.ModelSerializer):
@@ -7,14 +7,21 @@ class EntrySerializer(serializers.ModelSerializer):
     # Use FileField for validation during create/update, since the frontend sends files
     image = serializers.FileField(required=False, allow_null=True, write_only=True)
     image_url = serializers.URLField(source='image', read_only=True)
-    video = serializers.FileField(required=False, allow_null=True)
-    document = serializers.FileField(required=False, allow_null=True)
-    voice_note = serializers.FileField(required=False, allow_null=True)
+    video = serializers.FileField(required=False, allow_null=True, write_only=True)
+    video_url = serializers.URLField(source='video', read_only=True)
+    document = serializers.FileField(required=False, allow_null=True, write_only=True)
+    document_url = serializers.URLField(source='document', read_only=True)
+    voice_note = serializers.FileField(required=False, allow_null=True, write_only=True)
+    voice_note_url = serializers.URLField(source='voice_note', read_only=True)
     sentiment = serializers.CharField(read_only=True)
 
     class Meta:
         model = Entry
-        fields = ['id', 'content', 'timestamp', 'author', 'image','image_url', 'video', 'document', 'mood', 'voice_note', 'sentiment']
+        fields = [
+            'id', 'content', 'timestamp', 'author', 'image', 'image_url',
+            'video', 'video_url', 'document', 'document_url', 'mood',
+            'voice_note', 'voice_note_url', 'sentiment'
+        ]
         read_only_fields = ['id', 'author', 'timestamp', 'sentiment']
 
     def validate(self, data):
