@@ -27,28 +27,28 @@ const EntryList = ({ entries, handleDelete, handleEdit }) => {
 
             {entry.image_url && (
               <img
-                src={entry.image_url}  // Removed process.env.REACT_APP_API_URL
+                src={entry.image_url}
                 alt="Uploaded Visual"
                 className="entry-image"
               />
             )}
-            {entry.video && (
+            {entry.video_url && (
               <video
-                src={entry.video}
+                src={entry.video_url}
                 controls
                 className="entry-video"
               >
                 { /* Your browser does not support video */ }
               </video>
             )}
-            {entry.document && (
-              <a href={entry.document} download className="entry-document">
+            {entry.document_url && (
+              <a href={entry.document_url} download className="entry-document">
                 Download Document
               </a>
             )}
-            {entry.voice_note && (
+            {entry.voice_note_url && (
               <audio
-                src={entry.voice_note}
+                src={entry.voice_note_url}
                 controls
                 className="entry-audio"
               >

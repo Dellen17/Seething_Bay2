@@ -142,25 +142,25 @@ const CalendarView = () => {
                       {entry.image_url && (
                         <div className="media-thumbnail">
                           <img
-                            src={entry.image_url}  // Removed process.env.REACT_APP_API_URL
+                            src={entry.image_url}
                             alt="Entry"
                             className="entry-image"
                           />
                         </div>
                       )}
-                      {entry.video && (
+                      {entry.video_url && (
                         <div className="media-thumbnail">
                           <video
-                            src={entry.video}  // Removed process.env.REACT_APP_API_URL
+                            src={entry.video_url}
                             controls
                             className="entry-video"
                           />
                         </div>
                       )}
-                      {entry.document && (
+                      {entry.document_url && (
                         <div className="media-thumbnail">
                           <a
-                            href={entry.document}  // Removed process.env.REACT_APP_API_URL
+                            href={entry.document_url}
                             download
                             className="entry-document"
                             onClick={(e) => e.stopPropagation()}
@@ -169,10 +169,10 @@ const CalendarView = () => {
                           </a>
                         </div>
                       )}
-                      {entry.voice_note && (
+                      {entry.voice_note_url && (
                         <div className="media-thumbnail">
                           <audio
-                            src={entry.voice_note}  // Removed process.env.REACT_APP_API_URL
+                            src={entry.voice_note_url}
                             controls
                             className="entry-audio"
                             onClick={(e) => e.stopPropagation()}

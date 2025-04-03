@@ -26,14 +26,7 @@ const GalleryVoiceNotes = () => {
         allEntries = [...allEntries, ...response.data.results.entries];
         nextPage = response.data.next;
       }
-      const entriesWithVoiceNotes = allEntries.filter((entry) => {
-        return (
-          entry.voice_note &&
-          typeof entry.voice_note === 'string' &&
-          entry.voice_note.trim() !== '' &&
-          entry.voice_note.includes('/media/voice_notes/')
-        );
-      });
+      const entriesWithVoiceNotes = allEntries.filter((entry) => entry.voice_note_url);
       setVoiceNotes(entriesWithVoiceNotes);
     } catch (err) {
       setError(`Failed to fetch voice notes. Please try again. Details: ${err.message}`);
@@ -84,9 +77,9 @@ const GalleryVoiceNotes = () => {
                 className="voice-note-item"
                 onClick={() => handleVoiceNoteClick(entry.id)}
               >
-                {entry.voice_note && (
+                {entry.voice_note_url && (
                   <audio
-                    src={entry.voice_note}
+                    src={entry.voice_note_url}
                     controls
                     className="gallery-voice-note"
                   >

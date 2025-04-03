@@ -7,6 +7,7 @@ import CalendarView from './components/CalendarView';
 import Gallery from './components/Gallery';
 import GalleryImages from './components/GalleryImages';
 import GalleryVideos from './components/GalleryVideos';
+import GalleryDocuments from './components/GalleryDocuments';
 import GalleryVoiceNotes from './components/GalleryVoiceNotes';
 import MoodTracker from './components/MoodTracker';
 import Settings from './components/Settings';
@@ -84,6 +85,7 @@ const App = () => {
           {/* Nested Routes for Gallery Sub-pages */}
           <Route path="images" element={<GalleryImages />} />
           <Route path="videos" element={<GalleryVideos />} />
+          <Route path="documents" element={<GalleryDocuments />} />
           <Route path="voice-notes" element={<GalleryVoiceNotes />} />
         </Route>
         <Route

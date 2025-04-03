@@ -8,13 +8,13 @@ import '../styles/EditEntry.css';
 const EditEntry = ({ entry, onUpdateEntry, onCancel }) => {
   const [content, setContent] = useState(entry?.content || '');
   const [selectedImage, setSelectedImage] = useState(null);
-  const [existingImage, setExistingImage] = useState(entry?.image_url || ''); // Updated to use image_url
+  const [existingImage, setExistingImage] = useState(entry?.image_url || '');
   const [selectedVideo, setSelectedVideo] = useState(null);
-  const [existingVideo, setExistingVideo] = useState(entry?.video || '');
+  const [existingVideo, setExistingVideo] = useState(entry?.video_url || '');
   const [selectedDocument, setSelectedDocument] = useState(null);
-  const [existingDocument, setExistingDocument] = useState(entry?.document || '');
+  const [existingDocument, setExistingDocument] = useState(entry?.document_url || '');
   const [selectedVoiceNote, setSelectedVoiceNote] = useState(null);
-  const [existingVoiceNote, setExistingVoiceNote] = useState(entry?.voice_note || '');
+  const [existingVoiceNote, setExistingVoiceNote] = useState(entry?.voice_note_url || '');
   const [mood, setMood] = useState(entry?.mood || '');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -28,6 +28,26 @@ const EditEntry = ({ entry, onUpdateEntry, onCancel }) => {
     } else {
       setError('File size exceeds 5MB limit.');
     }
+  };
+
+  const handleRemoveImage = () => {
+    setExistingImage(null);
+    setSelectedImage(null);
+  };
+
+  const handleRemoveVideo = () => {
+    setExistingVideo(null);
+    setSelectedVideo(null);
+  };
+
+  const handleRemoveDocument = () => {
+    setExistingDocument(null);
+    setSelectedDocument(null);
+  };
+
+  const handleRemoveVoiceNote = () => {
+    setExistingVoiceNote(null);
+    setSelectedVoiceNote(null);
   };
 
   const handleSubmit = async (e) => {
@@ -46,10 +66,29 @@ const EditEntry = ({ entry, onUpdateEntry, onCancel }) => {
     formData.append('content', content);
     formData.append('mood', mood);
 
-    if (selectedImage) formData.append('image', selectedImage);
-    if (selectedVideo) formData.append('video', selectedVideo);
-    if (selectedDocument) formData.append('document', selectedDocument);
-    if (selectedVoiceNote) formData.append('voice_note', selectedVoiceNote, 'voice_note.webm');
+    if (selectedImage) {
+      formData.append('image', selectedImage);
+    } else if (!existingImage && entry?.image_url) {
+      formData.append('remove_image', 'true');
+    }
+
+    if (selectedVideo) {
+      formData.append('video', selectedVideo);
+    } else if (!existingVideo && entry?.video_url) {
+      formData.append('remove_video', 'true');
+    }
+
+    if (selectedDocument) {
+      formData.append('document', selectedDocument);
+    } else if (!existingDocument && entry?.document_url) {
+      formData.append('remove_document', 'true');
+    }
+
+    if (selectedVoiceNote) {
+      formData.append('voice_note', selectedVoiceNote, 'voice_note.webm');
+    } else if (!existingVoiceNote && entry?.voice_note_url) {
+      formData.append('remove_voice_note', 'true');
+    }
 
     try {
       const response = await axios.put(`${process.env.REACT_APP_API_URL}/api/entries/${entry.id}/update/`, formData, {
@@ -58,7 +97,13 @@ const EditEntry = ({ entry, onUpdateEntry, onCancel }) => {
           'Content-Type': 'multipart/form-data',
         },
       });
-      onUpdateEntry({ ...response.data, image: response.data.image_url }); // Updated to use image_url
+      onUpdateEntry({
+        ...response.data,
+        image: response.data.image_url,
+        video: response.data.video_url,
+        document: response.data.document_url,
+        voice_note: response.data.voice_note_url
+      });
       navigate('/');
       window.scrollTo(0, 0);
     } catch (err) {
@@ -127,6 +172,9 @@ const EditEntry = ({ entry, onUpdateEntry, onCancel }) => {
             <div className="existing-file-preview">
               <h4>Current Image:</h4>
               <img src={existingImage} alt="Current" className="edit-entry-image-preview" />
+              <button type="button" className="remove-file-button" onClick={handleRemoveImage}>
+                Remove Image
+              </button>
             </div>
           )}
         </div>
@@ -145,6 +193,9 @@ const EditEntry = ({ entry, onUpdateEntry, onCancel }) => {
             <div className="existing-file-preview">
               <h4>Current Video:</h4>
               <video src={existingVideo} controls className="edit-entry-video-preview" />
+              <button type="button" className="remove-file-button" onClick={handleRemoveVideo}>
+                Remove Video
+              </button>
             </div>
           )}
         </div>
@@ -163,6 +214,9 @@ const EditEntry = ({ entry, onUpdateEntry, onCancel }) => {
             <div className="existing-file-preview">
               <h4>Current Document:</h4>
               <a href={existingDocument} download>Download Document</a>
+              <button type="button" className="remove-file-button" onClick={handleRemoveDocument}>
+                Remove Document
+              </button>
             </div>
           )}
         </div>
@@ -182,6 +236,9 @@ const EditEntry = ({ entry, onUpdateEntry, onCancel }) => {
             <div className="existing-file-preview">
               <h4>Current Voice Note:</h4>
               <audio src={existingVoiceNote} controls className="edit-entry-audio-preview" type="audio/mpeg" />
+              <button type="button" className="remove-file-button" onClick={handleRemoveVoiceNote}>
+                Remove Voice Note
+              </button>
             </div>
           )}
         </div>

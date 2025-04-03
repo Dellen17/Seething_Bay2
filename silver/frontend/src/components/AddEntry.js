@@ -102,7 +102,13 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
             'Content-Type': 'multipart/form-data',
           },
         });
-        onUpdateEntry({ ...response.data, image: response.data.image_url }); // Use image_url
+        onUpdateEntry({
+          ...response.data,
+          image: response.data.image_url,
+          video: response.data.video_url,
+          document: response.data.document_url,
+          voice_note: response.data.voice_note_url
+        });
         setSuccess('Entry updated successfully!');
       } else {
         response = await axios.post(`${process.env.REACT_APP_API_URL}/api/entries/create/`, formData, {
@@ -111,7 +117,13 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
             'Content-Type': 'multipart/form-data',
           },
         });
-        onEntryAdded({ ...response.data, image: response.data.image_url }); // Use image_url
+        onEntryAdded({
+          ...response.data,
+          image: response.data.image_url,
+          video: response.data.video_url,
+          document: response.data.document_url,
+          voice_note: response.data.voice_note_url
+        });
         setSuccess('Entry created successfully!');
       }
   

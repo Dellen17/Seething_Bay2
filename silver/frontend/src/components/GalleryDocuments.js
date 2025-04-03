@@ -1,18 +1,31 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import LazyLoad from 'react-lazy-load';
+import { FaFilePdf, FaFileWord, FaFileAlt, FaDownload } from 'react-icons/fa';
 import LoadingSpinner from './LoadingSpinner';
 import { moods } from './MoodSelector';
-import '../styles/GalleryVideos.css';
+import '../styles/GalleryDocuments.css';
 
-const GalleryVideos = () => {
-  const [videos, setVideos] = useState([]);
+const GalleryDocuments = () => {
+  const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const fetchAllVideos = useCallback(async () => {
+  const getFileIcon = (url) => {
+    const extension = url.split('.').pop().toLowerCase();
+    switch(extension) {
+      case 'pdf':
+        return <FaFilePdf className="document-icon pdf" />;
+      case 'doc':
+      case 'docx':
+        return <FaFileWord className="document-icon word" />;
+      default:
+        return <FaFileAlt className="document-icon text" />;
+    }
+  };
+
+  const fetchAllDocuments = useCallback(async () => {
     setLoading(true);
     setError('');
     const token = localStorage.getItem('access_token');
@@ -27,38 +40,38 @@ const GalleryVideos = () => {
         allEntries = [...allEntries, ...response.data.results.entries];
         nextPage = response.data.next;
       }
-      const entriesWithVideos = allEntries.filter((entry) => entry.video_url);
-      setVideos(entriesWithVideos);
+      const entriesWithDocuments = allEntries.filter((entry) => entry.document);
+      setDocuments(entriesWithDocuments);
     } catch (err) {
-      setError('Failed to fetch videos. Please try again.');
+      setError('Failed to fetch documents. Please try again.');
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    fetchAllVideos();
-  }, [fetchAllVideos]);
+    fetchAllDocuments();
+  }, [fetchAllDocuments]);
 
   const handleRetry = () => {
-    fetchAllVideos();
+    fetchAllDocuments();
   };
 
-  const handleVideoClick = (entryId) => {
+  const handleDocumentClick = (entryId) => {
     navigate(`/edit/${entryId}`);
   };
 
   return (
-    <div className="gallery-videos-container">
+    <div className="gallery-documents-container">
       <button className="back-button" onClick={() => navigate('/gallery')}>
         ← Back to Gallery
       </button>
 
-      <h2>Videos</h2>
+      <h2>Documents</h2>
       {loading ? (
         <div className="loading-container">
           <LoadingSpinner />
-          <p className="loading-message">Loading videos...</p>
+          <p className="loading-message">Loading documents...</p>
         </div>
       ) : error ? (
         <div className="error-container">
@@ -67,46 +80,53 @@ const GalleryVideos = () => {
             Retry
           </button>
         </div>
-      ) : videos.length > 0 ? (
-        <div className="videos-grid">
-          {videos.map((entry) => {
+      ) : documents.length > 0 ? (
+        <div className="documents-grid">
+          {documents.map((entry) => {
             const moodData = moods.find((m) => m.label === entry.mood);
             const MoodIcon = moodData?.icon;
+            const filename = entry.document.split('/').pop();
+            
             return (
               <div
                 key={entry.id}
-                className="video-item"
-                onClick={() => handleVideoClick(entry.id)}
+                className="document-item"
+                onClick={() => handleDocumentClick(entry.id)}
               >
-                <LazyLoad height={200} offset={100}>
-                  <video
-                    src={entry.video_url}
-                    controls
-                    className="gallery-video"
-                  />
-                </LazyLoad>
-                <div className="video-overlay">
-                  <p className="video-timestamp">
+                <div className="document-preview">
+                  {getFileIcon(entry.document)}
+                  <span className="document-filename">{filename}</span>
+                </div>
+                <div className="document-overlay">
+                  <p className="document-timestamp">
                     {new Date(entry.timestamp).toLocaleDateString()}
                   </p>
                   {entry.mood && (
-                    <div className="video-mood">
+                    <div className="document-mood">
                       {MoodIcon && (
                         <MoodIcon size="20px" color={moodData?.color} />
                       )}
                       <span>{entry.mood.charAt(0).toUpperCase() + entry.mood.slice(1)}</span>
                     </div>
                   )}
+                  <a 
+                    href={entry.document} 
+                    download 
+                    className="download-button"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <FaDownload />
+                  </a>
                 </div>
               </div>
             );
           })}
         </div>
       ) : (
-        <p className="no-content">No videos found.</p>
+        <p className="no-content">No documents found.</p>
       )}
     </div>
   );
 };
 
-export default GalleryVideos;
+export default GalleryDocuments;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { FaImage, FaVideo, FaMicrophone, FaArrowLeft } from 'react-icons/fa';
+import { FaImage, FaVideo, FaMicrophone, FaFile, FaArrowLeft } from 'react-icons/fa';
 import '../styles/Gallery.css';
 
 const Gallery = () => {
@@ -33,6 +33,10 @@ const Gallery = () => {
         <Link to="videos" className={`gallery-option ${getActiveClass('videos')}`}>
           <FaVideo className="gallery-icon" />
           <span>Videos</span>
+        </Link>
+        <Link to="documents" className={`gallery-option ${getActiveClass('documents')}`}>
+          <FaFile className="gallery-icon" />
+          <span>Documents</span>
         </Link>
         <Link to="voice-notes" className={`gallery-option ${getActiveClass('voice-notes')}`}>
           <FaMicrophone className="gallery-icon" />

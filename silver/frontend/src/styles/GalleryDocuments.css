@@ -1,0 +1,215 @@
+.gallery-documents-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    color: #ffffff;
+    background-color: #222;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+  
+  .back-button {
+    background-color: #1da1f2;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 100%;
+    max-width: 200px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .back-button:hover {
+    background-color: #0d95e8;
+    transform: scale(1.05);
+  }
+  
+  .documents-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    width: 100%;
+  }
+  
+  .document-item {
+    position: relative;
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #333;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    width: 100%;
+    box-sizing: border-box;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .document-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+  
+  .document-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .document-icon {
+    font-size: 48px;
+    margin-bottom: 10px;
+  }
+  
+  .document-icon.pdf {
+    color: #e74c3c;
+  }
+  
+  .document-icon.word {
+    color: #2b579a;
+  }
+  
+  .document-icon.text {
+    color: #f39c12;
+  }
+  
+  .document-filename {
+    text-align: center;
+    word-break: break-all;
+    font-size: 0.9rem;
+  }
+  
+  .document-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    padding: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    text-align: center;
+  }
+  
+  .document-item:hover .document-overlay {
+    opacity: 1;
+  }
+  
+  .document-timestamp {
+    font-size: 0.9rem;
+    margin: 0;
+  }
+  
+  .document-mood {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 1rem;
+    margin-top: 5px;
+  }
+  
+  .download-button {
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    margin-top: 8px;
+    transition: transform 0.2s ease;
+  }
+  
+  .download-button:hover {
+    transform: scale(1.2);
+  }
+  
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    color: #bbb;
+  }
+  
+  .error-container {
+    text-align: center;
+  }
+  
+  .error-message {
+    color: #ff4d4d;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .retry-button {
+    background-color: #1da1f2;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .retry-button:hover {
+    background-color: #0d95e8;
+  }
+  
+  .no-content {
+    color: #bbb;
+    text-align: center;
+    font-size: 1.2rem;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 576px) {
+    .gallery-documents-container {
+      margin: 20px auto;
+      padding: 15px;
+      overflow-x: hidden;
+    }
+  
+    .back-button {
+      font-size: 14px;
+      padding: 8px 16px;
+    }
+  
+    .documents-grid {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+  
+    .document-item {
+      height: 180px;
+    }
+  }
+  
+  /* Larger Screens */
+  @media (min-width: 768px) {
+    .gallery-documents-container {
+      padding: 20px;
+    }
+  
+    .back-button {
+      width: auto;
+      max-width: none;
+    }
+  
+    .documents-grid {
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+  }
