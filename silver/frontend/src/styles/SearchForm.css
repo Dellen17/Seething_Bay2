@@ -1,105 +1,137 @@
 .search-form-container {
-    margin: 100px 0 20px 0;
-  }
-  
+  margin: 100px 0 20px 0;
+}
+
+.search-form {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.search-bar-wrapper {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  background-color: #333;
+  border-radius: 25px;
+  padding: 5px 10px;
+  border: 1px solid #444;
+}
+
+.search-input {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background-color: transparent;
+  color: #ffffff;
+  font-size: 16px;
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: #888;
+}
+
+.clear-button {
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0 10px;
+  transition: color 0.3s ease;
+}
+
+.clear-button:hover {
+  color: #ffffff;
+}
+
+.search-button {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+  padding: 10px 20px;
+  border-radius: 25px;
+  background-color: #1da1f2;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.search-button:hover {
+  background-color: #1991c6;
+}
+
+.search-icon {
+  margin-right: 8px;
+}
+
+.filters-container {
+  margin-top: 20px;
+  border: 1px solid #444;
+  padding: 15px;
+  border-radius: 10px;
+  background-color: #1c1c1c;
+}
+
+.filters-heading {
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.filter-option {
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: #ffffff;
+}
+
+.filter-option label {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.filter-option input[type="checkbox"] {
+  margin-right: 10px;
+  accent-color: #1da1f2;
+}
+
+.filter-icon {
+  margin-right: 8px;
+}
+
+/* Media query for smaller screens (e.g., Galaxy S8 at 360px width) */
+@media (max-width: 400px) {
   .search-form {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
+      flex-wrap: wrap; /* Allow the search bar and button to wrap if needed */
+      gap: 10px; /* Add some space between wrapped elements */
   }
-  
+
   .search-bar-wrapper {
-    display: flex;
-    align-items: center;
-    flex: 1;
-    background-color: #333;
-    border-radius: 25px;
-    padding: 5px 10px;
-    border: 1px solid #444;
+      flex: 1;
+      min-width: 0; /* Prevent the search bar from overflowing */
+      padding: 5px 8px; /* Slightly reduce padding to save space */
   }
-  
+
   .search-input {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    background-color: transparent;
-    color: #ffffff;
-    font-size: 16px;
-    outline: none;
+      font-size: 14px; /* Slightly smaller font size for better fit */
   }
-  
-  .search-input::placeholder {
-    color: #888;
-  }
-  
-  .clear-button {
-    background: none;
-    border: none;
-    color: #888;
-    cursor: pointer;
-    font-size: 16px;
-    padding: 0 10px;
-    transition: color 0.3s ease;
-  }
-  
-  .clear-button:hover {
-    color: #ffffff;
-  }
-  
+
   .search-button {
-    display: flex;
-    align-items: center;
-    margin-left: 10px;
-    padding: 10px 20px;
-    border-radius: 25px;
-    background-color: #1da1f2;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
+      margin-left: 0; /* Remove margin-left to avoid extra spacing */
+      padding: 8px 15px; /* Reduce padding to make the button smaller */
+      font-size: 14px; /* Smaller font size for the button text */
   }
-  
-  .search-button:hover {
-    background-color: #1991c6;
-  }
-  
+
   .search-icon {
-    margin-right: 8px;
+      margin-right: 6px; /* Slightly reduce the icon margin */
   }
-  
-  .filters-container {
-    margin-top: 20px;
-    border: 1px solid #444;
-    padding: 15px;
-    border-radius: 10px;
-    background-color: #1c1c1c;
+
+  .search-form-container {
+      margin: 80px 0 15px 0; /* Reduce top margin to save vertical space */
   }
-  
-  .filters-heading {
-    margin-bottom: 10px;
-    font-size: 18px;
-    font-weight: bold;
-    color: #ffffff;
-  }
-  
-  .filter-option {
-    margin-bottom: 10px;
-    font-size: 16px;
-    color: #ffffff;
-  }
-  
-  .filter-option label {
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-  }
-  
-  .filter-option input[type="checkbox"] {
-    margin-right: 10px;
-    accent-color: #1da1f2;
-  }
-  
-  .filter-icon {
-    margin-right: 8px;
-  }
+}
