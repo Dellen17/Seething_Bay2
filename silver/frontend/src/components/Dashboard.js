@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react'; // Added useRef
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import EntryList from './EntryList';
@@ -20,6 +20,23 @@ const Dashboard = () => {
 
   const navigate = useNavigate();
   const { id } = useParams();
+
+  // Add a ref to target the dashboard-content div
+  const dashboardRef = useRef(null);
+
+  // Function to check if the device is mobile (based on your CSS breakpoint)
+  const isMobile = () => window.innerWidth < 576;
+
+  // Function to scroll to the top, handling both mobile and desktop
+  const scrollToTop = () => {
+    if (isMobile() && dashboardRef.current) {
+      // On mobile, scroll the dashboard-content div
+      dashboardRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      // On desktop, use window.scrollTo (which already works)
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
 
   // Fetch filtered entries based on search form inputs
   const handleSearch = async (filters, page = 1) => {
@@ -120,11 +137,13 @@ const Dashboard = () => {
       )
     );
     setEditingEntry(null);
+    scrollToTop(); // Scroll to top after updating
   };
 
   // Handle canceling the edit
   const handleCancelEdit = () => {
     setEditingEntry(null);
+    scrollToTop(); // Scroll to top after canceling
   };
 
   // Handle pagination page change
@@ -135,16 +154,16 @@ const Dashboard = () => {
     } else {
       fetchEntries();
     }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    scrollToTop(); // Scroll to top after page change
   };
 
   const toggleEditor = () => {
     setShowEditor((prev) => !prev);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    scrollToTop(); // Scroll to top when toggling the editor
   };
 
   return (
-    <div className="dashboard-content">
+    <div className="dashboard-content" ref={dashboardRef}>
       <SearchForm
         filters={filters}
         setFilters={setFilters}
