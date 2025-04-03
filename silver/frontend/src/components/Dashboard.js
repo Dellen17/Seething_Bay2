@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'; // Removed useRef since it's not needed now
+import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import EntryList from './EntryList';
@@ -8,7 +8,7 @@ import Pagination from './Pagination';
 import SearchForm from './SearchForm';
 import '../styles/Dashboard.css';
 
-const Dashboard = ({ mainContentRef }) => { // Keep the prop as is
+const Dashboard = () => {
   const [entries, setEntries] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -20,22 +20,6 @@ const Dashboard = ({ mainContentRef }) => { // Keep the prop as is
 
   const navigate = useNavigate();
   const { id } = useParams();
-
-  // Function to check if the device is mobile (based on your CSS breakpoint)
-  const isMobile = () => window.innerWidth < 576;
-
-  // Function to scroll to the top, handling both mobile and desktop with debug logs
-  const scrollToTop = () => {
-    console.log('mainContentRef:', mainContentRef); // Log the ref object
-    console.log('mainContentRef.current:', mainContentRef.current); // Log the current DOM element
-    if (isMobile() && mainContentRef.current) {
-      // On mobile, scroll the main-content div
-      mainContentRef.current.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-      // On desktop, use window.scrollTo (which already works)
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
 
   // Fetch filtered entries based on search form inputs
   const handleSearch = async (filters, page = 1) => {
@@ -136,13 +120,11 @@ const Dashboard = ({ mainContentRef }) => { // Keep the prop as is
       )
     );
     setEditingEntry(null);
-    scrollToTop(); // Scroll to top after updating
   };
 
   // Handle canceling the edit
   const handleCancelEdit = () => {
     setEditingEntry(null);
-    scrollToTop(); // Scroll to top after canceling
   };
 
   // Handle pagination page change
@@ -153,12 +135,12 @@ const Dashboard = ({ mainContentRef }) => { // Keep the prop as is
     } else {
       fetchEntries();
     }
-    scrollToTop(); // Scroll to top after page change
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const toggleEditor = () => {
     setShowEditor((prev) => !prev);
-    scrollToTop(); // Scroll to top when toggling the editor
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
