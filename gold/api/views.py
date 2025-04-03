@@ -282,14 +282,14 @@ def create_entry(request):
     # Log the contents of request.FILES for debugging
     logger.info(f"request.FILES contents: {list(request.FILES.keys())}")
 
-    # Remove the image, video, document, and voice_note fields from the serializer data
-    # since we'll handle them manually after validation
-    data = request.data.copy()
-    files = ['image', 'video', 'document', 'voice_note']
-    for field in files:
-        if field in data:
-            data.pop(field)
+    # Instead of copying request.data, create a new dictionary with non-file fields
+    # Use request.POST to get form fields (content, mood, etc.)
+    data = {}
+    for key in request.POST:
+        # Handle cases where a field might have multiple values (e.g., lists)
+        data[key] = request.POST.getlist(key)[0] if len(request.POST.getlist(key)) == 1 else request.POST.getlist(key)
 
+    # Validate the non-file data using the serializer
     serializer = EntrySerializer(data=data, context={'request': request})
 
     if serializer.is_valid():
@@ -386,12 +386,12 @@ def update_entry(request, pk):
     except Entry.DoesNotExist:
         return Response({"error": "Entry not found or you do not have permission to edit this entry."}, status=status.HTTP_404_NOT_FOUND)
 
-    # Remove the image, video, document, and voice_note fields from the serializer data
-    data = request.data.copy()
-    files = ['image', 'video', 'document', 'voice_note']
-    for field in files:
-        if field in data:
-            data.pop(field)
+    # Instead of copying request.data, create a new dictionary with non-file fields
+    # Use request.POST to get form fields (content, mood, etc.)
+    data = {}
+    for key in request.POST:
+        # Handle cases where a field might have multiple values (e.g., lists)
+        data[key] = request.POST.getlist(key)[0] if len(request.POST.getlist(key)) == 1 else request.POST.getlist(key)
 
     serializer = EntrySerializer(entry, data=data, context={'request': request}, partial=True)
 
@@ -407,13 +407,13 @@ def update_entry(request, pk):
             setattr(entry, field, value)
 
         # Handle file removals
-        if request.data.get('remove_image') == 'true':
+        if request.POST.get('remove_image') == 'true':
             entry.image = None
-        if request.data.get('remove_video') == 'true':
+        if request.POST.get('remove_video') == 'true':
             entry.video = None
-        if request.data.get('remove_document') == 'true':
+        if request.POST.get('remove_document') == 'true':
             entry.document = None
-        if request.data.get('remove_voice_note') == 'true':
+        if request.POST.get('remove_voice_note') == 'true':
             entry.voice_note = None
 
         # Handle image upload
