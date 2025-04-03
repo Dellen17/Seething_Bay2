@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react'; // Keep useRef for dashboardRef if needed later
+import { useState, useEffect, useCallback } from 'react'; // Removed useRef since it's not needed now
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import EntryList from './EntryList';
@@ -8,7 +8,7 @@ import Pagination from './Pagination';
 import SearchForm from './SearchForm';
 import '../styles/Dashboard.css';
 
-const Dashboard = ({ mainContentRef }) => { // Updated to accept mainContentRef as a prop
+const Dashboard = ({ mainContentRef }) => { // Keep the prop as is
   const [entries, setEntries] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -24,8 +24,10 @@ const Dashboard = ({ mainContentRef }) => { // Updated to accept mainContentRef 
   // Function to check if the device is mobile (based on your CSS breakpoint)
   const isMobile = () => window.innerWidth < 576;
 
-  // Function to scroll to the top, handling both mobile and desktop
+  // Function to scroll to the top, handling both mobile and desktop with debug logs
   const scrollToTop = () => {
+    console.log('mainContentRef:', mainContentRef); // Log the ref object
+    console.log('mainContentRef.current:', mainContentRef.current); // Log the current DOM element
     if (isMobile() && mainContentRef.current) {
       // On mobile, scroll the main-content div
       mainContentRef.current.scrollTo({ top: 0, behavior: 'smooth' });
