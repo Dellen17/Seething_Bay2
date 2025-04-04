@@ -41,6 +41,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "https://seething-bay97.vercel.app",
+    "http://localhost:3000",
 ]
 
 CORS_ALLOW_HEADERS = [
