@@ -32,7 +32,7 @@ const Dashboard = () => {
   const fetchEntries = useCallback(async (page = 1, keyword = '') => {
     setLoading(true);
     try {
-      const params = { page, keyword }; // Always pass keyword, even if empty
+      const params = { page, keyword };
 
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/search/`, {
         params,
@@ -118,7 +118,7 @@ const Dashboard = () => {
     setCurrentPage(1);
     setHasMore(true);
     fetchEntries(1, filters.keyword);
-    toggleModal();
+    // Removed toggleModal() to avoid double-toggling
   };
 
   // Update an entry in the state
