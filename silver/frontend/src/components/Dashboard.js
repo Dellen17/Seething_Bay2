@@ -30,13 +30,13 @@ const Dashboard = () => {
   };
 
   // Fetch filtered entries based on search form inputs
-  const handleSearch = async (filters, page = 1) => {
+  const handleSearch = async (filters) => {
     setIsSearchLoading(true);
     try {
       const params = {
         keyword: filters.keyword || '',
         date: filters.date || '',
-        page: page,
+        page: 1,
       };
       if (filters.mediaType.length > 0) {
         params['mediaType[]'] = filters.mediaType;
@@ -48,15 +48,10 @@ const Dashboard = () => {
       });
 
       const { entries: fetchedEntries, totalPages } = response.data.results;
-
-      // Deduplicate entries to prevent overlaps
-      const existingIds = new Set(entries.map(e => e.id));
-      const newEntries = fetchedEntries.filter(e => !existingIds.has(e.id));
-
-      setEntries((prev) => (page === 1 ? newEntries : [...prev, ...newEntries])); // Replace or append entries
+      setEntries(fetchedEntries);
       setTotalPages(totalPages);
-      setCurrentPage(page);
-      setHasMore(page < totalPages);
+      setCurrentPage(1);
+      setHasMore(totalPages > 1);
       setIsFiltered(true);
     } catch (error) {
       console.error('Error fetching filtered entries:', error);
@@ -81,16 +76,10 @@ const Dashboard = () => {
       });
 
       const { entries: fetchedEntries, totalPages } = response.data.results;
-
-      // Deduplicate entries to prevent overlaps
-      const existingIds = new Set(entries.map(e => e.id));
-      const newEntries = fetchedEntries.filter(e => !existingIds.has(e.id));
-
-      setEntries((prev) => (page === 1 ? newEntries : [...prev, ...newEntries])); // Replace or append entries
+      setEntries((prevEntries) => [...prevEntries, ...fetchedEntries]);
       setTotalPages(totalPages);
       setCurrentPage(page);
       setHasMore(page < totalPages);
-      setIsFiltered(false); // Reset filtered state for unfiltered entries
     } catch (err) {
       console.error('Failed to fetch entries', err);
       if (err.response?.status === 401) navigate('/login');
@@ -111,11 +100,7 @@ const Dashboard = () => {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && hasMore && !loading) {
-          if (isFiltered) {
-            handleSearch(filters, currentPage + 1); // Fetch next page of filtered results
-          } else {
-            fetchEntries(currentPage + 1); // Fetch next page of unfiltered results
-          }
+          fetchEntries(currentPage + 1);
         }
       },
       { threshold: 0.5 }
@@ -127,7 +112,7 @@ const Dashboard = () => {
     return () => {
       if (target) observer.unobserve(target);
     };
-  }, [fetchEntries, currentPage, hasMore, loading, isFiltered, filters]);
+  }, [fetchEntries, currentPage, hasMore, loading]);
 
   // Re-fetch entries after adding a new one
   const handleEntryAdded = () => {
@@ -135,9 +120,9 @@ const Dashboard = () => {
     setCurrentPage(1);
     setHasMore(true);
     if (isFiltered) {
-      handleSearch(filters, 1); // Reset to page 1 for filtered results
+      handleSearch(filters);
     } else {
-      fetchEntries(1); // Reset to page 1 for unfiltered results
+      fetchEntries();
     }
     toggleModal(); // Close the modal after adding an entry
   };
@@ -155,15 +140,13 @@ const Dashboard = () => {
       <SearchForm
         filters={filters}
         setFilters={setFilters}
-        onSearch={(filters) => {
-          handleSearch(filters, 1); // Always reset to page 1 when searching
-        }}
+        onSearch={handleSearch}
         onClear={() => {
           setFilters({ keyword: '', mediaType: [], date: '' });
           setEntries([]);
           setCurrentPage(1);
           setHasMore(true);
-          fetchEntries(1); // Explicitly fetch page 1 of unfiltered entries
+          fetchEntries();
         }}
         isLoading={isSearchLoading}
       />
