@@ -279,166 +279,187 @@ def get_entry(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_entry(request):
-    """
-    Create a new entry with optional file uploads (image, video, document, voice note).
-    """
-    logger.info(f"Request FILES: {list(request.FILES.keys())}")
+    # Log the contents of request.FILES for debugging
+    logger.info(f"request.FILES contents: {list(request.FILES.keys())}")
 
-    # Extract non-file fields from request.POST
+    # Instead of copying request.data, create a new dictionary with non-file fields
+    # Use request.POST to get form fields (content, mood, etc.)
     data = {}
     for key in request.POST:
+        # Handle cases where a field might have multiple values (e.g., lists)
         data[key] = request.POST.getlist(key)[0] if len(request.POST.getlist(key)) == 1 else request.POST.getlist(key)
 
-    # Validate non-file data using the serializer
+    # Validate the non-file data using the serializer
     serializer = EntrySerializer(data=data, context={'request': request})
-    if not serializer.is_valid():
-        logger.error(f"Serializer validation failed: {serializer.errors}")
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # Define allowed file types
-    allowed_video_types = ['video/mp4', 'video/avi', 'video/mpeg', 'video/quicktime']
-    allowed_document_types = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain']
-    allowed_audio_types = ['audio/webm', 'audio/mpeg', 'audio/wav']
-    allowed_image_types = ['image/jpeg', 'image/png', 'image/gif', 'image/bmp']
+    if serializer.is_valid():
+        # Define allowed file types
+        allowed_video_types = ['video/mp4', 'video/avi', 'video/mpeg', 'video/quicktime']
+        allowed_document_types = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain']
+        allowed_audio_types = ['audio/webm', 'audio/mpeg', 'audio/wav']
+        allowed_image_types = ['image/jpeg', 'image/png', 'image/gif', 'image/bmp']
 
-    # Create the entry instance without saving to the database yet
-    entry = Entry(author=request.user)
+        # Create the entry instance without saving to the database yet
+        entry = Entry(author=request.user)
 
-    # Update the entry with validated data
-    for field, value in serializer.validated_data.items():
-        setattr(entry, field, value)
+        # Update the entry with validated data
+        for field, value in serializer.validated_data.items():
+            setattr(entry, field, value)
 
-    # Handle file uploads
-    try:
+        # Handle image upload
         if 'image' in request.FILES:
             image = request.FILES['image']
+            logger.info(f"Received image: {image.name}, content_type: {image.content_type}")
             if image.content_type not in allowed_image_types:
+                logger.error(f"Invalid image type: {image.content_type}")
                 return Response({"error": "Only image files (.jpeg, .png, .gif, .bmp) are allowed."}, status=status.HTTP_400_BAD_REQUEST)
-            entry.image = upload_to_s3(image, 'entry_images', image.name)
+            try:
+                image_url = upload_to_s3(image, 'entry_images', image.name)
+                logger.info(f"Uploaded image to S3, URL: {image_url}")
+                entry.image = image_url
+                logger.info(f"Set entry.image to: {entry.image}")
+            except Exception as e:
+                logger.error(f"Failed to upload image: {str(e)}")
+                return Response({"error": f"Failed to upload image: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+        # Handle video upload
         if 'video' in request.FILES:
             video = request.FILES['video']
             if video.content_type not in allowed_video_types:
                 return Response({"error": "Only video files (.mp4, .avi, .mpeg, .mov) are allowed."}, status=status.HTTP_400_BAD_REQUEST)
-            entry.video = upload_to_s3(video, 'entry_videos', video.name)
+            try:
+                video_url = upload_to_s3(video, 'entry_videos', video.name)
+                entry.video = video_url
+            except Exception as e:
+                logger.error(f"Failed to upload video: {str(e)}")
+                return Response({"error": f"Failed to upload video: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+        # Handle document upload
         if 'document' in request.FILES:
             document = request.FILES['document']
             if document.content_type not in allowed_document_types:
                 return Response({"error": "Only documents (.pdf, .doc, .docx, .txt) are allowed."}, status=status.HTTP_400_BAD_REQUEST)
-            entry.document = upload_to_s3(document, 'entry_documents', document.name)
+            try:
+                document_url = upload_to_s3(document, 'entry_documents', document.name)
+                entry.document = document_url
+            except Exception as e:
+                logger.error(f"Failed to upload document: {str(e)}")
+                return Response({"error": f"Failed to upload document: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+        # Handle voice note upload
         if 'voice_note' in request.FILES:
             voice_note = request.FILES['voice_note']
             if voice_note.content_type not in allowed_audio_types:
                 return Response({"error": "Only audio files (.webm, .mp3, .wav) are allowed."}, status=status.HTTP_400_BAD_REQUEST)
-            entry.voice_note = upload_to_s3(voice_note, 'voice_notes', voice_note.name)
+            try:
+                voice_note_url = upload_to_s3(voice_note, 'voice_notes', voice_note.name)
+                entry.voice_note = voice_note_url
+            except Exception as e:
+                logger.error(f"Failed to upload voice note: {str(e)}")
+                return Response({"error": f"Failed to upload voice note: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    except Exception as e:
-        logger.error(f"Failed to upload file: {str(e)}")
-        return Response({"error": f"Failed to upload file: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        # Analyze sentiment if content is provided
+        if 'content' in serializer.validated_data:
+            try:
+                entry.sentiment = analyze_sentiment(serializer.validated_data['content'])
+            except Exception as e:
+                logger.error(f"Error calling DeepSeek API: {str(e)}")
+                entry.sentiment = 'neutral'  # Fallback to neutral if sentiment analysis fails
 
-    # Analyze sentiment if content is provided
-    if 'content' in serializer.validated_data:
-        try:
-            entry.sentiment = analyze_sentiment(serializer.validated_data['content'])
-        except Exception as e:
-            logger.error(f"Error calling DeepSeek API: {str(e)}")
-            entry.sentiment = 'neutral'  # Fallback to neutral if sentiment analysis fails
+        # Save the entry to the database
+        logger.info("Saving entry to database...")
+        entry.save()
+        logger.info(f"Entry saved with ID: {entry.id}, image: {entry.image}")
 
-    # Save the entry to the database
-    entry.save()
-    logger.info(f"Entry saved with ID: {entry.id}, image: {entry.image}")
+        # Serialize the saved entry for the response
+        response_serializer = EntrySerializer(entry, context={'request': request})
+        return Response(response_serializer.data, status=status.HTTP_201_CREATED)
 
-    # Serialize the saved entry for the response
-    response_serializer = EntrySerializer(entry, context={'request': request})
-    return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+    logger.error(f"Serializer validation failed: {serializer.errors}")
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def update_entry(request, pk):
-    """
-    Update an existing entry with optional file uploads or removals.
-    """
     try:
         entry = Entry.objects.get(pk=pk, author=request.user)
     except Entry.DoesNotExist:
         return Response({"error": "Entry not found or you do not have permission to edit this entry."}, status=status.HTTP_404_NOT_FOUND)
 
-    # Extract non-file fields from request.POST
+    # Instead of copying request.data, create a new dictionary with non-file fields
+    # Use request.POST to get form fields (content, mood, etc.)
     data = {}
     for key in request.POST:
+        # Handle cases where a field might have multiple values (e.g., lists)
         data[key] = request.POST.getlist(key)[0] if len(request.POST.getlist(key)) == 1 else request.POST.getlist(key)
 
-    # Validate non-file data using the serializer
     serializer = EntrySerializer(entry, data=data, context={'request': request}, partial=True)
-    if not serializer.is_valid():
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # Define allowed file types
-    allowed_video_types = ['video/mp4', 'video/avi', 'video/mpeg', 'video/quicktime']
-    allowed_document_types = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain']
-    allowed_audio_types = ['audio/webm', 'audio/mpeg', 'audio/wav']
-    allowed_image_types = ['image/jpeg', 'image/png', 'image/gif', 'image/bmp']
+    if serializer.is_valid():
+        # Define allowed file types
+        allowed_video_types = ['video/mp4', 'video/avi', 'video/mpeg', 'video/quicktime']
+        allowed_document_types = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain']
+        allowed_audio_types = ['audio/webm', 'audio/mpeg', 'audio/wav']
+        allowed_image_types = ['image/jpeg', 'image/png', 'image/gif', 'image/bmp']
 
-    # Update the entry with validated data
-    for field, value in serializer.validated_data.items():
-        setattr(entry, field, value)
+        # Update the entry with validated data
+        for field, value in serializer.validated_data.items():
+            setattr(entry, field, value)
 
-    # Handle file removals
-    if request.POST.get('remove_image') == 'true':
-        entry.image = None
-    if request.POST.get('remove_video') == 'true':
-        entry.video = None
-    if request.POST.get('remove_document') == 'true':
-        entry.document = None
-    if request.POST.get('remove_voice_note') == 'true':
-        entry.voice_note = None
+        # Handle file removals
+        if request.POST.get('remove_image') == 'true':
+            entry.image = None
+        if request.POST.get('remove_video') == 'true':
+            entry.video = None
+        if request.POST.get('remove_document') == 'true':
+            entry.document = None
+        if request.POST.get('remove_voice_note') == 'true':
+            entry.voice_note = None
 
-    # Handle file uploads
-    try:
+        # Handle image upload
         if 'image' in request.FILES:
             image = request.FILES['image']
             if image.content_type not in allowed_image_types:
                 return Response({"error": "Only image files (.jpeg, .png, .gif, .bmp) are allowed."}, status=status.HTTP_400_BAD_REQUEST)
-            entry.image = upload_to_s3(image, 'entry_images', image.name)
+            image_url = upload_to_s3(image, 'entry_images', image.name)
+            entry.image = image_url
 
+        # Handle video upload
         if 'video' in request.FILES:
             video = request.FILES['video']
             if video.content_type not in allowed_video_types:
                 return Response({"error": "Only video files (.mp4, .avi, .mpeg, .mov) are allowed."}, status=status.HTTP_400_BAD_REQUEST)
-            entry.video = upload_to_s3(video, 'entry_videos', video.name)
+            video_url = upload_to_s3(video, 'entry_videos', video.name)
+            entry.video = video_url
 
+        # Handle document upload
         if 'document' in request.FILES:
             document = request.FILES['document']
             if document.content_type not in allowed_document_types:
                 return Response({"error": "Only documents (.pdf, .doc, .docx, .txt) are allowed."}, status=status.HTTP_400_BAD_REQUEST)
-            entry.document = upload_to_s3(document, 'entry_documents', document.name)
+            document_url = upload_to_s3(document, 'entry_documents', document.name)
+            entry.document = document_url
 
+        # Handle voice note upload
         if 'voice_note' in request.FILES:
             voice_note = request.FILES['voice_note']
             if voice_note.content_type not in allowed_audio_types:
                 return Response({"error": "Only audio files (.webm, .mp3, .wav) are allowed."}, status=status.HTTP_400_BAD_REQUEST)
-            entry.voice_note = upload_to_s3(voice_note, 'voice_notes', voice_note.name)
+            voice_note_url = upload_to_s3(voice_note, 'voice_notes', voice_note.name)
+            entry.voice_note = voice_note_url
 
-    except Exception as e:
-        logger.error(f"Failed to upload file: {str(e)}")
-        return Response({"error": f"Failed to upload file: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-    # Analyze sentiment if content is updated
-    if 'content' in serializer.validated_data:
-        try:
+        # Analyze sentiment if content is updated
+        if 'content' in serializer.validated_data:
             entry.sentiment = analyze_sentiment(serializer.validated_data['content'])
-        except Exception as e:
-            logger.error(f"Error calling DeepSeek API: {str(e)}")
-            entry.sentiment = 'neutral'  # Fallback to neutral if sentiment analysis fails
 
-    # Save the updated entry
-    entry.save()
+        # Save the updated entry
+        entry.save()
 
-    # Serialize the updated entry for the response
-    response_serializer = EntrySerializer(entry, context={'request': request})
-    return Response(response_serializer.data, status=status.HTTP_200_OK)
+        # Serialize the updated entry for the response
+        response_serializer = EntrySerializer(entry, context={'request': request})
+        return Response(response_serializer.data, status=status.HTTP_200_OK)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
@@ -525,7 +546,7 @@ def get_entries_by_month(request, year, month):
         return Response(serializer.data)
     except Exception as e:
         return Response({'error': str(e)}, status=400)
-
+    
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def update_email(request):
@@ -687,4 +708,4 @@ def social_login_redirect(request):
     refresh = RefreshToken.for_user(user)
     frontend_url = getattr(settings, 'FRONTEND_URL', 'http://127.0.0.1:3000')  # Fallback to localhost for dev
     redirect_url = f"{frontend_url}/login?access={str(refresh.access_token)}&refresh={str(refresh)}"
-    return redirect(redirect_url)
+    return redirect(redirect_url)    
