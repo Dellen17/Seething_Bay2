@@ -205,36 +205,14 @@ def logout_user(request):
 @permission_classes([IsAuthenticated])
 def search_entries(request):
     """
-    Search and filter entries based on keyword, media type, and date for the authenticated user.
+    Search entries based on keyword for the authenticated user.
     """
     keyword = request.GET.get('keyword', '')
-    media_types = request.GET.getlist('mediaType[]', [])
-    date = request.GET.get('date', '')
 
     query = Q(author=request.user)
 
     if keyword:
         query &= Q(content__icontains=keyword)
-
-    if media_types:
-        media_query = Q()
-        for media_type in media_types:
-            if media_type == 'image':
-                media_query |= Q(image__isnull=False) & ~Q(image='')
-            elif media_type == 'video':
-                media_query |= Q(video__isnull=False) & ~Q(video='')
-            elif media_type == 'document':
-                media_query |= Q(document__isnull=False) & ~Q(document='')
-            elif media_type == 'voice_note':
-                media_query |= Q(voice_note__isnull=False) & ~Q(voice_note='')
-        query &= media_query
-
-    if date:
-        try:
-            parsed_date = datetime.strptime(date, '%Y-%m-%d').date()
-            query &= Q(timestamp__date=parsed_date)
-        except ValueError:
-            return Response({'error': 'Invalid date format. Use YYYY-MM-DD.'}, status=400)
 
     entries = Entry.objects.filter(query).order_by('-timestamp')
 
