@@ -5,6 +5,7 @@ import EntryList from './EntryList';
 import AddEntry from './AddEntry';
 import EditEntry from './EditEntry';
 import SearchForm from './SearchForm';
+import Modal from './Modal'; // Import the Modal component
 import '../styles/Dashboard.css';
 
 const Dashboard = () => {
@@ -14,12 +15,19 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [editingEntry, setEditingEntry] = useState(null);
-  const [showEditor, setShowEditor] = useState(false);
   const [filters, setFilters] = useState({ keyword: '', mediaType: [], date: '' });
   const [isSearchLoading, setIsSearchLoading] = useState(false);
   const [isFiltered, setIsFiltered] = useState(false);
 
+  // State for modal visibility
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const navigate = useNavigate();
+
+  // Toggle modal
+  const toggleModal = () => {
+    setIsModalOpen((prev) => !prev);
+  };
 
   // Fetch filtered entries based on search form inputs
   const handleSearch = async (filters) => {
@@ -116,7 +124,7 @@ const Dashboard = () => {
     } else {
       fetchEntries();
     }
-    setShowEditor(false);
+    toggleModal(); // Close the modal after adding an entry
   };
 
   // Update an entry in the state
@@ -143,26 +151,28 @@ const Dashboard = () => {
         isLoading={isSearchLoading}
       />
 
+      {/* Floating "+" Button */}
       <button
         className="toggle-editor-button"
-        onClick={() => setShowEditor((prev) => !prev)}
-        title={showEditor ? 'Close Editor' : 'Add New Entry'}
+        onClick={toggleModal} // Open the modal
+        title={isModalOpen ? 'Close Editor' : 'Add New Entry'}
       >
-        {showEditor ? '✖' : '+'}
+        {isModalOpen ? '✖' : '+'}
       </button>
 
-      {showEditor && (
-        <AddEntry 
-          onEntryAdded={handleEntryAdded} 
-          setShowEditor={setShowEditor}
+      {/* Modal for AddEntry */}
+      <Modal isOpen={isModalOpen} onClose={toggleModal}>
+        <AddEntry
+          onEntryAdded={handleEntryAdded}
+          setShowEditor={() => toggleModal()} // Ensure modal closes when canceled
         />
-      )}
+      </Modal>
 
       {editingEntry ? (
-        <EditEntry 
-          entry={editingEntry} 
+        <EditEntry
+          entry={editingEntry}
           onUpdateEntry={handleUpdateEntry}
-          onCancel={() => setEditingEntry(null)} 
+          onCancel={() => setEditingEntry(null)}
         />
       ) : (
         <EntryList

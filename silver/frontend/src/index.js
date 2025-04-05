@@ -5,6 +5,11 @@ import App from './App';
 import './styles/Global.css';
 import reportWebVitals from './reportWebVitals';
 
+// Ensure you have a div with id="modal-root" for modals
+const modalRoot = document.createElement('div');
+modalRoot.id = 'modal-root';
+document.body.appendChild(modalRoot);
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
