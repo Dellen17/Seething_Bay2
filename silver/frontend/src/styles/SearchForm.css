@@ -68,42 +68,6 @@
   margin-right: 8px;
 }
 
-.filters-container {
-  margin-top: 20px;
-  border: 1px solid #444;
-  padding: 15px;
-  border-radius: 10px;
-  background-color: #1c1c1c;
-}
-
-.filters-heading {
-  margin-bottom: 10px;
-  font-size: 18px;
-  font-weight: bold;
-  color: #ffffff;
-}
-
-.filter-option {
-  margin-bottom: 10px;
-  font-size: 16px;
-  color: #ffffff;
-}
-
-.filter-option label {
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-}
-
-.filter-option input[type="checkbox"] {
-  margin-right: 10px;
-  accent-color: #1da1f2;
-}
-
-.filter-icon {
-  margin-right: 8px;
-}
-
 /* Media query for smaller screens (e.g., Galaxy S8 at 360px width) */
 @media (max-width: 400px) {
   .search-form {

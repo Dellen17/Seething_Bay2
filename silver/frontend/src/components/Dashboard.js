@@ -5,7 +5,7 @@ import EntryList from './EntryList';
 import AddEntry from './AddEntry';
 import EditEntry from './EditEntry';
 import SearchForm from './SearchForm';
-import Modal from './Modal'; // Import the Modal component
+import Modal from './Modal';
 import '../styles/Dashboard.css';
 
 const Dashboard = () => {
@@ -15,9 +15,8 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [editingEntry, setEditingEntry] = useState(null);
-  const [filters, setFilters] = useState({ keyword: '', mediaType: [], date: '' });
+  const [filters, setFilters] = useState({ keyword: '' }); // Simplified filters
   const [isSearchLoading, setIsSearchLoading] = useState(false);
-  const [isFiltered, setIsFiltered] = useState(false);
 
   // State for modal visibility
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -29,18 +28,48 @@ const Dashboard = () => {
     setIsModalOpen((prev) => !prev);
   };
 
-  // Fetch filtered entries based on search form inputs
+  // Fetch entries (for initial load or infinite scroll)
+  const fetchEntries = useCallback(async (page = 1, keyword = '') => {
+    setLoading(true);
+    try {
+      const params = { page };
+      if (keyword) params.keyword = keyword;
+
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/entries/`, {
+        params,
+        headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
+      });
+
+      const { entries: fetchedEntries, totalPages } = response.data.results;
+      if (page === 1) {
+        setEntries(fetchedEntries); // Reset entries on first page
+      } else {
+        setEntries((prevEntries) => {
+          // Avoid duplicates by filtering out entries that already exist
+          const existingIds = new Set(prevEntries.map((entry) => entry.id));
+          const newEntries = fetchedEntries.filter((entry) => !existingIds.has(entry.id));
+          return [...prevEntries, ...newEntries];
+        });
+      }
+      setTotalPages(totalPages);
+      setCurrentPage(page);
+      setHasMore(page < totalPages);
+    } catch (err) {
+      console.error('Failed to fetch entries', err);
+      if (err.response?.status === 401) navigate('/login');
+    } finally {
+      setLoading(false);
+    }
+  }, [navigate]);
+
+  // Fetch filtered entries based on keyword
   const handleSearch = async (filters) => {
     setIsSearchLoading(true);
+    setEntries([]); // Reset entries before search
+    setCurrentPage(1); // Reset to first page
+    setHasMore(true); // Reset hasMore
     try {
-      const params = {
-        keyword: filters.keyword || '',
-        date: filters.date || '',
-        page: 1,
-      };
-      if (filters.mediaType.length > 0) {
-        params['mediaType[]'] = filters.mediaType;
-      }
+      const params = { keyword: filters.keyword || '', page: 1 };
 
       const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/search/`, {
         params,
@@ -52,7 +81,6 @@ const Dashboard = () => {
       setTotalPages(totalPages);
       setCurrentPage(1);
       setHasMore(totalPages > 1);
-      setIsFiltered(true);
     } catch (error) {
       console.error('Error fetching filtered entries:', error);
       if (error.response?.status === 401) navigate('/login');
@@ -61,46 +89,17 @@ const Dashboard = () => {
     }
   };
 
-  // Fetch unfiltered entries (initial load or infinite scroll)
-  const fetchEntries = useCallback(async (page = 1) => {
-    setLoading(true);
-    try {
-      const params = { page };
-      if (filters.keyword) params.keyword = filters.keyword;
-      if (filters.date) params.date = filters.date;
-      if (filters.mediaType.length > 0) params['mediaType[]'] = filters.mediaType;
-
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/entries/`, {
-        params,
-        headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
-      });
-
-      const { entries: fetchedEntries, totalPages } = response.data.results;
-      setEntries((prevEntries) => [...prevEntries, ...fetchedEntries]);
-      setTotalPages(totalPages);
-      setCurrentPage(page);
-      setHasMore(page < totalPages);
-    } catch (err) {
-      console.error('Failed to fetch entries', err);
-      if (err.response?.status === 401) navigate('/login');
-    } finally {
-      setLoading(false);
-    }
-  }, [filters, navigate]);
-
-  // Initial fetch only on mount
+  // Initial fetch on mount
   useEffect(() => {
-    if (!isFiltered) {
-      fetchEntries();
-    }
-  }, [fetchEntries, isFiltered]);
+    fetchEntries(1, filters.keyword);
+  }, [fetchEntries]);
 
   // Infinite scroll using IntersectionObserver
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && hasMore && !loading) {
-          fetchEntries(currentPage + 1);
+          fetchEntries(currentPage + 1, filters.keyword);
         }
       },
       { threshold: 0.5 }
@@ -112,19 +111,15 @@ const Dashboard = () => {
     return () => {
       if (target) observer.unobserve(target);
     };
-  }, [fetchEntries, currentPage, hasMore, loading]);
+  }, [fetchEntries, currentPage, hasMore, loading, filters.keyword]);
 
   // Re-fetch entries after adding a new one
   const handleEntryAdded = () => {
     setEntries([]);
     setCurrentPage(1);
     setHasMore(true);
-    if (isFiltered) {
-      handleSearch(filters);
-    } else {
-      fetchEntries();
-    }
-    toggleModal(); // Close the modal after adding an entry
+    fetchEntries(1, filters.keyword);
+    toggleModal();
   };
 
   // Update an entry in the state
@@ -142,11 +137,11 @@ const Dashboard = () => {
         setFilters={setFilters}
         onSearch={handleSearch}
         onClear={() => {
-          setFilters({ keyword: '', mediaType: [], date: '' });
+          setFilters({ keyword: '' });
           setEntries([]);
           setCurrentPage(1);
           setHasMore(true);
-          fetchEntries();
+          fetchEntries(1);
         }}
         isLoading={isSearchLoading}
       />
@@ -154,7 +149,7 @@ const Dashboard = () => {
       {/* Floating "+" Button */}
       <button
         className="toggle-editor-button"
-        onClick={toggleModal} // Open the modal
+        onClick={toggleModal}
         title={isModalOpen ? 'Close Editor' : 'Add New Entry'}
       >
         {isModalOpen ? '✖' : '+'}
@@ -164,7 +159,7 @@ const Dashboard = () => {
       <Modal isOpen={isModalOpen} onClose={toggleModal}>
         <AddEntry
           onEntryAdded={handleEntryAdded}
-          setShowEditor={() => toggleModal()} // Ensure modal closes when canceled
+          setShowEditor={() => toggleModal()}
         />
       </Modal>
 

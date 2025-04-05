@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaSearch, FaFile, FaImage, FaVideo, FaMicrophone } from 'react-icons/fa';
+import { FaSearch } from 'react-icons/fa';
 import LoadingSpinner from './LoadingSpinner';
 import '../styles/SearchForm.css';
 
@@ -8,34 +8,19 @@ const SearchForm = ({ filters, setFilters, onSearch, onClear, isLoading }) => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    onSearch(filters, 1);
+    onSearch(filters);
   };
 
-  const toggleFilters = () => {
-    setShowFilters(!showFilters);
-  };
-
-  // Clear all filters and fetch unfiltered entries
+  // Clear the search input and fetch unfiltered entries
   const clearSearch = () => {
-    setFilters({ keyword: '', mediaType: [], date: '' });
+    setFilters({ keyword: '' });
     if (onClear) onClear();
   };
 
   // Handle keyword change
   const handleKeywordChange = (e) => {
     const { value } = e.target;
-    setFilters((prevFilters) => ({ ...prevFilters, keyword: value }));
-  };
-
-  // Handle media type filter change (single selection)
-  const handleMediaTypeChange = (e) => {
-    const { value, checked } = e.target;
-    setFilters((prevFilters) => {
-      const mediaType = checked ? [value] : [];
-      // If unchecking, trigger unfiltered fetch
-      if (!checked && onClear) onClear();
-      return { ...prevFilters, mediaType };
-    });
+    setFilters({ keyword: value });
   };
 
   return (
@@ -46,11 +31,11 @@ const SearchForm = ({ filters, setFilters, onSearch, onClear, isLoading }) => {
             type="text"
             placeholder="Search your entries"
             value={filters.keyword}
-            onClick={toggleFilters}
+            onClick={() => setShowFilters(false)} // No filters to show
             onChange={handleKeywordChange}
             className="search-input"
           />
-          {(filters.keyword || filters.mediaType.length > 0) && (
+          {filters.keyword && (
             <button
               type="button"
               onClick={clearSearch}
@@ -71,68 +56,6 @@ const SearchForm = ({ filters, setFilters, onSearch, onClear, isLoading }) => {
           )}
         </button>
       </form>
-
-      {showFilters && (
-        <div className="filters-container">
-          <h4 className="filters-heading">Filters</h4>
-
-          <div className="filter-option">
-            <label>
-              <input
-                type="checkbox"
-                name="mediaType"
-                value="document"
-                checked={filters.mediaType.includes('document')}
-                onChange={handleMediaTypeChange}
-              />
-              <FaFile className="filter-icon" />
-              <span>Documents</span>
-            </label>
-          </div>
-
-          <div className="filter-option">
-            <label>
-              <input
-                type="checkbox"
-                name="mediaType"
-                value="image"
-                checked={filters.mediaType.includes('image')}
-                onChange={handleMediaTypeChange}
-              />
-              <FaImage className="filter-icon" />
-              <span>Images</span>
-            </label>
-          </div>
-
-          <div className="filter-option">
-            <label>
-              <input
-                type="checkbox"
-                name="mediaType"
-                value="video"
-                checked={filters.mediaType.includes('video')}
-                onChange={handleMediaTypeChange}
-              />
-              <FaVideo className="filter-icon" />
-              <span>Videos</span>
-            </label>
-          </div>
-
-          <div className="filter-option">
-            <label>
-              <input
-                type="checkbox"
-                name="mediaType"
-                value="voice_note"
-                checked={filters.mediaType.includes('voice_note')}
-                onChange={handleMediaTypeChange}
-              />
-              <FaMicrophone className="filter-icon" />
-              <span>Voice Notes</span>
-            </label>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

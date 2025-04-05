@@ -59,15 +59,15 @@ const About = () => {
 
       <h2>Our Mission</h2>
       <p>
-        At Seething Bay, our mission is to provide a safe and intuitive space for self-reflection and emotional
-        well-being. We believe that journaling can be a powerful tool for personal growth, and we're here to
+        The aim is to provide a safe and intuitive space for self-reflection and emotional
+        well-being. I believe that journaling can be a powerful tool for personal growth, ii am here to
         make it easier and more meaningful for you.
       </p>
 
       <h2>Contact Us</h2>
       <p>
-        If you have any questions, feedback, or suggestions, feel free to reach out to us at{' '}
-        <a href="mailto:support@seethingbay.com">support@seethingbay.com</a>. We'd love to hear from you!
+        If you have any questions, feedback, or suggestions, feel free to reach out to me at{' '}
+        <a href="mailto:gabrieldellen22@gmail.com">gabrieldelen22@gmail.com</a>. I'd love to hear from you!
       </p>
     </div>
   );
