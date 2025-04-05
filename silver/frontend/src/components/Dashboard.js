@@ -15,7 +15,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [editingEntry, setEditingEntry] = useState(null);
-  const [filters, setFilters] = useState({ keyword: '' }); // Simplified filters
+  const [filters, setFilters] = useState({ keyword: '' });
   const [isSearchLoading, setIsSearchLoading] = useState(false);
 
   // State for modal visibility
@@ -32,10 +32,9 @@ const Dashboard = () => {
   const fetchEntries = useCallback(async (page = 1, keyword = '') => {
     setLoading(true);
     try {
-      const params = { page };
-      if (keyword) params.keyword = keyword;
+      const params = { page, keyword }; // Always pass keyword, even if empty
 
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/entries/`, {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/search/`, {
         params,
         headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
       });

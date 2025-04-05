@@ -164,8 +164,8 @@
 /* Mobile Adjustments */
 @media (max-width: 576px) {
   .mood-tracker-container {
-    margin: 20px auto;
-    padding: 15px;
+    margin: 80px auto 15px auto; /* Increased top margin to 80px to clear the Navbar */
+    padding: 15px 15px 15px 15px; /* Added top padding for extra spacing */
     overflow-x: hidden;
   }
 

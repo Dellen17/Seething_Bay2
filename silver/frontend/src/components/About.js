@@ -67,7 +67,7 @@ const About = () => {
       <h2>Contact Us</h2>
       <p>
         If you have any questions, feedback, or suggestions, feel free to reach out to me at{' '}
-        <a href="mailto:gabrieldellen22@gmail.com">gabrieldelen22@gmail.com</a>. I'd love to hear from you!
+        <a href="mailto:gabrieldellen22@gmail.com">gabrieldellen22@gmail.com</a>. I'd love to hear from you!
       </p>
     </div>
   );
