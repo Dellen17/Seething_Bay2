@@ -30,6 +30,7 @@
     right: 10px;
     background: none;
     border: none;
+    border-radius: 50%;
     color: #fff;
     font-size: 1.5rem;
     cursor: pointer;
@@ -37,7 +38,7 @@
   }
   
   .modal-close:hover {
-    color: #1da1f2;
+    color: rgba(255, 255, 255, 0.3);
   }
   
   @media (max-width: 576px) {

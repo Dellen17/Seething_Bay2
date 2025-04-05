@@ -48,7 +48,7 @@ const Dashboard = () => {
       });
 
       const { entries: fetchedEntries, totalPages } = response.data.results;
-      setEntries(fetchedEntries);
+      setEntries(fetchedEntries); // Replace entries state with filtered results
       setTotalPages(totalPages);
       setCurrentPage(1);
       setHasMore(totalPages > 1);
@@ -76,7 +76,7 @@ const Dashboard = () => {
       });
 
       const { entries: fetchedEntries, totalPages } = response.data.results;
-      setEntries((prevEntries) => [...prevEntries, ...fetchedEntries]);
+      setEntries((prevEntries) => [...prevEntries, ...fetchedEntries]); // Append entries for infinite scroll
       setTotalPages(totalPages);
       setCurrentPage(page);
       setHasMore(page < totalPages);
@@ -146,7 +146,7 @@ const Dashboard = () => {
           setEntries([]);
           setCurrentPage(1);
           setHasMore(true);
-          fetchEntries();
+          fetchEntries(); // Fetch all entries when clearing filters
         }}
         isLoading={isSearchLoading}
       />
