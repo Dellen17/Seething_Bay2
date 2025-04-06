@@ -475,7 +475,7 @@ def user_profile(request):
             'username': user.username,
             'email': user.email,
             'date_joined': user.date_joined,
-            'profile_picture': profile.profile_picture.url if profile.profile_picture else None,
+            'profile_picture': profile.profile_picture if profile.profile_picture else None,
             'total_entries': total_entries,
             **entry_counts,
         }
