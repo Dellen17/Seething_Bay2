@@ -3,7 +3,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0017_initial'),
+        ('api', '0017_alter_entry_document_alter_entry_image_and_more'),
     ]
 
     operations = [
