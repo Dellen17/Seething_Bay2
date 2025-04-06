@@ -488,23 +488,38 @@ def user_profile(request):
 @permission_classes([IsAuthenticated])
 def upload_profile_picture(request):
     """
-    Upload or update the user's profile picture.
+    Upload or update the user's profile picture to S3.
     """
     user = request.user
     profile, created = Profile.objects.get_or_create(user=user)
 
     if 'profile_picture' in request.FILES:
-        if profile.profile_picture:
-            default_storage.delete(profile.profile_picture.path)
+        # Validate image type
+        allowed_image_types = ['image/jpeg', 'image/png', 'image/gif', 'image/bmp']
+        image = request.FILES['profile_picture']
+        if image.content_type not in allowed_image_types:
+            return Response(
+                {"error": "Only image files (.jpeg, .png, .gif, .bmp) are allowed."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-        profile.profile_picture = request.FILES['profile_picture']
-        profile.save()
+        try:
+            # Upload the image to S3
+            image_url = upload_to_s3(image, 'profile_pictures', image.name)
+            # Store the S3 URL in the profile_picture field
+            profile.profile_picture = image_url
+            profile.save()
 
-        profile_picture_url = request.build_absolute_uri(profile.profile_picture.url)
-        return Response({
-            'message': 'Profile picture updated successfully.',
-            'profile_picture': profile_picture_url,
-        })
+            return Response({
+                'message': 'Profile picture updated successfully.',
+                'profile_picture': image_url,
+            })
+        except Exception as e:
+            logger.error(f"Failed to upload profile picture: {str(e)}")
+            return Response(
+                {"error": f"Failed to upload profile picture: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
     else:
         return Response({'error': 'No file provided.'}, status=400)
 
