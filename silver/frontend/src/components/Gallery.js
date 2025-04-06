@@ -14,39 +14,46 @@ const Gallery = () => {
     return location.pathname.includes(path) ? 'active' : '';
   };
 
+  // Check if we're on the main /gallery route
+  const isMainGalleryRoute = location.pathname === '/gallery';
+
   return (
     <div className="gallery-container">
-      <button className="back-button" onClick={() => navigate('/')}>
-        <FaArrowLeft className="back-icon" />
-        <span>Back to Dashboard</span>
-      </button>
+      {isMainGalleryRoute && (
+        <>
+          <button className="back-button" onClick={() => navigate('/')}>
+            <FaArrowLeft className="back-icon" />
+            <span>Back to Dashboard</span>
+          </button>
 
-      <h2>Gallery</h2>
-      {loading && <p className="loading-message">Loading gallery...</p>}
-      {error && <p className="error-message">{error}</p>}
+          <h2>Gallery</h2>
+          {loading && <p className="loading-message">Loading gallery...</p>}
+          {error && <p className="error-message">{error}</p>}
 
-      <div className="gallery-options">
-        <Link to="images" className={`gallery-option ${getActiveClass('images')}`}>
-          <FaImage className="gallery-icon" />
-          <span>Images</span>
-        </Link>
-        <Link to="videos" className={`gallery-option ${getActiveClass('videos')}`}>
-          <FaVideo className="gallery-icon" />
-          <span>Videos</span>
-        </Link>
-        <Link to="documents" className={`gallery-option ${getActiveClass('documents')}`}>
-          <FaFile className="gallery-icon" />
-          <span>Documents</span>
-        </Link>
-        <Link to="voice-notes" className={`gallery-option ${getActiveClass('voice-notes')}`}>
-          <FaMicrophone className="gallery-icon" />
-          <span>Voice Notes</span>
-        </Link>
-      </div>
+          <div className="gallery-options">
+            <Link to="images" className={`gallery-option ${getActiveClass('images')}`}>
+              <FaImage className="gallery-icon" />
+              <span>Images</span>
+            </Link>
+            <Link to="videos" className={`gallery-option ${getActiveClass('videos')}`}>
+              <FaVideo className="gallery-icon" />
+              <span>Videos</span>
+            </Link>
+            <Link to="documents" className={`gallery-option ${getActiveClass('documents')}`}>
+              <FaFile className="gallery-icon" />
+              <span>Documents</span>
+            </Link>
+            <Link to="voice-notes" className={`gallery-option ${getActiveClass('voice-notes')}`}>
+              <FaMicrophone className="gallery-icon" />
+              <span>Voice Notes</span>
+            </Link>
+          </div>
+        </>
+      )}
 
       <div className="gallery-content">
         <Outlet />
-        {location.pathname === '/gallery' && (
+        {isMainGalleryRoute && (
           <p className="gallery-placeholder">
             Select a category above to view your media.
           </p>

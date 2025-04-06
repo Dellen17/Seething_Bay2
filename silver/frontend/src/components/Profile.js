@@ -28,7 +28,7 @@ const Profile = () => {
                 setUser(response.data);
                 setProfilePicture(
                     response.data.profile_picture
-                        ? response.data.profile_picture  // Removed process.env.REACT_APP_API_URL
+                        ? `${response.data.profile_picture}?t=${new Date().getTime()}`
                         : null
                 );
             })
@@ -56,7 +56,8 @@ const Profile = () => {
                         },
                     }
                 );
-                setProfilePicture(response.data.profile_picture);
+                // Append a timestamp to the URL to avoid caching
+                setProfilePicture(`${response.data.profile_picture}?t=${new Date().getTime()}`);
                 setIsEditing(false);
                 setSuccessMessage('Profile picture updated successfully!');
                 setTimeout(() => setSuccessMessage(''), 3000); // Clear after 3 seconds
@@ -66,6 +67,11 @@ const Profile = () => {
                 setIsUploading(false);
             }
         }
+    };
+
+    // Handle image load error by falling back to the placeholder
+    const handleImageError = () => {
+        setProfilePicture(null);
     };
 
     if (error) return <p className="error-message">{error}</p>;
@@ -82,7 +88,12 @@ const Profile = () => {
                     <h2>{user.username}'s Profile</h2>
                     <div className="profile-picture-container">
                         {profilePicture ? (
-                            <img src={profilePicture} alt="Profile" className="profile-picture" />
+                            <img
+                                src={profilePicture}
+                                alt="Profile"
+                                className="profile-picture"
+                                onError={handleImageError}
+                            />
                         ) : (
                             <div className="profile-picture-placeholder">No Picture</div>
                         )}

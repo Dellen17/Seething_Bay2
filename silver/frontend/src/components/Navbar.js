@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom'; // Import Link for navigation
 import '../styles/Navbar.css';
 
 const Navbar = ({ isSidebarOpen, toggleMobileSidebar }) => {
@@ -7,7 +8,9 @@ const Navbar = ({ isSidebarOpen, toggleMobileSidebar }) => {
       <button className="mobile-hamburger" onClick={toggleMobileSidebar}>
         ☰
       </button>
-      <h1 className="navbar-logo">Seething Bay</h1>
+      <Link to="/" className="navbar-logo">
+        <h1>Seething Bay</h1>
+      </Link>
     </header>
   );
 };
