@@ -35,10 +35,6 @@ from rest_framework.pagination import PageNumberPagination # type: ignore
 from urllib.parse import urlencode
 from django.core.exceptions import ValidationError
 from .utils import upload_to_s3, analyze_sentiment
-import logging
-
-# Set up logging
-logger = logging.getLogger(__name__)
 
 User = get_user_model()
 
@@ -257,11 +253,6 @@ def get_entry(request, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_entry(request):
-    # Log the contents of request.FILES for debugging
-    logger.info(f"request.FILES contents: {list(request.FILES.keys())}")
-
-    # Instead of copying request.data, create a new dictionary with non-file fields
-    # Use request.POST to get form fields (content, mood, etc.)
     data = {}
     for key in request.POST:
         # Handle cases where a field might have multiple values (e.g., lists)
@@ -287,17 +278,12 @@ def create_entry(request):
         # Handle image upload
         if 'image' in request.FILES:
             image = request.FILES['image']
-            logger.info(f"Received image: {image.name}, content_type: {image.content_type}")
             if image.content_type not in allowed_image_types:
-                logger.error(f"Invalid image type: {image.content_type}")
                 return Response({"error": "Only image files (.jpeg, .png, .gif, .bmp) are allowed."}, status=status.HTTP_400_BAD_REQUEST)
             try:
                 image_url = upload_to_s3(image, 'entry_images', image.name)
-                logger.info(f"Uploaded image to S3, URL: {image_url}")
                 entry.image = image_url
-                logger.info(f"Set entry.image to: {entry.image}")
             except Exception as e:
-                logger.error(f"Failed to upload image: {str(e)}")
                 return Response({"error": f"Failed to upload image: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         # Handle video upload
@@ -309,7 +295,6 @@ def create_entry(request):
                 video_url = upload_to_s3(video, 'entry_videos', video.name)
                 entry.video = video_url
             except Exception as e:
-                logger.error(f"Failed to upload video: {str(e)}")
                 return Response({"error": f"Failed to upload video: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         # Handle document upload
@@ -321,7 +306,6 @@ def create_entry(request):
                 document_url = upload_to_s3(document, 'entry_documents', document.name)
                 entry.document = document_url
             except Exception as e:
-                logger.error(f"Failed to upload document: {str(e)}")
                 return Response({"error": f"Failed to upload document: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         # Handle voice note upload
@@ -333,7 +317,6 @@ def create_entry(request):
                 voice_note_url = upload_to_s3(voice_note, 'voice_notes', voice_note.name)
                 entry.voice_note = voice_note_url
             except Exception as e:
-                logger.error(f"Failed to upload voice note: {str(e)}")
                 return Response({"error": f"Failed to upload voice note: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         # Analyze sentiment if content is provided
@@ -341,19 +324,14 @@ def create_entry(request):
             try:
                 entry.sentiment = analyze_sentiment(serializer.validated_data['content'])
             except Exception as e:
-                logger.error(f"Error calling DeepSeek API: {str(e)}")
-                entry.sentiment = 'neutral'  # Fallback to neutral if sentiment analysis fails
+                entry.sentiment = 'neutral'
 
         # Save the entry to the database
-        logger.info("Saving entry to database...")
         entry.save()
-        logger.info(f"Entry saved with ID: {entry.id}, image: {entry.image}")
 
         # Serialize the saved entry for the response
         response_serializer = EntrySerializer(entry, context={'request': request})
         return Response(response_serializer.data, status=status.HTTP_201_CREATED)
-
-    logger.error(f"Serializer validation failed: {serializer.errors}")
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['PUT'])
@@ -515,7 +493,6 @@ def upload_profile_picture(request):
                 'profile_picture': image_url,
             })
         except Exception as e:
-            logger.error(f"Failed to upload profile picture: {str(e)}")
             return Response(
                 {"error": f"Failed to upload profile picture: {str(e)}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR

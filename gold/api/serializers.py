@@ -36,9 +36,8 @@ class EntrySerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
     def to_representation(self, instance):
-        # When returning the data, ensure the fields are represented as URLs
+        # When returning the data, this ensures the fields are represented as URLs
         representation = super().to_representation(instance)
-        # The fields are already URLs in the database, so no conversion needed
         return representation
 
 class ProfileSerializer(serializers.ModelSerializer):
