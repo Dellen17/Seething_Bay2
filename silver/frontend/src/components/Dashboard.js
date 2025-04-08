@@ -41,10 +41,10 @@ const Dashboard = () => {
 
       const { entries: fetchedEntries, totalPages } = response.data.results;
       if (page === 1) {
-        setEntries(fetchedEntries); // Reset entries on first page
+        setEntries(fetchedEntries);
       } else {
         setEntries((prevEntries) => {
-          // Avoid duplicates by filtering out entries that already exist
+          // This avoids duplicates by filtering out entries that already exist
           const existingIds = new Set(prevEntries.map((entry) => entry.id));
           const newEntries = fetchedEntries.filter((entry) => !existingIds.has(entry.id));
           return [...prevEntries, ...newEntries];
@@ -64,9 +64,9 @@ const Dashboard = () => {
   // Fetch filtered entries based on keyword
   const handleSearch = async (filters) => {
     setIsSearchLoading(true);
-    setEntries([]); // Reset entries before search
-    setCurrentPage(1); // Reset to first page
-    setHasMore(true); // Reset hasMore
+    setEntries([]);
+    setCurrentPage(1);
+    setHasMore(true);
     try {
       const params = { keyword: filters.keyword || '', page: 1 };
 
@@ -118,7 +118,6 @@ const Dashboard = () => {
     setCurrentPage(1);
     setHasMore(true);
     fetchEntries(1, filters.keyword);
-    // Removed toggleModal() to avoid double-toggling
   };
 
   // Update an entry in the state
@@ -145,7 +144,6 @@ const Dashboard = () => {
         isLoading={isSearchLoading}
       />
 
-      {/* Floating "+" Button */}
       <button
         className="toggle-editor-button"
         onClick={toggleModal}
@@ -154,7 +152,6 @@ const Dashboard = () => {
         {isModalOpen ? '✖' : '+'}
       </button>
 
-      {/* Modal for AddEntry */}
       <Modal isOpen={isModalOpen} onClose={toggleModal}>
         <AddEntry
           onEntryAdded={handleEntryAdded}
@@ -186,10 +183,8 @@ const Dashboard = () => {
         />
       )}
 
-      {/* Load More Trigger */}
       {hasMore && !loading && <div id="load-more-trigger" style={{ height: '10px' }}></div>}
 
-      {/* Loading Indicator */}
       {loading && <p>Loading more entries...</p>}
     </div>
   );

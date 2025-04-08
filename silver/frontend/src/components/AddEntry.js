@@ -13,7 +13,7 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
   const [fileType, setFileType] = useState('');
   const [inputMethod, setInputMethod] = useState('text');
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState(''); // Added success state
+  const [success, setSuccess] = useState('');
   const [mood, setMood] = useState('');
   const [audioBlob, setAudioBlob] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
@@ -27,7 +27,7 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
       setMood(entry.mood || '');
       setAudioBlob(null);
       setError('');
-      setSuccess(''); // Reset success message
+      setSuccess('');
     }
   }, [entry]);
 
@@ -157,7 +157,7 @@ const AddEntry = ({ onEntryAdded, entry, onUpdateEntry, setShowEditor }) => {
     <div className="add-entry-container">
       <h3 className="form-title">{entry ? 'Edit Entry' : 'Add New Entry'}</h3>
       {error && <p className="error-message">{error}</p>}
-      {success && <p className="success-message">{success}</p>} {/* Added success message display */}
+      {success && <p className="success-message">{success}</p>}
       <form className="add-entry-form" onSubmit={handleSubmit}>
         <div className="form-group">
           <label className="form-label">Choose Input Method</label>

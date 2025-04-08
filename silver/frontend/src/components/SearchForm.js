@@ -31,7 +31,7 @@ const SearchForm = ({ filters, setFilters, onSearch, onClear, isLoading }) => {
             type="text"
             placeholder="Search your entries"
             value={filters.keyword}
-            onClick={() => setShowFilters(false)} // No filters to show
+            onClick={() => setShowFilters(false)}
             onChange={handleKeywordChange}
             className="search-input"
           />

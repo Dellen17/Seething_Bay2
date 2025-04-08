@@ -161,8 +161,8 @@ const MoodTracker = () => {
           },
           maxRotation: window.innerWidth < 576 ? 45 : 0,
           minRotation: window.innerWidth < 576 ? 45 : 0,
-          maxTicksLimit: window.innerWidth < 576 ? 5 : 10, // Limit number of ticks on mobile
-          autoSkip: true, // Automatically skip labels to prevent overlap
+          maxTicksLimit: window.innerWidth < 576 ? 5 : 10,
+          autoSkip: true,
         },
       },
       y: {

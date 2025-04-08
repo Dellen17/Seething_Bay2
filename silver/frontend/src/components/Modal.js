@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { FaTimes } from 'react-icons/fa'; // For the close icon
+import { FaTimes } from 'react-icons/fa';
 import '../styles/Modal.css';
 
 const Modal = ({ isOpen, onClose, children }) => {
@@ -15,7 +15,7 @@ const Modal = ({ isOpen, onClose, children }) => {
         {children}
       </div>
     </div>,
-    document.getElementById('modal-root') // Ensure you have a div with id="modal-root" in index.html
+    document.getElementById('modal-root')
   );
 };
 
