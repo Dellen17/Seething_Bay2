@@ -94,7 +94,7 @@
   color: #1a91da;
 }
 
-.back-button {
+.register-back-button {
   position: absolute;
   top: 20px;
   left: 20px;
@@ -106,7 +106,7 @@
   transition: color 0.3s ease;
 }
 
-.back-button:hover {
+.register-back-button:hover {
   color: #999;
 }
 
@@ -146,7 +146,7 @@
     margin-bottom: 8px;
   }
 
-  .back-button {
+  .register-back-button {
     top: 15px;
     left: 15px;
     font-size: 0.9rem;
