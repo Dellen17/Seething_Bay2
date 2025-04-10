@@ -41,6 +41,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "https://seething-bay97.vercel.app",
+    "http://localhost:3000",
 ]
 
 CORS_ALLOW_HEADERS = [
@@ -99,9 +100,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-# Database - Using Heroku's PostgreSQL in production, local for dev
+# Database - Works for both Heroku (DATABASE_URL) and local dev (.env)
 DATABASES = {
-    'default': dj_database_url.config(default='postgres://postgres:Dellen42!@localhost:5432/profile')
+    'default': dj_database_url.config(
+        default=f"postgres://{config('DB_USER')}:{config('DB_PASSWORD')}@{config('DB_HOST')}:{config('DB_PORT')}/{config('DB_NAME')}"
+    )
 }
 
 # Password validation
