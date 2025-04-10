@@ -100,10 +100,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-# Database - Works for both Heroku (DATABASE_URL) and local dev (.env)
+# Database - Works with Heroku's DATABASE_URL or local PostgreSQL from .env
 DATABASES = {
     'default': dj_database_url.config(
-        default=f"postgres://{config('DB_USER')}:{config('DB_PASSWORD')}@{config('DB_HOST')}:{config('DB_PORT')}/{config('DB_NAME')}"
+        default=f"postgres://postgres:Dellen42!@localhost:5432/profile",  # Hardcoded fallback for local dev
+        conn_max_age=600  # Optional: keep connections alive
     )
 }
 
