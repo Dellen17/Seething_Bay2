@@ -1,17 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FaTrash, FaEdit } from 'react-icons/fa';
+import Modal from './Modal'; // Import Modal
 import { moods } from './MoodSelector';
 import '../styles/EntryList.css';
 
 const EntryList = ({ entries, handleDelete, handleEdit }) => {
+  const [selectedImage, setSelectedImage] = useState(null); // State for fullscreen image
+
   if (!entries || entries.length === 0) {
     return <p>No entries to display.</p>;
   }
 
+  const handleImageClick = (entry) => {
+    setSelectedImage(entry); // Set the clicked image for fullscreen
+  };
+
+  const handleCloseModal = () => {
+    setSelectedImage(null); // Close the modal
+  };
+
   return (
     <div className="entry-list">
       {entries.map((entry) => {
-        const moodData = moods.find(m => m.label === entry.mood);
+        const moodData = moods.find((m) => m.label === entry.mood);
         const MoodIcon = moodData?.icon;
         const moodColor = moodData?.color || 'gray';
         return (
@@ -30,6 +41,8 @@ const EntryList = ({ entries, handleDelete, handleEdit }) => {
                 src={entry.image_url}
                 alt="Uploaded Visual"
                 className="entry-image"
+                onClick={() => handleImageClick(entry)} // Make image clickable
+                style={{ cursor: 'pointer' }} // Visual cue for clickability
               />
             )}
             {entry.video_url && (
@@ -38,7 +51,7 @@ const EntryList = ({ entries, handleDelete, handleEdit }) => {
                 controls
                 className="entry-video"
               >
-                { /* Your browser does not support video */ }
+                {/* Your browser does not support video */}
               </video>
             )}
             {entry.document_url && (
@@ -69,6 +82,23 @@ const EntryList = ({ entries, handleDelete, handleEdit }) => {
           </div>
         );
       })}
+
+      {/* Fullscreen Modal */}
+      <Modal isOpen={!!selectedImage} onClose={handleCloseModal}>
+        {selectedImage && (
+          <img
+            src={selectedImage.image_url}
+            alt={`Full view of entry ${selectedImage.id}`}
+            style={{
+              maxWidth: '100vw',
+              maxHeight: '100vh',
+              width: 'auto',
+              height: 'auto',
+              objectFit: 'contain', // Keeps aspect ratio while fitting the screen
+            }}
+          />
+        )}
+      </Modal>
     </div>
   );
 };

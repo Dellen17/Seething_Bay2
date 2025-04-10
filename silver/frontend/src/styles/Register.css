@@ -94,39 +94,61 @@
   color: #1a91da;
 }
 
-@media (max-width: 768px) {
-.register-container {
-  padding: 15px;
-  min-height: calc(100vh - 30px);
-}
-
-.register-heading {
-  font-size: 1.5rem;
-  margin-bottom: 15px;
-}
-
-.register-form {
-  gap: 10px;
-}
-
-.register-input {
-  padding: 8px;
-  margin: 5px 0;
-  font-size: 0.9rem;
-}
-
-.register-button {
-  padding: 10px;
-  font-size: 0.9rem;
-}
-
-.password-toggle-icon {
+.back-button {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: none;
+  border: none;
+  color: #666;
   font-size: 1rem;
-  right: 8px;
+  cursor: pointer;
+  transition: color 0.3s ease;
 }
 
-.register-error {
-  font-size: 0.8rem;
-  margin-bottom: 8px;
+.back-button:hover {
+  color: #999;
 }
+
+@media (max-width: 768px) {
+  .register-container {
+    padding: 15px;
+    min-height: calc(100vh - 30px);
+  }
+
+  .register-heading {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+  }
+
+  .register-form {
+    gap: 10px;
+  }
+
+  .register-input {
+    padding: 8px;
+    margin: 5px 0;
+    font-size: 0.9rem;
+  }
+
+  .register-button {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+
+  .password-toggle-icon {
+    font-size: 1rem;
+    right: 8px;
+  }
+
+  .register-error {
+    font-size: 0.8rem;
+    margin-bottom: 8px;
+  }
+
+  .back-button {
+    top: 15px;
+    left: 15px;
+    font-size: 0.9rem;
+  }
 }

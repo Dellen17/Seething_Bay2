@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import LoadingSpinner from './LoadingSpinner';
+import Modal from './Modal'; // Import the Modal component
 import { moods } from './MoodSelector';
 import '../styles/GalleryImages.css';
 
@@ -9,6 +10,7 @@ const GalleryImages = () => {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [selectedImage, setSelectedImage] = useState(null); // State for fullscreen image
   const navigate = useNavigate();
 
   const fetchAllImages = useCallback(async () => {
@@ -43,8 +45,12 @@ const GalleryImages = () => {
     fetchAllImages();
   };
 
-  const handleImageClick = (entryId) => {
-    navigate(`/edit/${entryId}`);
+  const handleImageClick = (entry) => {
+    setSelectedImage(entry); // Set the clicked image for fullscreen view
+  };
+
+  const handleCloseModal = () => {
+    setSelectedImage(null); // Close the modal
   };
 
   return (
@@ -75,7 +81,7 @@ const GalleryImages = () => {
               <div
                 key={entry.id}
                 className="image-item"
-                onClick={() => handleImageClick(entry.id)}
+                onClick={() => handleImageClick(entry)}
               >
                 <img
                   src={entry.image_url}
@@ -103,6 +109,23 @@ const GalleryImages = () => {
       ) : (
         <p className="no-content">No images found.</p>
       )}
+
+      {/* Fullscreen Modal */}
+      <Modal isOpen={!!selectedImage} onClose={handleCloseModal}>
+        {selectedImage && (
+          <img
+            src={selectedImage.image_url}
+            alt={`Full view of entry ${selectedImage.id}`}
+            style={{
+              maxWidth: '100vw',
+              maxHeight: '100vh',
+              width: 'auto',
+              height: 'auto',
+              objectFit: 'contain',
+            }}
+          />
+        )}
+      </Modal>
     </div>
   );
 };

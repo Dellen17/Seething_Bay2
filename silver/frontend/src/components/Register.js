@@ -66,6 +66,9 @@ const Register = () => {
 
   return (
     <div className="register-container">
+      <button className="back-button" onClick={() => navigate('/login')}>
+        ← Back to Login
+      </button>
       <h2 className="register-heading">Register</h2>
       {error && <p className="register-error">{error}</p>}
       <form onSubmit={handleRegister} className="register-form">
