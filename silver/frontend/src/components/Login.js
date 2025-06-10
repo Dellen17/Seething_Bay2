@@ -51,7 +51,7 @@ const Login = () => {
       });
       localStorage.setItem('access_token', response.data.access);
       localStorage.setItem('refresh_token', response.data.refresh);
-      navigate('/');
+      navigate('/dashboard');
     } catch (error) {
       if (error.response?.status === 401) {
         const newAccessToken = await refreshAccessToken();
@@ -63,7 +63,7 @@ const Login = () => {
             });
             localStorage.setItem('access_token', response.data.access);
             localStorage.setItem('refresh_token', response.data.refresh);
-            navigate('/');
+            navigate('/dashboard');
           } catch (err) {
             setError('Invalid login credentials. Please try again.');
           }
@@ -96,7 +96,7 @@ const Login = () => {
     if (access && refresh) {
       localStorage.setItem('access_token', access);
       localStorage.setItem('refresh_token', refresh);
-      navigate('/');
+      navigate('/dashboard');
     } else {
       setError('Google login failed. No tokens received.');
     }

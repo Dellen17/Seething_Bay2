@@ -42,7 +42,7 @@ const Register = () => {
         password: password,
       });
       console.log(response.data);
-      navigate('/login');
+      navigate('/dashboard');
     } catch (error) {
       if (error.response?.data?.email) {
         setError('This email is already registered');

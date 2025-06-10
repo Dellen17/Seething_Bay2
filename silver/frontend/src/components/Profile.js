@@ -79,7 +79,7 @@ const Profile = () => {
 
     return (
         <div className="profile-container">
-            <button className="back-button" onClick={() => navigate('/')}>
+            <button className="back-button" onClick={() => navigate('/dashboard')}>
                 ← Back to Dashboard
             </button>
 

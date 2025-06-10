@@ -18,22 +18,23 @@ import ResetPassword from './components/ResetPassword';
 import ResetPasswordConfirm from './components/ResetPasswordConfirm';
 import Layout from './components/Layout';
 import About from './components/About';
+import Welcome from './components/Welcome';
 
 const App = () => {
   return (
     <Router>
       <Routes>
         {/* Public Routes */}
+        <Route path="/" element={<Welcome />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/password-reset" element={<ResetPassword />} />
         <Route path="/reset-password-confirm/:uidb64/:token" element={<ResetPasswordConfirm />} />
-
         <Route path="/about" element={<About />} />
 
         {/* Protected Routes */}
         <Route
-          path="/"
+          path="/dashboard"
           element={
             <ProtectedRoute>
               <Layout>
@@ -113,7 +114,7 @@ const App = () => {
         <Route path="/logout" element={<Logout />} />
 
         {/* Fallback Routes */}
-        <Route path="*" element={<Navigate to="/login" />} />
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>
   );
