@@ -104,7 +104,7 @@ const EditEntry = ({ entry, onUpdateEntry, onCancel }) => {
         document: response.data.document_url,
         voice_note: response.data.voice_note_url
       });
-      navigate('/');
+      navigate('/dashboard');
       window.scrollTo(0, 0);
     } catch (err) {
       console.error('Error response:', err.response);
@@ -257,7 +257,7 @@ const EditEntry = ({ entry, onUpdateEntry, onCancel }) => {
             className="edit-entry-cancel"
             onClick={() => {
               onCancel();
-              navigate('/');
+              navigate('/dashboard');
               window.scrollTo(0, 0);
             }}
           >

@@ -91,7 +91,7 @@ const CalendarView = () => {
 
   return (
     <div className="calendar-view">
-      <button className="back-button" onClick={() => navigate('/')}>
+      <button className="back-button" onClick={() => navigate('/dashboard')}>
         ← Back to Dashboard
       </button>
 

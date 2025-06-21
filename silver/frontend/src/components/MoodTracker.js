@@ -204,7 +204,7 @@ const MoodTracker = () => {
 
   return (
     <div className="mood-tracker-container">
-      <button className="back-button" onClick={() => navigate('/')}>
+      <button className="back-button" onClick={() => navigate('/dashboard')}>
         ← Back to Dashboard
       </button>
 

@@ -21,7 +21,7 @@ const Gallery = () => {
     <div className="gallery-container">
       {isMainGalleryRoute && (
         <>
-          <button className="back-button" onClick={() => navigate('/')}>
+          <button className="back-button" onClick={() => navigate('/dashboard')}>
             <FaArrowLeft className="back-icon" />
             <span>Back to Dashboard</span>
           </button>

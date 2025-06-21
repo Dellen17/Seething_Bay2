@@ -102,7 +102,7 @@ const Settings = () => {
       {/* Back Button */}
       <button
         className="back-button"
-        onClick={() => navigate('/')}
+        onClick={() => navigate('/dashboard')}
         aria-label="Back to Dashboard"
       >
         ← Back to Dashboard
