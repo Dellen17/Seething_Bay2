@@ -14,7 +14,7 @@ class EntryAdmin(admin.ModelAdmin):
 
     def image_preview(self, obj):
         if obj.image:
-            return format_html('<img src="{}" style="max-width: 100px; max-height: 100px;" />', obj.image.url)
+            return format_html('<img src="{}" style="max-width: 100px; max-height: 100px;" />', obj.image)
         return "No Image"
     image_preview.short_description = 'Image Preview'
 
@@ -22,20 +22,20 @@ class EntryAdmin(admin.ModelAdmin):
         if obj.video:
             return format_html(
                 '<video width="200" controls><source src="{}" type="video/mp4">Your browser does not support the video tag.</video>',
-                obj.video.url
+                obj.video
             )
         return "No Video"
     video_preview.short_description = 'Video Preview'
 
     def document_link(self, obj):
         if obj.document:
-            return format_html('<a href="{}" download>Download Document</a>', obj.document.url)
+            return format_html('<a href="{}" download>Download Document</a>', obj.document)
         return "No Document"
     document_link.short_description = 'Document'
 
     def voice_note_link(self, obj):
         if obj.voice_note:
-            return format_html('<a href="{}" download>Download Voice Note</a>', obj.voice_note.url)
+            return format_html('<a href="{}" download>Download Voice Note</a>', obj.voice_note)
         return "No Voice Note"
     voice_note_link.short_description = 'Voice Note'
 
