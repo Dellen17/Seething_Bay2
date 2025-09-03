@@ -1,2 +1,2 @@
-release: python manage.py migrate
+release: python manage.py migrate && python manage.py collectstatic --noinput && echo "Migrations and static files collected"
 web: gunicorn backend.wsgi:application --log-file -
