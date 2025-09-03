@@ -102,10 +102,12 @@ TEMPLATES = [
     },
 ]
 
-# Database (uses DATABASE_URL from .env)
+# Database (uses DATABASE_URL from .env locally or Render's env in production)
 DATABASES = {
     'default': dj_database_url.config(
-        default=config('DATABASE_URL')
+        default=config('DATABASE_URL'),
+        conn_max_age=600,
+        ssl_require=not DEBUG  # SSL for production (Render), disabled locally
     )
 }
 
@@ -137,17 +139,9 @@ STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Media & File Storage
-USE_S3 = config('USE_S3', default=False, cast=bool)
-
-if USE_S3:
-    # S3 storage
-    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-    MEDIA_URL = f'https://{config("seething-bay-media-2025")}.s3.amazonaws.com/'
-else:
-    # Local storage
-    MEDIA_URL = '/media/'
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# Media & File Storage (for local development; S3 handled via boto3 in views/utils)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -184,7 +178,7 @@ FRONTEND_URL = "https://seething-bay97.vercel.app"
 # Password reset timeout
 PASSWORD_RESET_TIMEOUT = 3600
 
-# AWS S3 Settings
+# AWS S3 Settings (used in utils.py for boto3 uploads)
 AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID', default='')
 AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY', default='')
 AWS_S3_REGION_NAME = 'eu-west-1'  # Europe (Ireland)
